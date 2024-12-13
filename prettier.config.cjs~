@@ -1,0 +1,11 @@
+// module.exports = {
+//   tailwindConfig: "./tailwind.config.cjs",
+//   plugins: [require("prettier-plugin-tailwindcss")],
+// };
+// Instead of require
+module.exports = async () => {
+  const pluginTailwind = await import('prettier-plugin-tailwindcss');
+  return {
+    plugins: [pluginTailwind.default],
+  };
+};
