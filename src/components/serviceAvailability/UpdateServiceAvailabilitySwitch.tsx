@@ -10,7 +10,9 @@ type Props = {
 };
 
 const SwitchBtn: React.FC<Props> = ({ is_active, id, refetch }) => {
-  const urlUpdatePostCode = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/service-availabilities/${id}/change-state`;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  const urlUpdatePostCode = `${BASE_URL}/service-availabilities/${id}/change-state`;
   const [inputValue, setInputValue] = useState<boolean>(is_active || false);
   const {
     updateArea,
@@ -42,6 +44,7 @@ const SwitchBtn: React.FC<Props> = ({ is_active, id, refetch }) => {
   return (
     <>
       <Switch
+        disabled={updateLoading}
         crossOrigin={`crossOrigin`}
         checked={inputValue}
         onChange={handleToggle}

@@ -17,7 +17,7 @@ const SignIn = () => {
       const data = await signIn(email, password);
       localStorage.setItem("authToken", data.result.token);
 
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/home";
     } catch (err) {
       if (typeof err === "string") {
         setError(err);
@@ -45,10 +45,15 @@ const SignIn = () => {
           className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2"
         >
           <div className="mb-1 flex flex-col gap-6">
-            <p color="blue-gray" className="-mb-3 font-medium">
+            <label
+              htmlFor="email"
+              color="blue-gray"
+              className="z-10 font-medium"
+            >
               Your email
-            </p>
+            </label>
             <input
+              id="email"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900 p-3 border border-gray-300 rounded-md"
               type="email"
               placeholder="Email"
@@ -56,10 +61,15 @@ const SignIn = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <p color="blue-gray" className="-mb-3 font-medium">
+            <label
+              htmlFor="password"
+              color="blue-gray"
+              className="z-10 font-medium"
+            >
               Password
-            </p>
+            </label>
             <input
+              id="password"
               type="password"
               placeholder="*******"
               value={password}

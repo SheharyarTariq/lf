@@ -41,8 +41,10 @@ export const CreateItem: React.FC<Props> = memo(
     const [dryCleaningPrice, setDryCleaningPrice] = useState<number | null>(
       null,
     );
-    const urlAddArea = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/items`;
-    const urlUpdateArea = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/items/${id}`;
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+    const urlAddArea = `${BASE_URL}/items`;
+    const urlUpdateArea = `${BASE_URL}/items/${id}`;
 
     const {
       addArea,
@@ -122,9 +124,9 @@ export const CreateItem: React.FC<Props> = memo(
             </Typography>
             <Typography className="mt-1 font-normal text-gray-600">
               {name ? (
-                <p> Save After Editing Item.</p>
+                <span> Save After Editing Item.</span>
               ) : (
-                <p> Save After Adding Item.</p>
+                <span> Save After Adding Item.</span>
               )}{" "}
             </Typography>
           </DialogHeader>

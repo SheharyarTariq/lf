@@ -17,8 +17,10 @@ type Props = {
 
 export const DeleteArea: React.FC<Props> = memo(({ name, id, refetch }) => {
   const [open, setOpen] = React.useState(false);
-  const token = localStorage.getItem("authToken");
-  const url = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/areas/${id}`;
+  // const token = localStorage.getItem("authToken");
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  const url = `${BASE_URL}/areas/${id}`;
   const handleOpen = () => setOpen(!open);
 
   const { deleteArea, loading } = useDeleteArea("Area", url);

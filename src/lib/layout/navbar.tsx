@@ -9,8 +9,6 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 
-
-
 type Route = {
   name: string;
   path: string;
@@ -25,13 +23,17 @@ type NavbarProps = {
 
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export const Navbar:React.FC<NavbarProps>=({ brandName, routes, action }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  brandName,
+  routes,
+  action,
+}) => {
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
+      () => window.innerWidth >= 960 && setOpenNav(false),
     );
   }, []);
 
@@ -69,10 +71,12 @@ export const Navbar:React.FC<NavbarProps>=({ brandName, routes, action }) => {
           </Typography>
         </Link>
         <div className="hidden lg:block">{navList}</div>
-        {/*{React.cloneElement(action, {*/}
-        {/*  className: "hidden lg:inline-block",*/}
-        {/*})}*/}
-        {action && React.isValidElement(action) && React.cloneElement(action as React.ReactElement, { className: "hidden lg:inline-block" })}
+
+        {action &&
+          React.isValidElement(action) &&
+          React.cloneElement(action as React.ReactElement, {
+            className: "hidden lg:inline-block",
+          })}
 
         <IconButton
           variant="text"
@@ -90,16 +94,17 @@ export const Navbar:React.FC<NavbarProps>=({ brandName, routes, action }) => {
       <Collapse open={openNav}>
         <div className="container mx-auto">
           {navList}
-          {/*{React.cloneElement(action, {*/}
-          {/*  className: "w-full block lg:hidden",*/}
-          {/*})}*/}
-          {action && React.isValidElement(action) && React.cloneElement(action as React.ReactElement, { className: "w-full block lg:hidden" })}
 
+          {action &&
+            React.isValidElement(action) &&
+            React.cloneElement(action as React.ReactElement, {
+              className: "w-full block lg:hidden",
+            })}
         </div>
       </Collapse>
     </MTNavbar>
   );
-}
+};
 
 Navbar.defaultProps = {
   brandName: "Material Tailwind React",
@@ -114,12 +119,6 @@ Navbar.defaultProps = {
     </a>
   ),
 };
-
-// Navbar.propTypes = {
-//   brandName: PropTypes.string,
-//   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
-//   action: PropTypes.node,
-// };
 
 Navbar.displayName = "/src/widgets/layout/navbar.jsx";
 

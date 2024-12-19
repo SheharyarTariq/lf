@@ -23,8 +23,10 @@ export const CreateArea: React.FC<Props> = memo(
   ({ dailogLabel, name, id, refetch }) => {
     const [open, setOpen] = useState(false);
     const [inputValue, setInputValue] = useState<string>("");
-    const urlAddArea = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/areas`;
-    const urlUpdateArea = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/areas/${id}`;
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+    const urlAddArea = `${BASE_URL}/areas`;
+    const urlUpdateArea = `${BASE_URL}/areas/${id}`;
     const {
       addArea,
       loading: addLoading,
@@ -80,14 +82,14 @@ export const CreateArea: React.FC<Props> = memo(
             </Typography>
             <Typography>
               {dailogLabel ? (
-                <p className="mt-1 font-normal text-gray-600">
+                <span className="mt-1 font-normal text-gray-600">
                   {" "}
                   Press save after {dailogLabel}ing Area.
-                </p>
+                </span>
               ) : (
-                <p className="mt-1 font-normal text-gray-600">
+                <span className="mt-1 font-normal text-gray-600">
                   Press save after Adding Area.
-                </p>
+                </span>
               )}
             </Typography>
           </DialogHeader>

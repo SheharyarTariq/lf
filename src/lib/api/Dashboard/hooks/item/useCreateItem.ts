@@ -20,9 +20,8 @@ function useCreateItem(url: string) {
         body: JSON.stringify(dataValue),
       });
       const data = await response.json();
-      console.log("data=>", dataValue);
 
-      console.log("res=>", data);
+      console.log("data=>", data);
       if (!response.ok) {
         setError(data.errors);
 

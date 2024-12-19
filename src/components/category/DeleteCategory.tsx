@@ -16,7 +16,9 @@ type Props = {
 
 export const DeleteCategory: React.FC<Props> = memo(({ name, id, refetch }) => {
   const [open, setOpen] = React.useState(false);
-  const url = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/categories/${id}`;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  const url = `${BASE_URL}/categories/${id}`;
   const handleOpen = () => setOpen(!open);
   const { deleteArea, loading } = useDeleteCategory("Category", url);
 

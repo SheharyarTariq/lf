@@ -20,7 +20,8 @@ export const CreateServiceAvailability: React.FC<Props> = memo(
   ({ areaId, refetch }) => {
     const [open, setOpen] = useState(false);
     const [inputValue, setInputValue] = useState<string>("");
-    const urlAddArea = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/service-availabilities`;
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const urlAddArea = `${BASE_URL}/service-availabilities`;
     const {
       addArea,
       loading: addLoading,

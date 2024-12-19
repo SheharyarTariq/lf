@@ -18,7 +18,9 @@ type Props = {
 export const DeleteServiceAvailability: React.FC<Props> = memo(
   ({ name, id, refetch }) => {
     const [open, setOpen] = React.useState(false);
-    const url = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/service-availabilities/${id}`;
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+    const url = `${BASE_URL}/service-availabilities/${id}`;
     const handleOpen = () => setOpen(!open);
 
     const { deleteArea, loading } = useDeleteServiceAvailability("Area", url);

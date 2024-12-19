@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const api = axios.create({
-
-    baseURL:'https://laundry-free-2a18b6e8d093.herokuapp.com/api',
-
+  baseURL: `${BASE_URL}`,
 });
 
 export default api;

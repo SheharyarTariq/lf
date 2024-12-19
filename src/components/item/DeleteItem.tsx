@@ -2,10 +2,9 @@ import React, { memo } from "react";
 import {
   Button,
   Dialog,
-  DialogHeader,
   DialogBody,
   DialogFooter,
-  Typography,
+  DialogHeader,
 } from "@material-tailwind/react";
 import useDeleteServiceAvailability from "@/lib/api/Dashboard/hooks/serviceAvailability/useDeleteServiceAvailability";
 
@@ -17,7 +16,9 @@ type Props = {
 
 export const DeleteItem: React.FC<Props> = memo(({ name, id, refetch }) => {
   const [open, setOpen] = React.useState(false);
-  const url = `https://laundry-free-2a18b6e8d093.herokuapp.com/api/items/${id}`;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  const url = `${BASE_URL}/items/${id}`;
   const handleOpen = () => setOpen(!open);
 
   const { deleteArea, loading } = useDeleteServiceAvailability("Item", url);
