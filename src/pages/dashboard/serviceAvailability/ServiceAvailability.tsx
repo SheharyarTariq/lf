@@ -3,6 +3,7 @@ import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react"
 import {DeleteServiceAvailability} from "@/components/serviceAvailability/DeleteServiceAvailability";
 import SwitchBtn from "@/components/serviceAvailability/UpdateServiceAvailabilitySwitch";
 import {CreateServiceAvailability} from "@/components/serviceAvailability/CreateServiceAvailability";
+import {TableData} from "@/lib/common/TableData";
 
 type Props = {
     areaId: string;
@@ -11,16 +12,11 @@ type Props = {
     refetch: () => void;
 };
 
-const ServiceAvailability: React.FC<Props> = ({
-                                                  areaId,
-                                                  areaName,
-                                                  service_availabilities,
-                                                  refetch,
-                                              }) => {
+const ServiceAvailability: React.FC<Props> = ({areaId, areaName, service_availabilities, refetch,}) => {
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12 px-16">
             <Card>
-                <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+                <CardHeader variant="gradient" color="gray" className="mb-8 p-6 text-center">
                     <Typography variant="h6" color="white">
                         {areaName} Post Codes
                     </Typography>
@@ -29,34 +25,21 @@ const ServiceAvailability: React.FC<Props> = ({
                     <table className="w-full table-auto">
                         <thead>
                         <tr>
-                            <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                <Typography
-                                    variant="small"
-                                    className="text-[11px] font-bold uppercase text-blue-gray-400"
-                                >
-                                    Post Code
-                                </Typography>
-                            </th>
+                            {["Post Code", "Active", <CreateServiceAvailability
+                                areaId={areaId}
+                                refetch={refetch}
+                            />
+                            ].map((el, idx) => (
+                                <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                                    <Typography
+                                        variant="small"
+                                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                                    >
+                                        {el}
+                                    </Typography>
+                                </th>
+                            ))}
 
-                            <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                <Typography
-                                    variant="small"
-                                    className="text-[11px] font-bold uppercase text-blue-gray-400"
-                                >
-                                    Active
-                                </Typography>
-                            </th>
-                            <th className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                <Typography
-                                    variant="small"
-                                    className="text-[11px] font-bold uppercase text-blue-gray-400"
-                                >
-                                    <CreateServiceAvailability
-                                        areaId={areaId}
-                                        refetch={refetch}
-                                    />
-                                </Typography>
-                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -81,40 +64,26 @@ const ServiceAvailability: React.FC<Props> = ({
 
                                 return (
                                     <tr key={id}>
-                                        <td className={`${className}`}>
-                                            <Typography
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-bold"
-                                            >
-                                                {postcode}
-                                            </Typography>
-                                        </td>
-                                        <td className={`${className}`}>
-                                            <SwitchBtn
-                                                is_active={is_active}
-                                                id={`${id}`}
-                                                refetch={refetch}
-                                            />
-                                        </td>
-                                        <td className={className}>
-                                            <DeleteServiceAvailability
-                                                id={`${id}`}
-                                                name={postcode}
-                                                refetch={refetch}
-                                            />
-                                        </td>
+                                        <TableData classes={`${className}`} data={postcode}/>
+                                        <TableData classes={`${className}`} data={<SwitchBtn
+                                            is_active={is_active}
+                                            id={`${id}`}
+                                            refetch={refetch}
+                                        />}/>
+                                        
+                                        <TableData classes={className} data={<DeleteServiceAvailability
+                                            id={`${id}`}
+                                            name={postcode}
+                                            refetch={refetch}
+                                        />}/>
+
                                     </tr>
                                 );
                             },
                         )}
                         {service_availabilities?.length === 0 && (
                             <tr>
-                                <td colSpan={3} className="text-center p-4">
-                                    <Typography className="text-blue-gray-600">
-                                        No Data
-                                    </Typography>
-                                </td>
+                                <TableData data=' No Data' classes="text-center p-4 " colspan={3} noBold={true}/>
                             </tr>
                         )}
                         </tbody>

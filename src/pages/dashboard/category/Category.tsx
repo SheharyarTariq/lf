@@ -1,49 +1,22 @@
 import React, {useState} from "react";
-import {
-    Card,
-    CardBody,
-    CardHeader,
-    Typography,
-} from "@material-tailwind/react";
+import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react";
 import {CreateCategory} from "@/components/category/CreateCategory";
 import {DeleteCategory} from "@/components/category/DeleteCategory";
 import useFetch from "@/lib/api/Dashboard/hooks/category/useFetchCategory";
-import Items from "@/pages/dashboard/items/Items";
+import Item from "@/pages/dashboard/item/Item";
+import {TableData} from "@/lib/common/TableData";
+import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCodes} from "@/lib/common/Dropdown";
 
 export const Category = () => {
     const BASE_URL = import.meta.env.VITE_BASE_URL;
 
     const url = `${BASE_URL}/categories`;
     const {data, error, loading, refetch} = useFetch<any>(url);
-    const [allDropdownsOpen, setAllDropdownsOpen] = useState(false);
+    const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
     const [openDropdowns, setOpenDropdowns] = useState<{
         [key: string]: boolean;
     }>({});
 
-    const handleGetPostCodes = (id: string) => {
-        setOpenDropdowns((prevState) => ({
-            ...prevState,
-            [id]: !prevState[id],
-        }));
-    };
-    const handleGetAllPostCodesOpen = () => {
-        setAllDropdownsOpen((prevState) => !prevState);
-        data.result.map(({id}: { id: string }) =>
-            setOpenDropdowns((prevState) => ({
-                ...prevState,
-                [id]: false,
-            })),
-        );
-    };
-    const handleGetAllPostCodesClose = () => {
-        setAllDropdownsOpen((prevState) => !prevState);
-        data.result.map(({id}: { id: string }) =>
-            setOpenDropdowns((prevState) => ({
-                ...prevState,
-                [id]: true,
-            })),
-        );
-    };
 
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -52,17 +25,20 @@ export const Category = () => {
                     <Typography variant="h6" color="white">
                         Category{" "}
                         {data &&
-                            (allDropdownsOpen ? (
-                                <i
-                                    className="fa-solid fa-caret-up cursor-pointer"
-                                    onClick={handleGetAllPostCodesOpen}
-                                />
+                            (openAllDropdowns ? (
+                                <i onClick={() => handleGetAllPostCodesOpen({
+                                    data,
+                                    setOpenAllDropdowns,
+                                    setOpenDropdowns
+                                })}
+                                   className="fa-solid fa-caret-up cursor-pointer"/>
                             ) : (
-                                <i
-                                    className="fa-solid fa-caret-down cursor-pointer"
-                                    onClick={handleGetAllPostCodesClose}
-                                />
-                            ))}
+                                <i className="fa-solid fa-caret-down cursor-pointer"
+                                   onClick={() => handleGetAllPostCodesClose({
+                                       data,
+                                       setOpenAllDropdowns,
+                                       setOpenDropdowns
+                                   })}/>))}
                     </Typography>
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0  pt-0 pb-2">
@@ -102,9 +78,7 @@ export const Category = () => {
                         <tbody>
                         {error && (
                             <tr>
-                                <td colSpan={4} className="text-center p-4">
-                                    <Typography className="text-red-500">{error}</Typography>
-                                </td>
+                                <TableData colspan={4} data={error} classes="text-center p-4 " textColor='red'/>
                             </tr>
                         )}
                         {!error &&
@@ -134,89 +108,50 @@ export const Category = () => {
                                     return (
                                         <React.Fragment key={id}>
                                             <tr>
-                                                <td className={`${className}`}>
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-bold"
-                                                    >
-                                                        {name}
-                                                    </Typography>
-                                                </td>
+                                                <TableData classes={className} data={name}/>
+                                                <TableData classes={className} data={description ? description : "-"}/>
 
-                                                <td className={`${className}`}>
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-bold"
-                                                    >
-                                                        {description ? description : "-"}
-                                                    </Typography>
-                                                </td>
+                                                <TableData classes={className} data={category_handling_options?.map(
+                                                    ({handling_option}, index) => {
+                                                        return (
+                                                            <span
+                                                                key={index}> {(handling_option === 'fold') && 'Fold'}{(handling_option === 'hang') && 'Hang'}</span>
+                                                        );
+                                                    },
+                                                )}/>
+                                                <TableData classes={className} data={<div className={`flex`}>
 
-                                                <td className={`${className}`}>
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-bold"
-                                                    >
-                                                        {category_handling_options?.map(
-                                                            ({handling_option}, index) => {
-                                                                return (
-                                                                    <span key={index}> {handling_option}</span>
-                                                                );
-                                                            },
-                                                        )}
-                                                    </Typography>
-                                                </td>
+                                                    <CreateCategory
+                                                        handlingOption={category_handling_options}
+                                                        description={description}
+                                                        dailogLabel="Edit"
+                                                        name={name}
+                                                        id={id}
+                                                        refetch={refetch}
+                                                    />
+                                                    <DeleteCategory
+                                                        name={name}
+                                                        id={id}
+                                                        refetch={refetch}
+                                                    />
+                                                </div>}/>
+                                                <TableData classes={className} data={openDropdowns[id] ? (
+                                                    <i className="fa-solid fa-caret-up cursor-pointer"
+                                                       onClick={() => handleGetPostCodes({id, setOpenDropdowns})}/>) : (
+                                                    <i className="fa-solid fa-caret-down cursor-pointer"
+                                                       onClick={() => handleGetPostCodes({id, setOpenDropdowns})}/>)}/>
 
-                                                <td className={className}>
-                                                    <div className={`flex`}>
-                                                        <CreateCategory
-                                                            handlingOption={category_handling_options}
-                                                            description={description}
-                                                            dailogLabel="Edit"
-                                                            name={name}
-                                                            id={id}
-                                                            refetch={refetch}
-                                                        />
-                                                        <DeleteCategory
-                                                            name={name}
-                                                            id={id}
-                                                            refetch={refetch}
-                                                        />
-                                                    </div>
-                                                </td>
-                                                <td className={`${className}`}>
-                                                    <Typography
-                                                        variant="small"
-                                                        color="blue-gray"
-                                                        className="font-bold px-4"
-                                                    >
-                                                        {openDropdowns[id] ? (
-                                                            <i
-                                                                className="fa-solid fa-caret-up cursor-pointer"
-                                                                onClick={() => handleGetPostCodes(`${id}`)}
-                                                            />
-                                                        ) : (
-                                                            <i
-                                                                className="fa-solid fa-caret-down cursor-pointer"
-                                                                onClick={() => handleGetPostCodes(`${id}`)}
-                                                            />
-                                                        )}
-                                                    </Typography>
-                                                </td>
                                             </tr>
                                             {openDropdowns[id] && (
                                                 <tr>
-                                                    <td colSpan={5} className="p-0">
-                                                        <Items
-                                                            categoryName={name}
-                                                            categoryId={`${id}`}
-                                                            items={items}
-                                                            refetch={refetch}
-                                                        />
-                                                    </td>
+                                                    <TableData colspan={5}
+                                                               data={<Item
+                                                                   categoryName={name}
+                                                                   categoryId={`${id}`}
+                                                                   items={items}
+                                                                   refetch={refetch}
+                                                               />} classes="p-0"/>
+
                                                 </tr>
                                             )}
                                         </React.Fragment>
@@ -226,11 +161,12 @@ export const Category = () => {
 
                         {loading && (
                             <tr>
-                                <td colSpan={4} className="text-center p-4">
-                                    <Typography className="text-blue-gray-600">
-                                        Loading...
-                                    </Typography>
-                                </td>
+                                <TableData data=' Loading...' classes="text-center p-4 " colspan={5} noBold={true}/>
+                            </tr>
+                        )}
+                        {data?.result?.length === 0 && (
+                            <tr>
+                                <TableData data=' No Data' classes="text-center p-4 " colspan={5} noBold={true}/>
                             </tr>
                         )}
                         </tbody>
