@@ -12,6 +12,7 @@ import {
     handleGetTimeSlots
 } from "@/lib/common/Dropdown";
 import Slot from "@/pages/dashboard/slot/Slot";
+import DeleteModal from "@/lib/common/DeleteModal";
 
 type Props = {
     name: string,
@@ -42,34 +43,51 @@ export const Area = () => {
         <div className="mt-12 mb-8 flex flex-col gap-12">
             <Card>
                 <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-                    <Typography variant="h6" color="white">
-                        Area{" "}
-                        {openAllDropdowns ? (
-                            <i onClick={() => handleGetAllPostCodesOpen({data, setOpenAllDropdowns, setOpenDropdowns})}
-                               className="fa-solid fa-caret-up cursor-pointer"/>
-                        ) : (
-                            <i className="fa-solid fa-caret-down cursor-pointer"
-                               onClick={() => handleGetAllPostCodesClose({
-                                   data,
-                                   setOpenAllDropdowns,
-                                   setOpenDropdowns
-                               })}/>)}
-                        <span>
-                            {!error && (
-                                <CreateArea
-                                    dailogLabel={null}
-                                    name={null}
-                                    id={null}
-                                    refetch={refetch}
-                                />
-                            )}</span>
+                    <Typography variant="h6" color="white" className="flex items-center">
+                        <div className="flex items-center">
+                            Area{" "}
+
+                        </div>
+                        <span className="ml-auto">
+        {!error && (
+            <CreateArea
+                dailogLabel={null}
+                name={null}
+                id={null}
+                refetch={refetch}
+            />
+        )}
+    </span>
                     </Typography>
+
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                     <table className="w-full table-auto">
                         <thead>
                         <tr>
-                            {["Area", <span className={`ml-9`}>Action</span>, "Post Codes", "Time Slot"
+                            {["Area", <span className={`ml-9`}>Action</span>, <div>Post Codes {openAllDropdowns ? (
+                                <i
+                                    onClick={() =>
+                                        handleGetAllPostCodesOpen({
+                                            data,
+                                            setOpenAllDropdowns,
+                                            setOpenDropdowns,
+                                        })
+                                    }
+                                    className="fa-solid fa-caret-up cursor-pointer"
+                                />
+                            ) : (
+                                <i
+                                    className="fa-solid fa-caret-down cursor-pointer"
+                                    onClick={() =>
+                                        handleGetAllPostCodesClose({
+                                            data,
+                                            setOpenAllDropdowns,
+                                            setOpenDropdowns,
+                                        })
+                                    }
+                                />
+                            )}</div>, "Time Slot"
                             ].map((el, idx) => (
                                 <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                                     <Typography
@@ -108,7 +126,12 @@ export const Area = () => {
 
                                                     <CreateArea dailogLabel="Edit" name={name} id={`${id}`}
                                                                 refetch={refetch}/>
-                                                    <DeleteArea name={name} id={`${id}`} refetch={refetch}/></div>}/>
+                                                    <DeleteModal btnLabel='Delete'
+                                                                 title="Delete Confirmation"
+                                                                 description={`Are you sure you want to Delete this Area (${name})?`}
+                                                                 refetch={refetch}
+                                                                 url={`${url}/${id}`}/>
+                                                </div>}/>
 
                                                 <TableData classes={className} data={openDropdowns[id] ? (
                                                     <i className="fa-solid fa-caret-up cursor-pointer"

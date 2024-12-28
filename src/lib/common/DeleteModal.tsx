@@ -1,47 +1,44 @@
-import React, {memo} from "react";
-import {
-    Button,
-    Dialog,
-    DialogBody,
-    DialogFooter,
-    DialogHeader,
-} from "@material-tailwind/react";
-import useDeleteCategory from "@/lib/api/Dashboard/hooks/category/useDeleteCategory";
+import React from 'react';
+import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
+import useDeleteArea from "@/lib/api/Dashboard/hooks/area/useDeleteArea";
 
 type Props = {
-    name: string;
-    id: string | number;
-    refetch: Function;
-};
+    btnLabel: string
+    refetch: Function
+    url: string
+    title: string
+    description: string
+}
 
-export const DeleteCategory: React.FC<Props> = memo(({name, id, refetch}) => {
+
+export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, description}) => {
+
     const [open, setOpen] = React.useState(false);
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
-    const url = `${BASE_URL}/categories/${id}`;
+
     const handleOpen = () => setOpen(!open);
-    const {deleteArea, loading} = useDeleteCategory("Category", url);
+
+    const {deleteArea, loading} = useDeleteArea("Area", url);
 
     const handleDelete = async () => {
         await deleteArea();
+
         refetch();
         handleOpen();
-        ``;
     };
     return (
         <>
             <Button variant="text" color="blue-gray" size="sm" onClick={handleOpen}>
-                Delete
+                {btnLabel}
             </Button>
-            <Dialog open={open} handler={handleOpen}>
+
+            <Dialog size={`sm`} open={open} handler={handleOpen}>
                 <DialogHeader>
-                    Would you like to permanently delete this Category?
+                    {title}
                 </DialogHeader>
                 <DialogBody>
-                    Once deleted,this ({" "}
-                    <strong>
-                        <b>{name}</b>
-                    </strong>{" "}
-                    ) will no longer be accessible.
+
+                    {description}
+
                 </DialogBody>
                 <DialogFooter>
                     <Button
@@ -59,4 +56,6 @@ export const DeleteCategory: React.FC<Props> = memo(({name, id, refetch}) => {
             </Dialog>
         </>
     );
-});
+}
+
+export default DeleteModal;

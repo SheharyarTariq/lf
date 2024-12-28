@@ -14,40 +14,29 @@ export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
     const urlUpdate = `${BASE_URL}/slot-availabilities/${id}/change-state`;
     const {updateArea, loading} = useUpdateServiceAvailability(urlUpdate);
     const [open, setOpen] = React.useState(false);
-
     const handleOpen = () => setOpen(!open);
 
     async function handleSlotActivation(isActive: boolean) {
         const dataValue = {is_active: !isActive};
-
         await updateArea(dataValue)
         refetch();
         handleOpen();
     }
 
-
     return (
-        // <button onClick={handleSlotActivation}
-        //         className={isActive ? 'border border-green-500 px-2  rounded-md mx-2' : 'border border-red-500 px-2  rounded-md mx-2'}>
-        //     {slot}
-        // </button>
         <>
             <Button variant="text" color='blue-gray' size="sm"
-                    className={isActive ? 'border border-green-500 mx-3' : ' border-red-500 mx-3'} onClick={handleOpen}>
+                    className={isActive ? ' bg-blue-gray-50' : 'border border-blue-gray-50'}
+                    onClick={handleOpen}>
                 {slot}
             </Button>
 
             <Dialog open={open} handler={handleOpen}>
                 <DialogHeader>
-                    Would you like to {isActive ? 'Deactivate' : 'Activate'} this time slot?
+                    {isActive ? 'Deactivate' : 'Activate'} Confirmation
                 </DialogHeader>
-                <DialogBody>
-                    Once deactivated,this ({" "}
-                    <strong>
-                        <b>{slot}</b>
-                    </strong>{" "}
-                    ) will no longer be accessible.
-                </DialogBody>
+                <DialogBody>Are you sure you want to {isActive ? 'Deactivate' : 'Activate'} this slot
+                    ({slot})?</DialogBody>
                 <DialogFooter>
                     <Button
                         variant="text"
@@ -58,7 +47,7 @@ export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
                         <span>Cancel</span>
                     </Button>
                     <Button variant="gradient" onClick={() => handleSlotActivation(isActive)} disabled={loading}>
-                        <span>{loading ? "Deactivating..." : "Confirm"}</span>
+                        <span>{loading ? (isActive ? "Deactivating..." : 'Activating') : "Confirm"}</span>
                     </Button>
                 </DialogFooter>
             </Dialog>

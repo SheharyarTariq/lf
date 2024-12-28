@@ -4,6 +4,7 @@ import {DeleteServiceAvailability} from "@/components/serviceAvailability/Delete
 import SwitchBtn from "@/components/serviceAvailability/UpdateServiceAvailabilitySwitch";
 import {CreateServiceAvailability} from "@/components/serviceAvailability/CreateServiceAvailability";
 import {TableData} from "@/lib/common/TableData";
+import DeleteModal from "@/lib/common/DeleteModal";
 
 type Props = {
     areaId: string;
@@ -13,6 +14,8 @@ type Props = {
 };
 
 const ServiceAvailability: React.FC<Props> = ({areaId, areaName, service_availabilities, refetch,}) => {
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const url = `${BASE_URL}/service-availabilities`;
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12 px-16">
             <Card>
@@ -70,13 +73,15 @@ const ServiceAvailability: React.FC<Props> = ({areaId, areaName, service_availab
                                             id={`${id}`}
                                             refetch={refetch}
                                         />}/>
-                                        
-                                        <TableData classes={className} data={<DeleteServiceAvailability
-                                            id={`${id}`}
-                                            name={postcode}
-                                            refetch={refetch}
-                                        />}/>
 
+                                        <TableData classes={className} data={
+                                            <>
+                                                <DeleteModal btnLabel='Delete'
+                                                             title="Delete Confirmation"
+                                                             description={`Are you sure you want to Delete this postcode (${postcode})?`}
+                                                             refetch={refetch}
+                                                             url={`${url}/${id}`}/>
+                                            </>}/>
                                     </tr>
                                 );
                             },

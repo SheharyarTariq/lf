@@ -4,6 +4,7 @@ import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react"
 import {CreateItem} from "@/components/item/CreateItem";
 import {DeleteItem} from "@/components/item/DeleteItem";
 import {TableData} from "@/lib/common/TableData";
+import DeleteModal from "@/lib/common/DeleteModal";
 
 type Props = {
     categoryId: string;
@@ -36,6 +37,8 @@ const Item: React.FC<Props> = ({
                                    refetch,
                                    items,
                                }) => {
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const url = `${BASE_URL}/items`;
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12 px-16">
             <Card>
@@ -117,11 +120,13 @@ const Item: React.FC<Props> = ({
                                                     refetch={refetch}
                                                 />
 
-                                                <DeleteItem
-                                                    id={`${id}`}
-                                                    name={name}
-                                                    refetch={refetch}
-                                                /></div>
+                                                
+                                                <DeleteModal btnLabel='Delete'
+                                                             title="Delete Confirmation"
+                                                             description={`Are you sure you want to Delete this Item (${name})?`}
+                                                             refetch={refetch}
+                                                             url={`${url}/${id}`}/>
+                                            </div>
                                         }
                                         />
                                     </tr>

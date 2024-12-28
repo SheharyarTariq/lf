@@ -63,7 +63,7 @@ export const CreateArea: React.FC<Props> = memo(
                     color="blue-gray"
                     size="sm"
                     onClick={handleOpen}
-                    className={`${!dailogLabel && "text-black text-center bg-gray-100"}`}
+                    className={`${!dailogLabel && "text-black hover:bg-gray-300 text-center bg-gray-100"}`}
                 >
                     {dailogLabel ? dailogLabel : <i className=" fa-solid fa-plus"></i>}
                 </Button>

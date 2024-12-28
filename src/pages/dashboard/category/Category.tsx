@@ -6,10 +6,10 @@ import useFetch from "@/lib/api/Dashboard/hooks/category/useFetchCategory";
 import Item from "@/pages/dashboard/item/Item";
 import {TableData} from "@/lib/common/TableData";
 import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCodes} from "@/lib/common/Dropdown";
+import DeleteModal from "@/lib/common/DeleteModal";
 
 export const Category = () => {
     const BASE_URL = import.meta.env.VITE_BASE_URL;
-
     const url = `${BASE_URL}/categories`;
     const {data, error, loading, refetch} = useFetch<any>(url);
     const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
@@ -129,11 +129,11 @@ export const Category = () => {
                                                         id={id}
                                                         refetch={refetch}
                                                     />
-                                                    <DeleteCategory
-                                                        name={name}
-                                                        id={id}
-                                                        refetch={refetch}
-                                                    />
+                                                    <DeleteModal btnLabel='Delete'
+                                                                 title="Delete Confirmation"
+                                                                 description={`Are you sure you want to Delete this Category (${name})?`}
+                                                                 refetch={refetch}
+                                                                 url={`${url}/${id}`}/>
                                                 </div>}/>
                                                 <TableData classes={className} data={openDropdowns[id] ? (
                                                     <i className="fa-solid fa-caret-up cursor-pointer"
