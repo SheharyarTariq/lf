@@ -30,6 +30,7 @@ function useFetch<T>(url: string): FetchResult<T> {
                 const parsedData = await response.json();
                 console.log('parsedData', parsedData);
                 if (!response.ok) {
+                    console.log('error', parsedData);
                     throw new Error(parsedData.errors?.name || parsedData.message || 'Failed to fetch data');
                 }
 
