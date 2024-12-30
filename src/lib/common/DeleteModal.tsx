@@ -8,16 +8,17 @@ type Props = {
     url: string
     title: string
     description: string
+    toastMessage: string
 }
 
 
-export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, description}) => {
+export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, description, toastMessage}) => {
 
     const [open, setOpen] = React.useState(false);
 
     const handleOpen = () => setOpen(!open);
 
-    const {deleteArea, loading} = useDeleteArea("Area", url);
+    const {deleteArea, loading} = useDeleteArea(toastMessage, url);
 
     const handleDelete = async () => {
         await deleteArea();
