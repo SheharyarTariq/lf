@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
     Dialog,
@@ -6,25 +6,33 @@ import {
     DialogFooter,
     DialogHeader,
     Typography,
+    Input,
+    Textarea,
 } from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
+import {token} from "@/lib/token/Token";
 
 interface AddItemFromCategoryProps {
     dialogLabel?: string;
+    orderId: string;
     onSuccess?: () => void;
 }
 
 export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                                                             dialogLabel,
+                                                                            orderId,
                                                                             onSuccess,
                                                                         }) => {
     const BASE_URL = import.meta.env.VITE_BASE_URL;
-    const url = `${BASE_URL}/categories`;
-
+    const categoriesUrl = `${BASE_URL}/categories`;
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const {data, error, loading, refetch} = useFetch<any>(url);
+    const {data, error, loading, refetch} = useFetch<any>(categoriesUrl);
+    const [items, setItems] = useState<any[]>([]);
+    const [selectedItem, setSelectedItem] = useState<any | null>(null);
+    const [itemsLoading, setItemsLoading] = useState(false);
+    const [itemsError, setItemsError] = useState<string | null>(null);
 
     useEffect(() => {
         if (data?.result?.length === 0) {
@@ -37,16 +45,88 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         setOpen((prev) => !prev);
     };
 
-    const handleSave = () => {
-        if (!selectedCategory) {
-            toast.error("Please select a category.");
+    const handleGetItemsByCategory = async (categoryId: string) => {
+        setItemsLoading(true);
+        setItemsError(null);
+
+        try {
+            const response = await fetch(`${BASE_URL}/items?category_id=${categoryId}`, {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            const result = await response.json();
+            setItems(result.result || []); // Use "result" key from API response
+        } catch (err) {
+            setItemsError((err as Error).message);
+        } finally {
+            setItemsLoading(false);
+        }
+    };
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const categoryId = e.target.value;
+        setSelectedCategory(categoryId);
+        handleGetItemsByCategory(categoryId);
+    };
+
+    const handleItemSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedItemId = e.target.value;
+        const item = items.find((item: { id: string }) => item.id === selectedItemId);
+        setSelectedItem({...item, quantity: 1}); // Add "quantity" with a default value of 1
+    };
+
+    const handleSave = async () => {
+        if (!selectedCategory || !selectedItem) {
+            toast.error("Please select a category and item.");
             return;
         }
 
-        toast.success(`Category with ID ${selectedCategory} selected successfully!`);
-        setOpen(false);
-        onSuccess?.();
+        // Prepare payload
+        const payload: any = {
+            item_id: selectedItem.id, // Replace "id" with "item_id"
+            // name: selectedItem.name,
+            // description: selectedItem.description,
+            quantity: selectedItem.quantity,
+            is_open_item: false, // Added is_open_item field to payload
+            handling_option: "fold", // Added handling_option field to payload
+        };
+
+        // Check if washing_price is not null and set cleaning_method and price_per_unit
+        if (selectedItem.washing_price !== null) {
+            payload.cleaning_method = "washing";
+            payload.price_per_unit = +selectedItem.washing_price;
+        } else {
+            payload.cleaning_method = "washing";
+            payload.price_per_unit = 20;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/order-items/orders/${orderId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to save item. Error: ${response.statusText}`);
+            }
+
+            toast.success("Item added to order successfully!");
+            setOpen(false);
+            onSuccess?.();
+        } catch (error) {
+            toast.error(`Failed to add item: ${(error as Error).message}`);
+        }
     };
+
 
     return (
         <>
@@ -61,18 +141,19 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
             >
                 {dialogLabel ? dialogLabel : <i className="fa-solid fa-plus"></i>}
             </Button>
-            <Dialog size="sm" open={open} handler={handleOpen} className="p-4">
+            <Dialog size="lg" open={open} handler={handleOpen} className="p-4">
                 <DialogHeader className="relative m-0 block">
                     <Typography variant="h4" color="blue-gray">
                         {dialogLabel || "Select"} Category
                     </Typography>
                     <Typography>
-            <span className="mt-1 font-normal text-gray-600">
-              Press Save After {dialogLabel || "Selecting"} a Category.
-            </span>
+                        <span className="mt-1 font-normal text-gray-600">
+                            Press Save After {dialogLabel || "Selecting"} a Category.
+                        </span>
                     </Typography>
                 </DialogHeader>
                 <DialogBody className="space-y-4 pb-6">
+                    {/* Category Selector */}
                     <div>
                         <Typography
                             variant="small"
@@ -89,7 +170,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                             <select
                                 className="p-2 rounded w-full border border-gray-400"
                                 value={selectedCategory || ""}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                onChange={handleCategoryChange}
                             >
                                 <option value="" disabled>
                                     Choose a category
@@ -104,12 +185,101 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                             <p className="text-gray-600">No categories available.</p>
                         )}
                     </div>
+
+                    {/* Item Selector */}
+                    {selectedCategory && !itemsLoading && !itemsError && items.length > 0 && (
+                        <div>
+                            <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="mb-2 text-left font-medium"
+                            >
+                                Select an Item
+                            </Typography>
+                            <select
+                                className="p-2 rounded w-full border border-gray-400"
+                                onChange={handleItemSelect}
+                            >
+                                <option value="" disabled>
+                                    Choose an item
+                                </option>
+                                {items.map((item: { id: string; name: string }) => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {/* Item Form */}
+                    {selectedItem && (
+                        <div className="mt-4">
+                            <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="mb-2 text-left font-medium"
+                            >
+                                Edit Item Details
+                            </Typography>
+                            <form className="space-y-4">
+                                <Input
+                                    label="Name"
+                                    value={selectedItem.name || ""}
+                                    onChange={(e) =>
+                                        setSelectedItem({...selectedItem, name: e.target.value})
+                                    }
+                                />
+                                <Textarea
+                                    label="Description"
+                                    value={selectedItem.description || ""}
+                                    onChange={(e) =>
+                                        setSelectedItem({
+                                            ...selectedItem,
+                                            description: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    label="Washing Price"
+                                    value={selectedItem.washing_price || ""}
+                                    onChange={(e) =>
+                                        setSelectedItem({
+                                            ...selectedItem,
+                                            washing_price: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    label="Dry Cleaning Price"
+                                    value={selectedItem.dry_cleaning_price || ""}
+                                    onChange={(e) =>
+                                        setSelectedItem({
+                                            ...selectedItem,
+                                            dry_cleaning_price: e.target.value,
+                                        })
+                                    }
+                                />
+                                <Input
+                                    label="Quantity"
+                                    type="number"
+                                    value={selectedItem.quantity || 1}
+                                    onChange={(e) =>
+                                        setSelectedItem({
+                                            ...selectedItem,
+                                            quantity: parseInt(e.target.value, 10) || 1,
+                                        })
+                                    }
+                                />
+                            </form>
+                        </div>
+                    )}
                 </DialogBody>
                 <DialogFooter>
                     <Button
                         className="ml-auto"
                         onClick={handleSave}
-                        disabled={loading || !selectedCategory}
+                        disabled={loading || !selectedCategory || !selectedItem}
                     >
                         Save
                     </Button>
