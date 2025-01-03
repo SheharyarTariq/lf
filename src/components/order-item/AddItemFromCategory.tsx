@@ -34,12 +34,6 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     const [itemsLoading, setItemsLoading] = useState(false);
     const [itemsError, setItemsError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (data?.result?.length === 0) {
-            toast.success("No categories found!");
-        }
-    }, [data]);
-
     const handleOpen = () => {
         refetch();
         setOpen((prev) => !prev);
@@ -60,7 +54,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                 throw new Error(`Error: ${response.status}`);
             }
             const result = await response.json();
-            setItems(result.result || []); // Use "result" key from API response
+            setItems(result.result || []);
         } catch (err) {
             setItemsError((err as Error).message);
         } finally {
@@ -77,7 +71,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     const handleItemSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedItemId = e.target.value;
         const item = items.find((item: { id: string }) => item.id === selectedItemId);
-        setSelectedItem({...item, quantity: 1}); // Add "quantity" with a default value of 1
+        setSelectedItem({...item, quantity: null});
     };
 
     const handleSave = async () => {
@@ -86,22 +80,18 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
             return;
         }
 
-        // Prepare payload
         const payload: any = {
-            item_id: selectedItem.id, // Replace "id" with "item_id"
-            // name: selectedItem.name,
-            // description: selectedItem.description,
+            item_id: selectedItem.id,
             quantity: selectedItem.quantity,
-            is_open_item: false, // Added is_open_item field to payload
-            handling_option: "fold", // Added handling_option field to payload
+            is_open_item: false,
+            handling_option: "hang",
         };
 
-        // Check if washing_price is not null and set cleaning_method and price_per_unit
         if (selectedItem.washing_price !== null) {
-            payload.cleaning_method = "washing";
+            payload.cleaning_method = "dry_cleaning";
             payload.price_per_unit = +selectedItem.washing_price;
         } else {
-            payload.cleaning_method = "washing";
+            payload.cleaning_method = "dry_cleaning";
             payload.price_per_unit = 20;
         }
 
@@ -153,7 +143,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                     </Typography>
                 </DialogHeader>
                 <DialogBody className="space-y-4 pb-6">
-                    {/* Category Selector */}
+
                     <div>
                         <Typography
                             variant="small"
@@ -186,7 +176,6 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                         )}
                     </div>
 
-                    {/* Item Selector */}
                     {selectedCategory && !itemsLoading && !itemsError && items.length > 0 && (
                         <div>
                             <Typography
@@ -212,7 +201,6 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                         </div>
                     )}
 
-                    {/* Item Form */}
                     {selectedItem && (
                         <div className="mt-4">
                             <Typography
@@ -224,6 +212,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                             </Typography>
                             <form className="space-y-4">
                                 <Input
+                                    crossOrigin="crossOrigin"
                                     label="Name"
                                     value={selectedItem.name || ""}
                                     onChange={(e) =>
@@ -241,6 +230,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                     }
                                 />
                                 <Input
+                                    crossOrigin="crossOrigin"
                                     label="Washing Price"
                                     value={selectedItem.washing_price || ""}
                                     onChange={(e) =>
@@ -251,6 +241,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                     }
                                 />
                                 <Input
+                                    crossOrigin="crossOrigin"
                                     label="Dry Cleaning Price"
                                     value={selectedItem.dry_cleaning_price || ""}
                                     onChange={(e) =>
@@ -261,13 +252,14 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                     }
                                 />
                                 <Input
+                                    crossOrigin="crossOrigin"
                                     label="Quantity"
                                     type="number"
-                                    value={selectedItem.quantity || 1}
+                                    value={selectedItem.quantity}
                                     onChange={(e) =>
                                         setSelectedItem({
                                             ...selectedItem,
-                                            quantity: parseInt(e.target.value, 10) || 1,
+                                            quantity: parseInt(e.target.value, 10),
                                         })
                                     }
                                 />
