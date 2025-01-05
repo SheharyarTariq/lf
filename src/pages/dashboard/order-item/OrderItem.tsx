@@ -3,7 +3,7 @@ import {OrderItems} from "../types";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
-import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
+import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory2";
 
 interface Props {
     id: string;

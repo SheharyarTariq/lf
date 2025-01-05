@@ -5,46 +5,61 @@ import {
     DialogBody,
     DialogFooter,
     DialogHeader,
-    Input,
     Typography,
 } from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import useCreateServiceAvailability from "@/lib/api/Dashboard/hooks/serviceAvailability/useCreateServiceAvailability";
+import {CreateServiceAvailabilityProps} from "@/pages/dashboard/types";
+import {config} from "@/config";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-type Props = {
-    areaId: string | null;
-    refetch: () => void;
-};
+const schema = yup.object().shape({
+    postcode: yup
+        .string()
+        .required("Postcode is required")
+        .matches(
+            /^[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2}$/,
+            "Invalid postcode format"
+        ),
+});
 
-export const CreateServiceAvailability: React.FC<Props> = memo(
+export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps> = memo(
     ({areaId, refetch}) => {
         const [open, setOpen] = useState(false);
-        const [inputValue, setInputValue] = useState<string>("");
-        const BASE_URL = import.meta.env.VITE_BASE_URL;
-        const urlAddArea = `${BASE_URL}/service-availabilities`;
+
         const {
-            addArea,
-            loading: addLoading,
-            error: addError,
-        } = useCreateServiceAvailability(urlAddArea);
+            register,
+            handleSubmit,
+            formState: {errors},
+            reset,
+        } = useForm({
+            resolver: yupResolver(schema),
+            defaultValues: {postcode: ""},
+        });
+
+        const {addArea, loading: addLoading, error: addError} = useCreateServiceAvailability(
+            `${config.BASE_URL}/service-availabilities`
+        );
         const isLoading = addLoading;
 
         const handleOpen = () => setOpen(!open);
 
-        const handleSave = async () => {
+        const onSubmit = async (data: { postcode: string }) => {
             const dataValue = {
-                postcode: inputValue,
+                postcode: data.postcode,
                 area_id: areaId,
             };
 
             const newArea = await addArea(dataValue);
 
             if (newArea) {
-                toast.success(`postcode added successfully!`, {
+                toast.success(`Postcode added successfully!`, {
                     position: "bottom-center",
                 });
                 refetch();
-                setInputValue("");
+                reset();
                 handleOpen();
             }
         };
@@ -58,7 +73,7 @@ export const CreateServiceAvailability: React.FC<Props> = memo(
                     onClick={handleOpen}
                     className="text-black text-center bg-gray-100 ml-3"
                 >
-                    <i className=" fa-solid fa-plus text-center"></i>
+                    <i className="fa-solid fa-plus text-center"></i>
                 </Button>
                 <Dialog size="sm" open={open} handler={handleOpen} className="p-4">
                     <DialogHeader className="relative m-0 block">
@@ -79,23 +94,20 @@ export const CreateServiceAvailability: React.FC<Props> = memo(
                                 Post code
                             </Typography>
                             <input
-                                // crossOrigin={`crossorigin`}
-                                // color="gray"
-                                // size="lg"
-                                className='p-2 rounded w-full border border-gray-400'
-
+                                className="p-2 rounded w-full border border-gray-400"
                                 placeholder="e.g. KT2R 2ER"
-                                name="name"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                {...register("postcode")}
                             />
+                            {errors.postcode && (
+                                <p className="text-red-500 text-xs">{errors.postcode.message}</p>
+                            )}
                             {addError && <p className="text-red-500 text-xs">{addError}</p>}
                         </div>
                     </DialogBody>
                     <DialogFooter>
                         <Button
                             className="ml-auto"
-                            onClick={handleSave}
+                            onClick={handleSubmit(onSubmit)}
                             disabled={isLoading}
                         >
                             {isLoading ? "Saving..." : "Save"}
@@ -104,5 +116,5 @@ export const CreateServiceAvailability: React.FC<Props> = memo(
                 </Dialog>
             </>
         );
-    },
+    }
 );

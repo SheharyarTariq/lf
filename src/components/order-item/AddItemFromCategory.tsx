@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {
     Button,
     Dialog,
     DialogBody,
     DialogFooter,
     DialogHeader,
-    Typography,
     Input,
     Textarea,
+    Typography,
 } from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
@@ -84,8 +84,20 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
             item_id: selectedItem.id,
             quantity: selectedItem.quantity,
             is_open_item: false,
-            handling_option: "hang",
         };
+
+        if (selectedItem.handling_options) {
+            selectedItem.handling_options.map((option: {
+                id: string,
+                handling_option: string,
+                default: boolean
+            }, index: number) => {
+                if (option.default === true) {
+                    payload.handling_option = option.handling_option;
+                }
+
+            });
+        }
 
         if (selectedItem.washing_price !== null) {
             payload.cleaning_method = "dry_cleaning";
@@ -219,16 +231,32 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                         setSelectedItem({...selectedItem, name: e.target.value})
                                     }
                                 />
-                                <Textarea
-                                    label="Description"
-                                    value={selectedItem.description || ""}
-                                    onChange={(e) =>
-                                        setSelectedItem({
-                                            ...selectedItem,
-                                            description: e.target.value,
-                                        })
-                                    }
-                                />
+                                <div>
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="mb-2 text-left font-medium"
+                                    >
+                                        Select Handling Option
+                                    </Typography>
+                                    <select
+                                        className="p-2 rounded w-full border border-gray-400"
+                                        onChange={handleItemSelect}
+                                    >
+                                        <option value="" disabled>
+                                            Choose an item
+                                        </option>
+                                        {selectedItem.handling_options.map((option: {
+                                            id: string,
+                                            handling_option: string,
+                                            default: boolean
+                                        }) => (
+                                            <option key={option.id} value={option.handling_option}>
+                                                {option.handling_option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <Input
                                     crossOrigin="crossOrigin"
                                     label="Washing Price"

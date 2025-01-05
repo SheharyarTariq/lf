@@ -13,12 +13,23 @@ export interface AreaProps {
 
 }
 
+export interface CreateAreaProps {
+    name: string | null;
+    id: string | null;
+    refetch: () => void;
+    dailogLabel: string | null;
+};
+
 export interface CategoryProps {
     name: string;
     description: string | null;
     id: number;
     category_handling_options: [] | null;
     items: [];
+    is_hangable: boolean;
+    is_foldable: boolean;
+    default_cleaning_method: "wash" | "dry_clean";
+    default_handling_option: "hang" | "fold";
 }
 
 export interface ItemProps {
@@ -30,6 +41,7 @@ export interface ItemProps {
         description: string | null;
         dry_cleaning_price: number | null;
         washing_price: number | null;
+        piece: number;
     }[];
 
     refetch: () => void;
@@ -43,6 +55,11 @@ export interface ServiceAvailabilityProps {
     }[];
     refetch: () => void;
 }
+
+export interface CreateServiceAvailabilityProps {
+    areaId: string | null;
+    refetch: () => void;
+};
 
 export interface SlotProps {
     areaId: string;

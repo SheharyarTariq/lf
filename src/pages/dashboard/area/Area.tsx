@@ -13,15 +13,13 @@ import {
 import Slot from "@/pages/dashboard/slot/Slot";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {AreaProps} from "../types"
+import {config} from "@/config";
 
 export const Area: React.FC = () => {
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-    const url = `${BASE_URL}/areas`;
-    const {data, error, loading, refetch} = useFetch<any>(url);
+    const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/areas`);
     const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean; }>({});
     const [openTimeDropdowns, setOpenTimeDropdowns] = useState<{ [key: string]: boolean; }>({});
-
     const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
 
     return (<div className="mt-12 mb-8 flex flex-col gap-12">
@@ -29,8 +27,7 @@ export const Area: React.FC = () => {
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                 <Typography variant="h6" color="white" className="flex items-center">
                     <div className="flex items-center">
-                        Area{" "}
-
+                        Area
                     </div>
                     <span className="ml-auto">
         {!error && (<CreateArea
@@ -89,7 +86,7 @@ export const Area: React.FC = () => {
                                         title="Delete Confirmation"
                                         description={`Are you sure you want to Delete this Area (${name})?`}
                                         refetch={refetch}
-                                        url={`${url}/${id}`}/>
+                                        url={`${config.BASE_URL}/areas/${id}`}/>
                                 </div>}/>
 
                                 <TableData classes={className} data={openDropdowns[id] ? (

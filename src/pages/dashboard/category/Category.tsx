@@ -7,17 +7,15 @@ import {TableData} from "@/lib/common/TableData";
 import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCodes} from "@/lib/common/Dropdown";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {CategoryProps} from "@/pages/dashboard/types";
+import {config} from "@/config";
 
 
 export const Category: React.FC = () => {
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
-    const url = `${BASE_URL}/categories`;
-    const {data, error, loading, refetch} = useFetch<any>(`${url}/with-items`);
+    const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/categories/with-items`);
     const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
     const [openDropdowns, setOpenDropdowns] = useState<{
         [key: string]: boolean;
     }>({});
-
 
     return (<div className="mt-12 mb-8 flex flex-col gap-12">
         <Card>
@@ -38,15 +36,19 @@ export const Category: React.FC = () => {
                 <table className="w-full table-auto">
                     <thead>
                     <tr>
-                        {["Category", "Description", "Option", <span className={`ml-9`}>Action</span>, !error && (
-                            <CreateCategory
-                                handlingOption={null}
-                                description={null}
-                                dailogLabel={null}
-                                name={null}
-                                id={null}
-                                refetch={refetch}
-                            />),].map((el, idx) => (<th
+                        {["Category", "Description", "Handling Option", "Default Washing", "Default Handling",
+                            <span className={`ml-9`}>Action</span>, !error && (
+                                <CreateCategory
+                                    is_hangable={null}
+                                    is_foldable={null}
+                                    default_cleaning_method={null}
+                                    default_handling_option={null}
+                                    description={null}
+                                    dailogLabel={null}
+                                    name={null}
+                                    id={null}
+                                    refetch={refetch}
+                                />),].map((el, idx) => (<th
                             key={idx}
                             className="border-b border-blue-gray-50 py-3 px-5 text-left"
                         >
@@ -64,7 +66,14 @@ export const Category: React.FC = () => {
                         <TableData colspan={4} data={error} classes="text-center p-4 " textColor='red'/>
                     </tr>)}
                     {!error && data?.result?.map(({
-                                                      name, description, id, category_handling_options, items,
+                                                      name,
+                                                      description,
+                                                      id,
+                                                      is_hangable,
+                                                      is_foldable,
+                                                      default_cleaning_method,
+                                                      default_handling_option,
+                                                      items,
                                                   }: CategoryProps, key: number,) => {
                         const className = `py-3 px-5 ${key === data.result.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
@@ -74,14 +83,28 @@ export const Category: React.FC = () => {
                                 <TableData classes={className} data={description ? description : "-"}/>
 
                                 <TableData classes={className}
-                                           data={category_handling_options?.map(({handling_option}, index) => {
-                                               return (<span
-                                                   key={index}> {(handling_option === 'fold') && 'Fold'}{(handling_option === 'hang') && 'Hang'}</span>);
-                                           },)}/>
+                                           data={
+                                               <div>
+                                                   {is_hangable ? "Hang" : null}
+                                                   {(is_hangable && is_foldable) ? "-" : null}
+
+                                                   {is_foldable ? "Fold" : null}</div>
+
+                                           }/>
+                                <TableData classes={className}
+                                           data={
+                                               <div>{default_cleaning_method}</div>}/>
+                                <TableData classes={className}
+                                           data={
+                                               <div>{default_handling_option}</div>}/>
+
                                 <TableData classes={className} data={<div className={`flex`}>
 
                                     <CreateCategory
-                                        handlingOption={category_handling_options}
+                                        is_hangable={is_hangable}
+                                        is_foldable={is_foldable}
+                                        default_cleaning_method={default_cleaning_method}
+                                        default_handling_option={default_handling_option}
                                         description={description}
                                         dailogLabel="Edit"
                                         name={name}
@@ -93,7 +116,7 @@ export const Category: React.FC = () => {
                                                  title="Delete Confirmation"
                                                  description={`Are you sure you want to Delete this Category (${name})?`}
                                                  refetch={refetch}
-                                                 url={`${url}/${id}`}/>
+                                                 url={`${config.BASE_URL}/categories/${id}`}/>
                                 </div>}/>
                                 <TableData classes={className} data={openDropdowns[id] ? (
                                     <i className="fa-solid fa-caret-up cursor-pointer"
@@ -116,10 +139,10 @@ export const Category: React.FC = () => {
                     },)}
 
                     {loading && (<tr>
-                        <TableData data=' Loading...' classes="text-center p-4 " colspan={5} noBold={true}/>
+                        <TableData data=' Loading...' classes="text-center p-4 " colspan={7} noBold={true}/>
                     </tr>)}
                     {data?.result?.length === 0 && (<tr>
-                        <TableData data=' No Data' classes="text-center p-4 " colspan={5} noBold={true}/>
+                        <TableData data=' No Data' classes="text-center p-4 " colspan={7} noBold={true}/>
                     </tr>)}
                     </tbody>
                 </table>

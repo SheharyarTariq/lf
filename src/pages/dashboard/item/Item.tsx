@@ -24,10 +24,11 @@ const Item: React.FC<ItemProps> = ({
                 <table className="w-full table-auto">
                     <thead>
                     <tr>
-                        {['Category', 'Description', 'Dry Cleaning Price', 'Washing Price', <CreateItem
+                        {['Category', 'Description', 'Dry Cleaning Price', 'Washing Price', "piece", <CreateItem
                             id={null}
                             label={null}
                             name={null}
+                            pieces={null}
                             description={null}
                             dry_cleaning_price={null}
                             washing_price={null}
@@ -48,7 +49,7 @@ const Item: React.FC<ItemProps> = ({
                     </thead>
                     <tbody>
                     {items?.map(({
-                                     id, name, description, dry_cleaning_price, washing_price,
+                                     id, name, description, dry_cleaning_price, washing_price, piece
                                  }, key: number,) => {
                         const className = `py-3 px-5 ${key === items?.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
@@ -59,8 +60,10 @@ const Item: React.FC<ItemProps> = ({
                             <TableData classes={`${className}`}
                                        data={dry_cleaning_price ? dry_cleaning_price : "-"}/>
                             <TableData classes={`${className}`} data={washing_price ? washing_price : "-"}/>
+                            <TableData classes={`${className}`} data={piece ? piece : "-"}/>
                             <TableData classes={`${className}`} data={<div className={`flex`}>
                                 <CreateItem
+                                    pieces={piece}
                                     id={`${id}`}
                                     label="Edit"
                                     categoryId={categoryId}

@@ -6,3 +6,7 @@ html {
     /*scrollbar-gutter: stable;*/
     /*background:#F5F7F8 ;*/
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
