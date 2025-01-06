@@ -4,16 +4,16 @@ import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory2";
+import {config} from "@/config";
 
 interface Props {
     id: string;
 }
 
 const OrderItem: React.FC<Props> = ({id}) => {
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
-    const url = `${BASE_URL}/admin/orders/${id}`;
+    const url = `${config.BASE_URL}/admin/orders/${id}`;
 
-    const {data, error, loading, refetch} = useFetch<any>(url);
+    const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${id}`);
 
     if (loading) {
         return <p>Loading...</p>;

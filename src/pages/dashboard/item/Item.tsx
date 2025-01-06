@@ -5,13 +5,12 @@ import {CreateItem} from "@/components/item/CreateItem";
 import {TableData} from "@/lib/common/TableData";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {ItemProps} from "@/pages/dashboard/types";
-
+import {config} from "@/config";
 
 const Item: React.FC<ItemProps> = ({
-                                       categoryId, categoryName, refetch, items,
+                                       categoryId, categoryName, refetch, items, is_dry_cleanable, is_washable
                                    }) => {
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
-    const url = `${BASE_URL}/items`;
+    const url = `${config.BASE_URL}/items`;
     return (<div className="mt-12 mb-8 flex flex-col gap-12 px-16">
         <Card>
             <CardHeader variant="gradient" color="gray"
@@ -28,6 +27,8 @@ const Item: React.FC<ItemProps> = ({
                             id={null}
                             label={null}
                             name={null}
+                            is_dry_cleanable={is_dry_cleanable}
+                            is_washable={is_washable}
                             pieces={null}
                             description={null}
                             dry_cleaning_price={null}
@@ -49,7 +50,7 @@ const Item: React.FC<ItemProps> = ({
                     </thead>
                     <tbody>
                     {items?.map(({
-                                     id, name, description, dry_cleaning_price, washing_price, piece
+                                     id, name, description, price, piece
                                  }, key: number,) => {
                         const className = `py-3 px-5 ${key === items?.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
@@ -58,19 +59,21 @@ const Item: React.FC<ItemProps> = ({
                             <TableData classes={`${className}`} data={description ? description : "-"}/>
 
                             <TableData classes={`${className}`}
-                                       data={dry_cleaning_price ? dry_cleaning_price : "-"}/>
-                            <TableData classes={`${className}`} data={washing_price ? washing_price : "-"}/>
+                                       data={price.dry_clean ? price.dry_clean : "-"}/>
+                            <TableData classes={`${className}`} data={price.wash ? price.wash : "-"}/>
                             <TableData classes={`${className}`} data={piece ? piece : "-"}/>
                             <TableData classes={`${className}`} data={<div className={`flex`}>
                                 <CreateItem
                                     pieces={piece}
                                     id={`${id}`}
                                     label="Edit"
+                                    is_dry_cleanable={is_dry_cleanable}
+                                    is_washable={is_washable}
                                     categoryId={categoryId}
                                     name={name}
                                     description={description}
-                                    dry_cleaning_price={dry_cleaning_price}
-                                    washing_price={washing_price}
+                                    dry_cleaning_price={price.dry_clean}
+                                    washing_price={price.wash}
                                     refetch={refetch}
                                 />
 
@@ -89,7 +92,7 @@ const Item: React.FC<ItemProps> = ({
 
 
                         <tr>
-                            <TableData data=' No Data' classes="text-center p-4 " colspan={5} noBold={true}/>
+                            <TableData data=' No Data' classes="text-center p-4 " colspan={6} noBold={true}/>
                         </tr>
 
                     )}

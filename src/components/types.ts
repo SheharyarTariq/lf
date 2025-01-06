@@ -6,6 +6,8 @@ export interface CreateItemProps {
     description: string | null;
     washing_price: number | null;
     pieces: number | null;
+    is_dry_cleanable: boolean | null | number;
+    is_washable: boolean | null | number;
     dry_cleaning_price: number | null;
     refetch: () => void;
 };

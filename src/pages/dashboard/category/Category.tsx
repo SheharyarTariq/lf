@@ -36,11 +36,13 @@ export const Category: React.FC = () => {
                 <table className="w-full table-auto">
                     <thead>
                     <tr>
-                        {["Category", "Description", "Handling Option", "Default Washing", "Default Handling",
+                        {["Category", "Description", "Handling Option", "Washing Option", "Default Washing", "Default Handling",
                             <span className={`ml-9`}>Action</span>, !error && (
                                 <CreateCategory
                                     is_hangable={null}
                                     is_foldable={null}
+                                    is_dry_cleanable={null}
+                                    is_washable={null}
                                     default_cleaning_method={null}
                                     default_handling_option={null}
                                     description={null}
@@ -71,6 +73,8 @@ export const Category: React.FC = () => {
                                                       id,
                                                       is_hangable,
                                                       is_foldable,
+                                                      is_dry_cleanable,
+                                                      is_washable,
                                                       default_cleaning_method,
                                                       default_handling_option,
                                                       items,
@@ -82,27 +86,26 @@ export const Category: React.FC = () => {
                                 <TableData classes={className} data={name}/>
                                 <TableData classes={className} data={description ? description : "-"}/>
 
-                                <TableData classes={className}
-                                           data={
-                                               <div>
-                                                   {is_hangable ? "Hang" : null}
-                                                   {(is_hangable && is_foldable) ? "-" : null}
-
-                                                   {is_foldable ? "Fold" : null}</div>
-
-                                           }/>
-                                <TableData classes={className}
-                                           data={
-                                               <div>{default_cleaning_method}</div>}/>
-                                <TableData classes={className}
-                                           data={
-                                               <div>{default_handling_option}</div>}/>
-
+                                <TableData classes={className} data={
+                                    <div>
+                                        {is_hangable ? "Hang" : null}
+                                        {(is_hangable && is_foldable) ? "-" : null}
+                                        {is_foldable ? "Fold" : null}</div>}/>
+                                <TableData classes={className} data={
+                                    <div>
+                                        {is_dry_cleanable ? "Dryclean" : null}
+                                        {(is_washable && is_dry_cleanable) ? "-" : null}
+                                        {is_washable ? "Wash" : null}</div>}/>
+                                <TableData classes={className} data={
+                                    <div>{(default_cleaning_method === "wash") ? "Wash" : "Dryclean"}</div>}/>
+                                <TableData classes={className} data={
+                                    <div>{(default_handling_option === "fold") ? "Fold" : "Hang"}</div>}/>
                                 <TableData classes={className} data={<div className={`flex`}>
-
                                     <CreateCategory
                                         is_hangable={is_hangable}
                                         is_foldable={is_foldable}
+                                        is_dry_cleanable={is_dry_cleanable}
+                                        is_washable={is_washable}
                                         default_cleaning_method={default_cleaning_method}
                                         default_handling_option={default_handling_option}
                                         description={description}
@@ -126,10 +129,12 @@ export const Category: React.FC = () => {
 
                             </tr>
                             {openDropdowns[id] && (<tr>
-                                <TableData colspan={5}
+                                <TableData colspan={8}
                                            data={<Item
                                                categoryName={name}
                                                categoryId={`${id}`}
+                                               is_dry_cleanable={is_dry_cleanable}
+                                               is_washable={is_washable}
                                                items={items}
                                                refetch={refetch}
                                            />} classes="p-0"/>

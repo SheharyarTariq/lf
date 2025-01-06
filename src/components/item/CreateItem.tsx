@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Typography,} from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import useCreateItem from "@/lib/api/Dashboard/hooks/item/useCreateItem";
@@ -14,6 +14,8 @@ export const CreateItem: React.FC<CreateItemProps> = ({
                                                           description,
                                                           washing_price,
                                                           dry_cleaning_price,
+                                                          is_washable,
+                                                          is_dry_cleanable,
                                                           pieces,
                                                           label,
                                                           refetch,
@@ -106,7 +108,6 @@ export const CreateItem: React.FC<CreateItemProps> = ({
                     </Typography>
                     <input
                         className='p-2 rounded w-full border border-gray-400'
-
                         placeholder="Enter description here...."
                         name="description"
                         value={formData.description}
@@ -115,58 +116,61 @@ export const CreateItem: React.FC<CreateItemProps> = ({
                         }))}
                     />
 
-                    <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="mb-2 mt-4 text-left font-medium"
-                    >
-                        Washing Price
-                    </Typography>
-                    <Input
-                        type="number"
-                        crossOrigin={`crossorigin`}
-                        color="gray"
-                        size="lg"
-                        placeholder="e.g. 10.29"
-                        name="washing_price"
-                        value={`${formData.washing_price}`}
-                        onChange={(e) => setFormData(prevState => ({
-                            ...prevState, washing_price: parseFloat(e.target.value)
-                        }))}
-                    />
+                    {is_washable ? <div>
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="mb-2 mt-4 text-left font-medium"
+                        >
+                            Washing Price
+                        </Typography>
+                        <Input
+                            type="number"
+                            crossOrigin={`crossorigin`}
+                            color="gray"
+                            size="lg"
+                            placeholder="e.g. 10.29"
+                            name="washing_price"
+                            value={`${formData.washing_price}`}
+                            onChange={(e) => setFormData(prevState => ({
+                                ...prevState, washing_price: parseFloat(e.target.value)
+                            }))}
+                        />
 
-                    {addError.washing_price && (<p className="text-red-500 text-xs">
-                        {addError?.washing_price}
-                    </p>)}
-                    {updateError.washing_price && (<p className="text-red-500 text-xs">
-                        {updateError?.washing_price}
-                    </p>)}
-                    <Typography
+                        {addError.washing_price && (<p className="text-red-500 text-xs">
+                            {addError?.washing_price}
+                        </p>)}
+                        {updateError.washing_price && (<p className="text-red-500 text-xs">
+                            {updateError?.washing_price}
+                        </p>)}
+                    </div> : null}
+
+                    {is_dry_cleanable ? <div><Typography
                         variant="small"
                         color="blue-gray"
                         className="mb-2 mt-4 text-left font-medium"
                     >
                         Dry Cleaning Price
                     </Typography>
-                    <Input
-                        type="number"
-                        crossOrigin={`crossorigin`}
-                        color="gray"
-                        size="lg"
-                        placeholder="e.g. 8.70"
-                        name="dry_cleaning_price"
-                        value={`${formData.dry_cleaning_price}`}
-                        onChange={(e) => setFormData(prevState => ({
-                            ...prevState, dry_cleaning_price: parseFloat(e.target.value)
-                        }))}
-                    />
+                        <Input
+                            type="number"
+                            crossOrigin={`crossorigin`}
+                            color="gray"
+                            size="lg"
+                            placeholder="e.g. 8.70"
+                            name="dry_cleaning_price"
+                            value={`${formData.dry_cleaning_price}`}
+                            onChange={(e) => setFormData(prevState => ({
+                                ...prevState, dry_cleaning_price: parseFloat(e.target.value)
+                            }))}
+                        />
 
-                    {addError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
-                        {addError?.dry_cleaning_price}
-                    </p>)}
-                    {updateError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
-                        {updateError?.dry_cleaning_price}
-                    </p>)}
+                        {addError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
+                            {addError?.dry_cleaning_price}
+                        </p>)}
+                        {updateError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
+                            {updateError?.dry_cleaning_price}
+                        </p>)}</div> : null}
                     <Typography
                         variant="small"
                         color="blue-gray"

@@ -3,6 +3,7 @@ import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Typograph
 import toast from "react-hot-toast";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import {token} from "@/lib/token/Token";
+import SelectItemFromDropDown from "@/components/order-item/SelectItemFromDropDown";
 
 interface AddItemFromCategoryProps {
     dialogLabel?: string;
@@ -18,7 +19,6 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const {data, error, loading, refetch} = useFetch<any>(categoriesUrl);
-    const [items, setItems] = useState<any[]>([]);
     const [selectedItem, setSelectedItem] = useState<any | null>(null);
     const [itemsLoading, setItemsLoading] = useState(false);
     const [itemsError, setItemsError] = useState<string | null>(null);
@@ -27,10 +27,10 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         refetch();
         setOpen((prev) => !prev);
     };
+
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const categoryId = e.target.value;
         setSelectedCategory(categoryId);
-        // handleGetItemsByCategory(categoryId);
     };
 
     return (<>
@@ -58,7 +58,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                         color="blue-gray"
                         className="mb-2 text-left font-medium"
                     >
-                        Add item to Order
+                        Select Category to Order
                     </Typography>
                     {loading ? (<p className="text-gray-600">Loading categories...</p>) : error ? (
                         <p className="text-red-500 text-xs">Error: {error}</p>) : data?.result?.length > 0 ? (
@@ -76,12 +76,14 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                 </option>))}
                         </select>) : (<p className="text-gray-600">No categories available.</p>)}
                 </div>
+                {selectedCategory && <div>
+                  <SelectItemFromDropDown categoryId={selectedCategory}/>
+                </div>}
 
             </DialogBody>
             <DialogFooter>
                 <Button
                     className="ml-auto"
-                    // onClick={handleSave}
                     disabled={loading || !selectedCategory || !selectedItem}
                 >
                     Save
