@@ -77,7 +77,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                         </select>) : (<p className="text-gray-600">No categories available.</p>)}
                 </div>
                 {selectedCategory && <div>
-                  <SelectItemFromDropDown categoryId={selectedCategory}/>
+                  <SelectItemFromDropDown categoryId={selectedCategory} orderId={orderId}/>
                 </div>}
 
             </DialogBody>
@@ -86,7 +86,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                     className="ml-auto"
                     disabled={loading || !selectedCategory || !selectedItem}
                 >
-                    Save
+                    Add
                 </Button>
             </DialogFooter>
         </Dialog>

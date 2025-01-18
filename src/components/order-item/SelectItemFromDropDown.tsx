@@ -6,6 +6,7 @@ import OrderItemForm from "@/components/order-item/OrderItemForm";
 
 interface Props {
     categoryId: string | null
+    orderId: string
 }
 
 interface ItemPayload {
@@ -32,10 +33,9 @@ interface Item {
     };
 }
 
-const SelectItemFromDropDown: React.FC<Props> = ({categoryId}) => {
+const SelectItemFromDropDown: React.FC<Props> = ({categoryId, orderId}) => {
     const url = `${config.BASE_URL}/items?category_id=${categoryId}`
     const {data, error, loading, refetch} = useFetch<any>(url);
-    // const [selectedItems, setSelectedItems] = useState<Item | null>();
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
     const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,7 +73,7 @@ const SelectItemFromDropDown: React.FC<Props> = ({categoryId}) => {
                     </select>) : (<p className="text-gray-600">No item available.</p>)}
             </div>
             {selectedItem && (
-                <OrderItemForm selectedItem={selectedItem}/>
+                <OrderItemForm selectedItem={selectedItem} orderId={orderId}/>
             )}
 
         </>);

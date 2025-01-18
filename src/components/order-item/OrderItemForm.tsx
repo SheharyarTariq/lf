@@ -1,7 +1,12 @@
 import React, {useState} from 'react';
-import {Input, Switch, Typography} from "@material-tailwind/react";
+import {Button, DialogFooter, Input, Switch, Typography} from "@material-tailwind/react";
+import {config} from "@/config";
+import useCreateCategory from "@/lib/api/Dashboard/hooks/category/useCreateCategory";
+import useCreateOrder from "@/lib/api/Dashboard/hooks/order-item/useCreateOrder";
 
 interface Props {
+    orderId: string;
+
     selectedItem: {
         id: string;
         name: string;
@@ -27,8 +32,13 @@ interface ItemPayload {
     price_per_unit: number | null;
 }
 
-const OrderItemForm: React.FC<Props> = ({selectedItem}) => {
-
+const OrderItemForm: React.FC<Props> = ({selectedItem, orderId}) => {
+    const url = `${config.BASE_URL}/order-items/orders/${orderId}`
+    const {
+        addOrderItem,
+        loading: addLoading,
+        // error: addError,
+    } = useCreateOrder(url);
     const [formData, setFormData] = useState<ItemPayload>({
         is_open_item: false,
         item_id: selectedItem.id,
@@ -113,6 +123,8 @@ const OrderItemForm: React.FC<Props> = ({selectedItem}) => {
                 />
                 &nbsp;Is Order Open
             </label>
+
+            {/*<button className="border" onClick={() => addOrderItem(formData)}>add</button>*/}
         </div>
     );
 }
