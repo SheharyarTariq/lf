@@ -22,7 +22,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
     descriptions: "",
     hang: false,
     fold: false,
-    defaultHandlingOption: null,
+    default_handling_option: null,
   });
 
   const urlAddArea = `${config.BASE_URL}/categories`;
@@ -44,21 +44,31 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
     if (description) setFormData(prev => ({...prev, descriptions: description}));
     if (is_foldable) setFormData(prev => ({...prev, fold: is_foldable}));
     if (is_hangable) setFormData(prev => ({...prev, hang: is_hangable}));
-    if (default_handling_option) setFormData(prev => ({
-      ...prev,
-      defaultHandlingOption: default_handling_option
-    }));
+    if (default_handling_option) {
+      setFormData(prev => ({...prev, default_handling_option: default_handling_option}));
+    } else if (is_foldable && is_hangable) {
+      setFormData(prev => ({...prev, default_handling_option: default_handling_option}))
+    } else if (is_foldable && !is_hangable) {
+      setFormData(prev => ({...prev, default_handling_option: "fold"}))
+    } else if (!is_foldable && is_hangable) {
+      setFormData(prev => ({...prev, default_handling_option: "hang"}))
+    } else if (!is_foldable && !is_hangable) {
+      setFormData(prev => ({...prev, default_handling_option: null}))
+    }
   }, [name, description, is_foldable, is_hangable, default_handling_option]);
 
   useEffect(() => {
     if (formData.fold && !formData.hang) {
-      setFormData(prev => ({...prev, defaultHandlingOption: "fold"}))
+      setFormData(prev => ({...prev, default_handling_option: "fold"}))
     } else if (!formData.fold && formData.hang) {
-      setFormData(prev => ({...prev, defaultHandlingOption: "hang"}))
+      setFormData(prev => ({...prev, default_handling_option: "hang"}))
     } else if (!formData.fold && !formData.hang) {
-      setFormData(prev => ({...prev, defaultHandlingOption: null}))
+      setFormData(prev => ({...prev, default_handling_option: null}))
+    } else if (formData.fold && formData.hang) {
+      setFormData(prev => ({...prev, default_handling_option: default_handling_option}))
     }
   }, [formData.hang, formData.fold]);
+
   const handleOpen = () => setOpen(!open);
 
   const handleSave = async () => {
@@ -67,7 +77,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
       description: formData.descriptions,
       is_hangable: formData.hang,
       is_foldable: formData.fold,
-      default_handling_option: formData.defaultHandlingOption,
+      default_handling_option: formData.default_handling_option,
     };
 
     const newArea = name ? await updateArea(dataValue) : await addArea(dataValue);
@@ -80,7 +90,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
         descriptions: "",
         hang: false,
         fold: false,
-        defaultHandlingOption: null,
+        default_handling_option: null,
       }))
       handleOpen();
     }
@@ -207,20 +217,20 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
             </Typography>
             <>
               <input type="radio" id="fold" name="handling_method" value="fold"
-                     checked={formData.defaultHandlingOption === "fold"}
+                     checked={formData.default_handling_option === "fold"}
                      onChange={(e) => setFormData(prev => ({
                        ...prev,
-                       defaultHandlingOption: (e.target.value)
+                       default_handling_option: (e.target.value)
                      }))}
               />
               <label htmlFor="fold">&nbsp;Fold</label><br/></>
 
             <>
               <input type="radio" id="hang" name="handling_method" value="hang"
-                     checked={formData.defaultHandlingOption === "hang"}
+                     checked={formData.default_handling_option === "hang"}
                      onChange={(e) => setFormData(prev => ({
                        ...prev,
-                       defaultHandlingOption: (e.target.value)
+                       default_handling_option: (e.target.value)
                      }))}
               />
               <label htmlFor="hang">&nbsp;Hang</label><br/></>

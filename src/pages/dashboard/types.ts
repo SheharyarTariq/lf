@@ -48,13 +48,13 @@ export interface CreateCategoryFormData {
   descriptions: string;
   hang: boolean;
   fold: boolean;
-  defaultHandlingOption: string | null;
+  default_handling_option: string | null;
 };
 
 export interface ItemProps {
   categoryId: string;
   categoryName: string;
-  default_handling_option: string;
+  // default_handling_option: string;
   items: {
     name: string;
     id: string;

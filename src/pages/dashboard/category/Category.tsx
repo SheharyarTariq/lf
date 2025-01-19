@@ -116,6 +116,7 @@ export const Category: React.FC = () => {
               {openDropdowns[id] && (<tr>
                 <TableData colspan={8}
                            data={<Item
+
                              categoryName={name}
                              categoryId={`${id}`}
                              items={items}

@@ -23,6 +23,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
                                                         description,
                                                         washing_price,
                                                         dry_cleaning_price,
+                                                        default_cleaning_method,
                                                         pieces,
                                                         label,
                                                         refetch,
@@ -33,7 +34,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
     description: "",
     washing_price: null,
     dry_cleaning_price: null,
-
+    default_cleaning_method: null,
     piece: null
   })
   const urlAddArea = `${config.BASE_URL}/items`;
@@ -44,12 +45,30 @@ export const CreateItem: React.FC<CreateItemProps> = ({
   const isLoading = addLoading;
 
   useEffect(() => {
+    if (formData.washing_price && !formData.dry_cleaning_price) {
+      setFormData(prevState => ({...prevState, default_cleaning_method: "wash"}));
+    } else if (!formData.washing_price && formData.dry_cleaning_price) {
+      setFormData(prevState => ({...prevState, default_cleaning_method: "dry_clean"}));
+    } else if (!formData.washing_price && !formData.dry_cleaning_price) {
+      setFormData(prevState => ({...prevState, default_cleaning_method: null}));
+    }
+  }, [formData.washing_price, formData.dry_cleaning_price]);
+
+  useEffect(() => {
     if (name) setFormData(prevState => ({...prevState, name: name}));
     if (description) setFormData(prevState => ({...prevState, description: description}));
     if (dry_cleaning_price) setFormData(prevState => ({...prevState, dry_cleaning_price: +dry_cleaning_price}));
     if (washing_price) setFormData(prevState => ({...prevState, washing_price: +washing_price}));
     if (pieces) setFormData(prevState => ({...prevState, piece: pieces}));
-  }, [name, description, dry_cleaning_price, washing_price, pieces]);
+    if (default_cleaning_method) setFormData(prevState => ({
+      ...prevState,
+      default_cleaning_method: default_cleaning_method
+    }));
+    // if (washing_price && dry_cleaning_price) {
+    //   setFormData(prevState => ({...prevState, default_cleaning_method: default_cleaning_method}));
+    // }
+  }, [name, description, dry_cleaning_price, washing_price, pieces, default_cleaning_method]);
+  console.log("data", formData)
 
   const handleOpen = () => setOpen(!open);
 
@@ -63,10 +82,18 @@ export const CreateItem: React.FC<CreateItemProps> = ({
     if (createOrUpdateItem) {
       toast.success(`Item ${name ? "updated" : "added"} successfully!`, {position: "bottom-center",});
       refetch();
-      setFormData({name: "", description: "", washing_price: null, dry_cleaning_price: null, piece: null})
+      setFormData({
+        name: "",
+        description: "",
+        washing_price: null,
+        dry_cleaning_price: null,
+        piece: null,
+        default_cleaning_method: null
+      });
       handleOpen();
     }
   };
+
 
   return (<>
     <Button
@@ -209,79 +236,44 @@ export const CreateItem: React.FC<CreateItemProps> = ({
           {updateError.piece && (<p className="text-red-500 text-xs">
             {updateError?.piece}
           </p>)}
-          {/*<div className="grid grid-cols-2 ">*/}
-          {/*  <div className="mt-4">*/}
-          {/*    <Typography*/}
-          {/*      variant="small"*/}
-          {/*      color="blue-gray"*/}
-          {/*      className="mb-2 text-left font-medium"*/}
-          {/*    >*/}
-          {/*      Handling Options*/}
-          {/*    </Typography>*/}
-          {/*    <label>*/}
-          {/*      <Switch*/}
-          {/*        crossOrigin={`crossOrigin`}*/}
-          {/*        checked={formData.fold}*/}
-          {/*        onChange={handleHandlingOptionFold}*/}
-          {/*      />*/}
-          {/*      &nbsp;Fold*/}
-          {/*    </label><br/>*/}
-          {/*    <label>*/}
-          {/*      <Switch*/}
-          {/*        crossOrigin={`crossOrigin`}*/}
-          {/*        checked={formData.hang}*/}
-          {/*        onChange={handleHandlingOptionHang}*/}
-          {/*      />*/}
-          {/*      &nbsp;Hang*/}
-          {/*    </label><br/>*/}
-          {/*    {(addError.is_foldable || addError.is_hangable) && (*/}
-          {/*      <p className="text-red-500 text-xs">*/}
-          {/*        {addError.is_foldable || addError.is_hangable}*/}
-          {/*      </p>*/}
-          {/*    )}*/}
-          {/*    {(updateError?.is_foldable || updateError.is_hangable) && (*/}
-          {/*      <p className="text-red-500 text-xs">*/}
-          {/*        {updateError.is_foldable || updateError.is_hangable}*/}
-          {/*      </p>*/}
-          {/*    )}*/}
 
-          {/*  </div>*/}
-          {/*</div>*/}
-          {/*<div>*/}
-          {/*  <Typography*/}
-          {/*    variant="small"*/}
-          {/*    color="blue-gray"*/}
-          {/*    className="mb-2 text-left font-medium"*/}
-          {/*  >*/}
-          {/*    Default Handling Option*/}
-          {/*  </Typography>*/}
-          {/*  <>*/}
-          {/*    <input type="radio" id="fold" name="handling_clean" value="wash"*/}
-          {/*           checked={formData.default_cleaning_method === "wash"}*/}
-          {/*           onChange={(e) => setFormData(prev => ({*/}
-          {/*             ...prev,*/}
-          {/*             defaultHandlingOption: (e.target.value)*/}
-          {/*           }))}*/}
-          {/*    />*/}
-          {/*    <label htmlFor="fold">&nbsp;Fold</label><br/></>*/}
+          {/*{(formData.dry_cleaning_price && formData.washing_price) ? */}
+          <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 text-left font-medium"
+            >
+              Default Washing Method
+            </Typography>
+            <>
+              <input type="radio" id="fold" name="handling_clean" value="wash"
+                     checked={formData.default_cleaning_method === "wash"}
+                     onChange={(e) => setFormData(prev => ({
+                       ...prev,
+                       default_cleaning_method: (e.target.value)
+                     }))}
+              />
+              <label htmlFor="fold">&nbsp;Wash</label><br/></>
 
-          {/*  <>*/}
-          {/*    <input type="radio" id="dry_clean" name="handling_clean" value="dry_clean"*/}
-          {/*           checked={formData.default_cleaning_method === "dry_clean"}*/}
-          {/*           onChange={(e) => setFormData(prev => ({*/}
-          {/*             ...prev,*/}
-          {/*             defaultHandlingOption: (e.target.value)*/}
-          {/*           }))}*/}
-          {/*    />*/}
-          {/*    <label htmlFor="hang">&nbsp;Hang</label><br/></>*/}
+            <>
+              <input type="radio" id="dry_clean" name="handling_clean" value="dry_clean"
+                     checked={formData.default_cleaning_method === "dry_clean"}
+                     onChange={(e) => setFormData(prev => ({
+                       ...prev,
+                       default_cleaning_method: (e.target.value)
+                     }))}
+              />
+              <label htmlFor="hang">&nbsp;Dry Clean</label><br/></>
 
-          {/*</div>*/}
-          {/*{addError.default_cleaning_method && (*/}
-          {/*  <p className="text-red-500 text-xs">{addError.default_cleaning_method}</p>*/}
-          {/*)}*/}
-          {/*{updateError?.default_cleaning_method && (*/}
-          {/*  <p className="text-red-500 text-xs">{updateError.default_cleaning_method}</p>*/}
-          {/*)}*/}
+          </div>
+          {/*: null}*/}
+          {addError.default_cleaning_method && (
+            <p className="text-red-500 text-xs">{addError.default_cleaning_method}</p>
+          )}
+          {updateError?.default_cleaning_method && (
+            <p className="text-red-500 text-xs">{updateError.default_cleaning_method}</p>
+          )}
         </div>
       </DialogBody>
       <DialogFooter>
