@@ -5,6 +5,8 @@ import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory2";
 import {config} from "@/config";
+import {CreateArea} from "@/components/area/CreateArea";
+import DeleteModal from "@/lib/common/DeleteModal";
 
 interface Props {
   id: string;
@@ -14,7 +16,7 @@ const OrderItem: React.FC<Props> = ({id}) => {
   const url = `${config.BASE_URL}/admin/orders/${id}`;
 
   const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${id}`);
-
+  console.log("data", data)
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -22,7 +24,6 @@ const OrderItem: React.FC<Props> = ({id}) => {
   if (error) {
     return <p>Error loading data: {error || "Unknown error"}</p>;
   }
-
   if (!data || !data.result) {
     return <p>No order details available.</p>;
   }
@@ -70,7 +71,7 @@ const OrderItem: React.FC<Props> = ({id}) => {
           <table className="w-full table-auto">
             <thead>
             <tr>
-              {["Name", "Quantity", "Cleaning Method", "Unit Price", "Total Price", "Approved"].map((el, idx) => (
+              {["Name", "Quantity", "Cleaning Method", "Unit Price", "Total Price", "Approved", "Action"].map((el, idx) => (
                 <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                   <Typography variant="small"
                               className="text-[11px] font-bold uppercase text-blue-gray-400">
@@ -98,7 +99,13 @@ const OrderItem: React.FC<Props> = ({id}) => {
                   <TableData classes="py-3 px-5" data={price_per_unit}/>
                   <TableData classes="py-3 px-5" data={total_price}/>
                   <TableData classes="py-3 px-5" data={is_approved ? "Yes" : "No"}/>
-                </tr>
+                  <TableData classes="py-3 px-5" data={<div className={`flex`}>
+                    <AddItemFromCategory orderId={id} refetchItemList={refetch}/>
+
+                    <DeleteModal toastMessage="Area" btnLabel='Delete' title="Delete Confirmation" refetch={refetch}
+                                 description={`Are you sure you want to Delete this Order item (${name})?`}
+                                 url={`${config.BASE_URL}/order-items/${id}`}/>
+                  </div>}/></tr>
               ))
             ) : (
               <tr>

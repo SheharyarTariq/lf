@@ -37,7 +37,6 @@ interface ItemPayload {
 const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFormData}) => {
   const url = `${config.BASE_URL}/order-items/orders/${orderId}`;
   const {addOrderItem, loading: addLoading} = useCreateOrder(url);
-
   useEffect(() => {
     setFormData({
       is_open_item: false,
@@ -68,28 +67,46 @@ const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFor
       </Typography>
       <br/>
       <div className="grid grid-cols-2 gap-2 ">
-        <Input crossOrigin="crossOrigin" label="Name" value={selectedItem.name || ""} readOnly/>
+        <Input crossOrigin="crossOrigin" label="Name" value={selectedItem.name} readOnly/>
         <Input
           crossOrigin="crossOrigin"
           label="Description"
-          value={selectedItem.description || "No Description"}
+          value={selectedItem.description || ""}
           readOnly
         />
       </div>
       <br/>
       <div className="grid grid-cols-2 gap-2 ">
-        <Input
-          crossOrigin="crossOrigin"
-          label="Cleaning Method"
-          value={selectedItem.defaults?.cleaning_method || "No Default Cleaning Method"}
-          readOnly
-        />
-        <Input
-          crossOrigin="crossOrigin"
-          label="Handling Option"
-          value={selectedItem?.defaults?.handling_option || "No Default Handling Option"}
-          readOnly
-        />
+        <select
+          className="p-2 rounded w-full border border-gray-400"
+          value={formData.cleaning_method || ""}
+          onChange={(e) => setFormData({...formData, cleaning_method: e.target.value || null})}
+        >
+          <option value="" disabled>
+            Choose a category
+          </option>
+          <option key="wash" value="wash">
+            Wash
+          </option>
+          <option key="dry_clean" value="dry_clean">
+            Dry Clean
+          </option>
+        </select>
+        <select
+          className="p-2 rounded w-full border border-gray-400"
+          value={formData.handling_option || ""}
+          onChange={(e) => setFormData({...formData, handling_option: e.target.value || null})}
+        >
+          <option value="" disabled>
+            Choose a category
+          </option>
+          <option key="hang" value="hang">
+            Hang
+          </option>
+          <option key="fold" value="fold">
+            Fold
+          </option>
+        </select>
       </div>
       <br/>
       <Input
@@ -109,19 +126,19 @@ const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFor
         value={formData.price_per_unit !== null ? formData.price_per_unit : ""}
         onChange={(e) => handleInputChange(e, "price_per_unit")}
       />
-      <br/>
-      <label>
-        <Switch disabled crossOrigin={`crossOrigin`} checked={formData.is_open_item}/>
-        &nbsp;Is Order Open
-      </label>
-      <br/>
-      <button
-        className={`border p-2 mt-2 ${addLoading ? "cursor-not-allowed opacity-50" : ""}`}
-        disabled={addLoading}
-        onClick={handleAddOrderItem}
-      >
-        {addLoading ? "Adding..." : "Add"}
-      </button>
+      {/*<br/>*/}
+      {/*<label>*/}
+      {/*  <Switch disabled crossOrigin={`crossOrigin`} checked={formData.is_open_item}/>*/}
+      {/*  &nbsp;Is Order Open*/}
+      {/*</label>*/}
+      {/*<br/>*/}
+      {/*<button*/}
+      {/*  className={`border p-2 mt-2 ${addLoading ? "cursor-not-allowed opacity-50" : ""}`}*/}
+      {/*  disabled={addLoading}*/}
+      {/*  onClick={handleAddOrderItem}*/}
+      {/*>*/}
+      {/*  {addLoading ? "Adding..." : "Add"}*/}
+      {/*</button>*/}
     </div>
   );
 };
