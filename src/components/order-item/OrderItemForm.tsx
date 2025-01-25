@@ -22,7 +22,10 @@ interface Props {
       cleaning_method: string | null;
       handling_option: string | null;
     };
-  };
+  } | null;
+  updateInitialQuantity?: number | null;
+  updateInitialPrice_per_unit?: string | null;
+  updating?: boolean;
 }
 
 interface ItemPayload {
@@ -34,7 +37,15 @@ interface ItemPayload {
   price_per_unit: number | null;
 }
 
-const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFormData}) => {
+const OrderItemForm: React.FC<Props> = ({
+                                          selectedItem,
+                                          orderId,
+                                          formData,
+                                          setFormData,
+                                          updating,
+                                          updateInitialQuantity,
+                                          updateInitialPrice_per_unit
+                                        }) => {
   const url = `${config.BASE_URL}/order-items/orders/${orderId}`;
   const {addOrderItem, loading: addLoading} = useCreateOrder(url);
   useEffect(() => {
@@ -51,6 +62,18 @@ const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFor
     });
   }, [selectedItem]);
 
+  useEffect(() => {
+    if (updating && updateInitialQuantity && updateInitialPrice_per_unit) {
+      setFormData({
+        is_open_item: false,
+        item_id: "",
+        quantity: +updateInitialQuantity,
+        cleaning_method: null,
+        handling_option: null,
+        price_per_unit: +updateInitialPrice_per_unit,
+      });
+    }
+  }, []);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, key: keyof ItemPayload) => {
     const value = e.target.value === "" ? null : parseFloat(e.target.value);
     setFormData((prev) => ({...prev, [key]: value}));
@@ -61,17 +84,17 @@ const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFor
   };
 
   return (
-    <div>
+    <div>{!updating && <>
       <Typography variant="small" color="blue-gray" className="mt-4 text-left font-medium">
         Selected Item Details:
       </Typography>
       <br/>
       <div className="grid grid-cols-2 gap-2 ">
-        <Input crossOrigin="crossOrigin" label="Name" value={selectedItem.name} readOnly/>
+        <Input crossOrigin="crossOrigin" label="Name" value={selectedItem?.name} readOnly/>
         <Input
           crossOrigin="crossOrigin"
           label="Description"
-          value={selectedItem.description || ""}
+          value={selectedItem?.description || ""}
           readOnly
         />
       </div>
@@ -108,7 +131,7 @@ const OrderItemForm: React.FC<Props> = ({selectedItem, orderId, formData, setFor
           </option>
         </select>
       </div>
-      <br/>
+      <br/></>}
       <Input
         crossOrigin="crossOrigin"
         type="number"

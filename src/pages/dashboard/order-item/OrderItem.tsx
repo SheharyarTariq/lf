@@ -3,7 +3,7 @@ import {OrderItems} from "../types";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
-import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory2";
+import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
 import {config} from "@/config";
 import {CreateArea} from "@/components/area/CreateArea";
 import DeleteModal from "@/lib/common/DeleteModal";
@@ -29,6 +29,7 @@ const OrderItem: React.FC<Props> = ({id}) => {
   }
 
   const {result} = data;
+  console.log("Data", data);
   const orderItems = Array.isArray(result.data) ? result.data : [];
 
   return (
@@ -83,6 +84,7 @@ const OrderItem: React.FC<Props> = ({id}) => {
             </thead>
             <tbody>
             {result.order_items.length > 0 ? (
+
               result.order_items.map(({
                                         id,
                                         name,
@@ -100,8 +102,9 @@ const OrderItem: React.FC<Props> = ({id}) => {
                   <TableData classes="py-3 px-5" data={total_price}/>
                   <TableData classes="py-3 px-5" data={is_approved ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={<div className={`flex`}>
-                    <AddItemFromCategory orderId={id} refetchItemList={refetch}/>
-
+                    <AddItemFromCategory orderId={id} refetchItemList={refetch} dialogLabel="Edit" updating={true}
+                                         updateInitialQuantity={quantity} updateInitialPrice_per_unit={price_per_unit}
+                                         orderItemId={id}/>
                     <DeleteModal toastMessage="Area" btnLabel='Delete' title="Delete Confirmation" refetch={refetch}
                                  description={`Are you sure you want to Delete this Order item (${name})?`}
                                  url={`${config.BASE_URL}/order-items/${id}`}/>

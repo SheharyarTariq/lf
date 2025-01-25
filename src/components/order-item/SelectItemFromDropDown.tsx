@@ -9,6 +9,9 @@ interface Props {
   orderId: string;
   setFormData: React.Dispatch<React.SetStateAction<ItemPayload>>;
   formData: ItemPayload;
+  updateInitialQuantity?: number | null;
+  updateInitialPrice_per_unit?: string | null;
+  updating?: boolean;
 }
 
 interface ItemPayload {
@@ -35,7 +38,15 @@ interface Item {
   };
 }
 
-const SelectItemFromDropDown: React.FC<Props> = ({categoryId, orderId, formData, setFormData}) => {
+const SelectItemFromDropDown: React.FC<Props> = ({
+                                                   categoryId,
+                                                   orderId,
+                                                   formData,
+                                                   setFormData,
+                                                   updateInitialQuantity,
+                                                   updateInitialPrice_per_unit,
+                                                   updating
+                                                 }) => {
   const url = `${config.BASE_URL}/items?category_id=${categoryId}`;
   const {data, error, loading} = useFetch<any>(url);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -46,10 +57,10 @@ const SelectItemFromDropDown: React.FC<Props> = ({categoryId, orderId, formData,
   };
 
   const selectedItem = data?.result?.find((item: { id: string }) => item.id === selectedItemId);
-  
+
   return (
     <>
-      <div>
+      {!updating && <div>
         <Typography
           variant="small"
           color="blue-gray"
@@ -79,13 +90,16 @@ const SelectItemFromDropDown: React.FC<Props> = ({categoryId, orderId, formData,
         ) : (
           <p className="text-gray-600">No item available.</p>
         )}
-      </div>
-      {selectedItem && (
+      </div>}
+      {(selectedItem || updating) && (
         <OrderItemForm
           selectedItem={selectedItem}
           orderId={orderId}
           formData={formData}
           setFormData={setFormData}
+          updating={updating}
+          updateInitialQuantity={updateInitialQuantity}
+          updateInitialPrice_per_unit={updateInitialPrice_per_unit}
         />
       )}
     </>
