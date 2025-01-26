@@ -12,15 +12,20 @@ interface Props {
   updateInitialQuantity?: number | null;
   updateInitialPrice_per_unit?: string | null;
   updating?: boolean;
+  updateValue_is_open_item?: boolean;
+
 }
 
 interface ItemPayload {
   is_open_item: boolean;
   item_id: string;
+  open_item_name: string,
+  piece: number,
   quantity: number | null;
-  cleaning_method: string | null;
+  cleaning_method?: string | null;
   handling_option: string | null;
   price_per_unit: number | null;
+
 }
 
 interface Item {
@@ -45,7 +50,7 @@ const SelectItemFromDropDown: React.FC<Props> = ({
                                                    setFormData,
                                                    updateInitialQuantity,
                                                    updateInitialPrice_per_unit,
-                                                   updating
+                                                   updating, updateValue_is_open_item
                                                  }) => {
   const url = `${config.BASE_URL}/items?category_id=${categoryId}`;
   const {data, error, loading} = useFetch<any>(url);
@@ -53,6 +58,7 @@ const SelectItemFromDropDown: React.FC<Props> = ({
 
   const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const itemId = e.target.value;
+    setFormData({...formData, item_id: e.target.value});
     setSelectedItemId(itemId);
   };
 
@@ -60,7 +66,7 @@ const SelectItemFromDropDown: React.FC<Props> = ({
 
   return (
     <>
-      {!updating && <div>
+      {(!updating && !formData.is_open_item) && <div>
         <Typography
           variant="small"
           color="blue-gray"
@@ -91,7 +97,7 @@ const SelectItemFromDropDown: React.FC<Props> = ({
           <p className="text-gray-600">No item available.</p>
         )}
       </div>}
-      {(selectedItem || updating) && (
+      {(selectedItem || updating || formData.is_open_item) && (
         <OrderItemForm
           selectedItem={selectedItem}
           orderId={orderId}
@@ -100,6 +106,7 @@ const SelectItemFromDropDown: React.FC<Props> = ({
           updating={updating}
           updateInitialQuantity={updateInitialQuantity}
           updateInitialPrice_per_unit={updateInitialPrice_per_unit}
+          updateValue_is_open_item={updateValue_is_open_item}
         />
       )}
     </>

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
 import useDeleteArea from "@/lib/api/Dashboard/hooks/area/useDeleteArea";
+import useDelete from "@/lib/api/Dashboard/hooks/useDelete";
+import CommonToaster from "@/lib/common/CommonToaster";
 
 type Props = {
   btnLabel: string
@@ -15,26 +17,32 @@ type Props = {
 export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, description, toastMessage}) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
-  const {deleteArea, loading} = useDeleteArea(toastMessage, url);
+  // const {deleteArea, loading} = useDeleteArea(toastMessage, url);
+  const {deleteData, loading, errors: deleteError} = useDelete(toastMessage, url);
   const handleDelete = async () => {
-    await deleteArea();
-    refetch();
-    handleOpen();
+    const response = await deleteData();
+    if (response?.success === true) {
+      refetch();
+      handleOpen();
+      CommonToaster({toastName: 'successToast', toastMessage: response.message || toastMessage});
+    } else if (response?.success === false) {
+      CommonToaster({toastName: 'dangerToast', toastMessage: "Failed to Delete"});
+    } else if (deleteError?.message) {
+      CommonToaster({toastName: 'dangerToast', toastMessage: deleteError?.message});
+    }
+
   };
   return (
     <>
       <Button variant="text" color="blue-gray" size="sm" onClick={handleOpen}>
         {btnLabel}
       </Button>
-
       <Dialog size={`sm`} open={open} handler={handleOpen}>
         <DialogHeader>
           {title}
         </DialogHeader>
         <DialogBody>
-
           {description}
-
         </DialogBody>
         <DialogFooter>
           <Button

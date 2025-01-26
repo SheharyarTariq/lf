@@ -5,7 +5,6 @@ import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
 import {config} from "@/config";
-import {CreateArea} from "@/components/area/CreateArea";
 import DeleteModal from "@/lib/common/DeleteModal";
 
 interface Props {
@@ -72,7 +71,7 @@ const OrderItem: React.FC<Props> = ({id}) => {
           <table className="w-full table-auto">
             <thead>
             <tr>
-              {["Name", "Quantity", "Cleaning Method", "Unit Price", "Total Price", "Approved", "Action"].map((el, idx) => (
+              {["Name", "Quantity", "Cleaning Method", "Handling Option", "Unit Price", "Total Price", "Approved", "Open item", "Action"].map((el, idx) => (
                 <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                   <Typography variant="small"
                               className="text-[11px] font-bold uppercase text-blue-gray-400">
@@ -90,22 +89,38 @@ const OrderItem: React.FC<Props> = ({id}) => {
                                         name,
                                         quantity,
                                         cleaning_method,
+                                        handling_option,
                                         price_per_unit,
                                         total_price,
-                                        is_approved
+                                        is_approved,
+                                        is_open_item,
+                                        piece
                                       }: OrderItems, idx: number) => (
                 <tr key={id}>
                   <TableData classes="py-3 px-5" data={name}/>
                   <TableData classes="py-3 px-5" data={quantity}/>
                   <TableData classes="py-3 px-5" data={cleaning_method}/>
+                  <TableData classes="py-3 px-5" data={handling_option}/>
                   <TableData classes="py-3 px-5" data={price_per_unit}/>
                   <TableData classes="py-3 px-5" data={total_price}/>
                   <TableData classes="py-3 px-5" data={is_approved ? "Yes" : "No"}/>
+                  <TableData classes="py-3 px-5" data={is_open_item ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={<div className={`flex`}>
-                    <AddItemFromCategory orderId={id} refetchItemList={refetch} dialogLabel="Edit" updating={true}
-                                         updateInitialQuantity={quantity} updateInitialPrice_per_unit={price_per_unit}
-                                         orderItemId={id}/>
-                    <DeleteModal toastMessage="Area" btnLabel='Delete' title="Delete Confirmation" refetch={refetch}
+                    <AddItemFromCategory orderId={id}
+                                         refetchItemList={refetch}
+                                         dialogLabel="Edit"
+                                         updating={true}
+                                         name={name}
+                                         updateInitialQuantity={quantity}
+                                         cleaning_method={cleaning_method}
+                                         updateInitialPrice_per_unit={price_per_unit}
+                                         orderItemId={id}
+                                         updateValue_is_open_item={is_open_item}
+                                         handling_option={handling_option}
+                                         piece={piece}
+                    />
+                    <DeleteModal toastMessage="Order Item deleted" btnLabel='Delete' title="Delete Confirmation"
+                                 refetch={refetch}
                                  description={`Are you sure you want to Delete this Order item (${name})?`}
                                  url={`${config.BASE_URL}/order-items/${id}`}/>
                   </div>}/></tr>

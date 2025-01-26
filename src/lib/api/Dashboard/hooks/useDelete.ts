@@ -4,6 +4,7 @@ import {token} from "@/lib/token/Token";
 
 export default function useDelete(label: string, url: string) {
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: any } | null>(null);
 
   const deleteData = async () => {
     try {
@@ -16,20 +17,22 @@ export default function useDelete(label: string, url: string) {
           'Authorization': `Bearer ${token}`,
         },
       });
+      const data = await response.json();
 
-      console.log('error', response)
-      if (response.ok) {
-        toast.success(` ${label} deleted successfully!`, {position: "bottom-center"});
-      } else {
-
-        toast.error(`Failed to delete ${label}`, {position: "bottom-center"});
+      console.log('response', data)
+      if (!response.ok) {
+        // setErrors()
       }
-    } catch (error) {
-      toast.error("An unexpected error occurred while deleting the area.", {position: "bottom-center"});
+      return data;
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setErrors({message: errorMessage});
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  return {deleteData, loading};
+  return {deleteData, loading, errors};
 }

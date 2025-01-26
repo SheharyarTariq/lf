@@ -1,42 +1,52 @@
 import React, {useEffect, useState} from "react";
-import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Typography,} from "@material-tailwind/react";
+import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typography,} from "@material-tailwind/react";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import SelectItemFromDropDown from "@/components/order-item/SelectItemFromDropDown";
 import {config} from "@/config";
 import useCreateOrder from "@/lib/api/Dashboard/hooks/order-item/useCreateOrder";
-import useUpdateServiceAvailability from "@/lib/api/Dashboard/hooks/serviceAvailability/useUpdateServiceAvailability";
 import useUpdateOrderItem from "@/lib/api/Dashboard/hooks/order-item/useUpdateOrderItem";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
   orderId: string;
-  onSuccess?: () => void;
+  // onSuccess?: () => void;
   refetchItemList: () => void;
   updateInitialQuantity?: number | null;
   updateInitialPrice_per_unit?: string | null;
   updating?: boolean;
   orderItemId?: string
+  updateValue_is_open_item?: boolean
+  name?: string
+  cleaning_method?: string | null;
+  handling_option?: string | null;
+  piece?: string | null;
 }
 
 interface ItemPayload {
   is_open_item: boolean;
   item_id: string;
+  open_item_name: string,
+  piece: number,
   quantity: number | null;
-  cleaning_method: string | null;
+  cleaning_method?: string | null;
   handling_option: string | null;
   price_per_unit: number | null;
-
 }
 
 export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                                                           dialogLabel,
                                                                           orderId,
-                                                                          onSuccess,
+                                                                          // onSuccess,
                                                                           refetchItemList,
                                                                           updating,
                                                                           updateInitialQuantity,
                                                                           updateInitialPrice_per_unit,
-                                                                          orderItemId
+                                                                          orderItemId,
+                                                                          updateValue_is_open_item,
+                                                                          name,
+                                                                          cleaning_method,
+                                                                          handling_option,
+                                                                          piece
                                                                         }) => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const categoriesUrl = `${BASE_URL}/categories`;
@@ -49,22 +59,91 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
   const [formData, setFormData] = useState<ItemPayload>({
     is_open_item: false,
     item_id: "",
+    open_item_name: "",
+    piece: 1,
     quantity: null,
     cleaning_method: null,
     handling_option: null,
     price_per_unit: null,
   });
 
+  console.log(
+    updateValue_is_open_item,
+    orderItemId,
+    name,
+    piece,
+    updateInitialQuantity,
+    cleaning_method,
+    handling_option,
+    updateInitialPrice_per_unit)
+  useEffect(() => {
+    if (updating) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        is_open_item: updateValue_is_open_item ?? prevFormData.is_open_item,
+        item_id: orderItemId ?? prevFormData.item_id,
+        open_item_name: name ?? prevFormData.open_item_name,
+        piece: piece ? +piece : prevFormData.piece,
+        cleaning_method: cleaning_method ?? prevFormData.cleaning_method,
+        handling_option: handling_option ?? prevFormData.handling_option,
+        quantity: updateInitialQuantity ?? prevFormData.quantity,
+        price_per_unit: updateInitialPrice_per_unit
+          ? +updateInitialPrice_per_unit
+          : prevFormData.price_per_unit,
+      }));
+    }
+  }, [
+    updating,
+    updateValue_is_open_item,
+    orderItemId,
+    name,
+    piece,
+    cleaning_method,
+    handling_option,
+    updateInitialQuantity,
+    updateInitialPrice_per_unit,
+  ]);
+
+  console.log("dataUseEffect", formData);
+
 
   const handleOpen = () => {
     refetch();
     setOpen((prev) => !prev);
   };
+
   const handleAddOrderItem = async () => {
     if (!updating) {
-      await addOrderItem({...formData, is_open_item: false});
+      if (formData.is_open_item) { //open item post data
+        const payload = {
+          is_open_item: formData.is_open_item,
+          open_item_name: formData.open_item_name,
+          piece: formData.piece,
+          quantity: formData.quantity,
+          cleaning_method: formData.cleaning_method,
+          handling_option: formData.handling_option,
+          price_per_unit: formData.price_per_unit,
+        }
+        await addOrderItem(payload);
+      } else {// not open item post data
+        const payload = {
+          is_open_item: formData.is_open_item,
+          item_id: formData.item_id,
+          quantity: formData.quantity,
+          cleaning_method: formData.cleaning_method,
+          handling_option: formData.handling_option,
+          price_per_unit: formData.price_per_unit,
+        }
+        await addOrderItem(payload);
+      }
     } else {
-      await update({price_per_unit: formData.price_per_unit, quantity: formData.quantity})
+      if (formData.is_open_item) {
+        await update(formData)
+
+      } else {
+        await update({price_per_unit: formData.price_per_unit, quantity: formData.quantity})
+
+      }
     }
     handleOpen();
     refetchItemList();
@@ -74,7 +153,9 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     setSelectedCategory(categoryId);
   };
 
-
+  const handleOpenItem = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({...formData, is_open_item: e.target.checked});
+  };
   return (<>
     <Button
       variant="text"
@@ -93,8 +174,15 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
 
       </DialogHeader>
       <DialogBody className="space-y-4 pb-6">
-
-        {!updating && <div>
+        {!updating &&
+          <> <br/>
+            <label>
+              <Switch crossOrigin={`crossOrigin`} checked={formData.is_open_item} onChange={handleOpenItem}/>
+              &nbsp;Is Order Open
+            </label>
+            <br/></>
+        }
+        {(!updating && !formData.is_open_item) && <div>
           <Typography
             variant="small"
             color="blue-gray"
@@ -118,17 +206,22 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                 </option>))}
             </select>) : (<p className="text-gray-600">No categories available.</p>)}
         </div>}
-        {(selectedCategory || updating) && <div>
-          <SelectItemFromDropDown categoryId={selectedCategory} orderId={orderId} formData={formData}
-                                  setFormData={setFormData} updating={updating}
+        {(selectedCategory || updating || formData.is_open_item) && <div>
+          <SelectItemFromDropDown categoryId={selectedCategory}
+                                  orderId={orderId}
+                                  formData={formData}
+                                  setFormData={setFormData}
+                                  updating={updating}
                                   updateInitialQuantity={updateInitialQuantity}
-                                  updateInitialPrice_per_unit={updateInitialPrice_per_unit}/>
+                                  updateInitialPrice_per_unit={updateInitialPrice_per_unit}
+                                  updateValue_is_open_item={updateValue_is_open_item}
+          />
         </div>}
 
       </DialogBody>
       <DialogFooter>
         <Button
-          disabled={loading || addLoading || (!selectedCategory && !updating)}
+          disabled={loading || addLoading || (!selectedCategory && !updating && !formData.is_open_item)}
           className={`border ml-auto p-2 mt-2 ${addLoading ? "cursor-not-allowed opacity-50" : ""}`}
           onClick={handleAddOrderItem}
         >

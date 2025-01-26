@@ -121,4 +121,6 @@ export interface OrderItems {
   total_price: string,
   is_approved: boolean | null,
   is_open_item: boolean,
+  handling_option: string | null,
+  piece: string | null
 }
