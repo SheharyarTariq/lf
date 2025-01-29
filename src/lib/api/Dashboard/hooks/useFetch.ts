@@ -19,6 +19,7 @@ function useFetch<T>(url: string): FetchResult<T> {
     const getData = async () => {
       setLoading(true);
       setError(null);
+
       try {
         const response = await fetch(url, {
           headers: {
@@ -27,14 +28,14 @@ function useFetch<T>(url: string): FetchResult<T> {
           },
         });
 
-        const parsedData = await response.json();
-        console.log('parsedData', parsedData);
+        const data = await response.json();
         if (!response.ok) {
-          console.log('error', parsedData);
-          throw new Error(parsedData.errors?.name || parsedData.message || 'Failed to fetch data');
+          console.log('error', data);
+          setError(data.errors);
+
         }
 
-        setfetchData(parsedData);
+        setfetchData(data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Something went wrong...';
         setError(errorMessage);

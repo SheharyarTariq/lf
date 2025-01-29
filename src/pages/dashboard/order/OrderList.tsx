@@ -4,13 +4,16 @@ import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import OrderItem from "@/pages/dashboard/order-item/OrderItem";
 import {OrderListProps} from "@/pages/dashboard/types";
+import {config} from "@/config";
+import {useSearchParams} from "react-router-dom";
 
 
 const OrderList: React.FC = () => {
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
-    const url = `${BASE_URL}/admin/orders`;
     const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
-    const {data, error, loading, refetch} = useFetch<any>(url);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const status = searchParams.get('status') || 'created';
+    const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders?status=${status}`);
 
     const handleRowClick = (orderId: string) => {
         setSelectedOrder(orderId);
@@ -18,8 +21,11 @@ const OrderList: React.FC = () => {
 
     const handleBackToList = () => {
         setSelectedOrder(null);
-
     };
+
+    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSearchParams({status: e.target.value});
+    }
 
     return (<div className="mt-12 mb-8 flex flex-col gap-12">
         {selectedOrder ? (<div className="w-full">
@@ -34,12 +40,21 @@ const OrderList: React.FC = () => {
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                 <Typography variant="h6" color="white" className="flex items-center">
                     Orders
+
                 </Typography>
             </CardHeader>
             <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                 <table className="w-full table-auto">
                     <thead>
+                    <select
+                        className="p-2 rounded w-full border border-gray-400"
+                        onChange={handleStatusChange}
+                        value={status}>
+                        <option value="created">Created</option>
+                        <option value="ready_for_pickup">Ready for Pickup</option>
+                    </select>
                     <tr>
+
                         {["Order#", "status", "created_at", "note", "pickup", "dropoff"].map((el, idx) => (
                             <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                                 <Typography variant="small"

@@ -26,7 +26,7 @@ function usePost(url: string) {
         console.log("Error =>", data);
         setErrors(data.errors)
       }
-      console.log("postData Response", data);
+      // console.log("postData Response", data);
       return data;
     } catch (err) {
       const errorMessage =

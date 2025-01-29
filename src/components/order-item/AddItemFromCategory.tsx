@@ -3,8 +3,8 @@ import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typograp
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import SelectItemFromDropDown from "@/components/order-item/SelectItemFromDropDown";
 import {config} from "@/config";
-import useCreateOrder from "@/lib/api/Dashboard/hooks/order-item/useCreateOrder";
-import useUpdateOrderItem from "@/lib/api/Dashboard/hooks/order-item/useUpdateOrderItem";
+import usePost from "@/lib/api/Dashboard/hooks/usePost";
+import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
@@ -48,14 +48,19 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                                                           handling_option,
                                                                           piece
                                                                         }) => {
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const categoriesUrl = `${BASE_URL}/categories`;
+  const categoriesUrl = `${config.BASE_URL}/categories`;
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const {data, error, loading, refetch} = useFetch<any>(categoriesUrl);
   const url = `${config.BASE_URL}/order-items/orders/${orderId}`;
-  const {addOrderItem, loading: addLoading} = useCreateOrder(url);
-  const {update, loading: updateLoading,} = useUpdateOrderItem(`${config.BASE_URL}/order-items/${orderItemId}`);
+  // const {addOrderItem, loading: addLoading} = useCreateOrder(url);
+  const {postData: addOrderItem, loading: addLoading, errors: postError} = usePost(url)
+  // const {update, loading: updateLoading,} = useUpdateOrderItem(`${config.BASE_URL}/order-items/${orderItemId}`);
+  const {
+    updateData: update,
+    loading: updateLoading,
+    errors: updateError
+  } = useUpdate(`${config.BASE_URL}/order-items/${orderItemId}`);
   const [formData, setFormData] = useState<ItemPayload>({
     is_open_item: false,
     item_id: "",
@@ -66,16 +71,8 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     handling_option: null,
     price_per_unit: null,
   });
+  console.log("Errors", postError);
 
-  console.log(
-    updateValue_is_open_item,
-    orderItemId,
-    name,
-    piece,
-    updateInitialQuantity,
-    cleaning_method,
-    handling_option,
-    updateInitialPrice_per_unit)
   useEffect(() => {
     if (updating) {
       setFormData((prevFormData) => ({
@@ -104,8 +101,6 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     updateInitialPrice_per_unit,
   ]);
 
-  console.log("dataUseEffect", formData);
-
 
   const handleOpen = () => {
     refetch();
@@ -124,7 +119,11 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
           handling_option: formData.handling_option,
           price_per_unit: formData.price_per_unit,
         }
-        await addOrderItem(payload);
+        const response = await addOrderItem(payload);
+        if (response.success) {
+          handleOpen();
+          refetchItemList();
+        }
       } else {// not open item post data
         const payload = {
           is_open_item: formData.is_open_item,
@@ -134,19 +133,29 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
           handling_option: formData.handling_option,
           price_per_unit: formData.price_per_unit,
         }
-        await addOrderItem(payload);
+        const response = await addOrderItem(payload);
+        if (response.success) {
+          handleOpen();
+          refetchItemList();
+        }
       }
     } else {
       if (formData.is_open_item) {
-        await update(formData)
-
+        const response = await update(formData)
+        if (response.success) {
+          handleOpen();
+          refetchItemList();
+        }
       } else {
-        await update({price_per_unit: formData.price_per_unit, quantity: formData.quantity})
-
+        const response = await update({price_per_unit: formData.price_per_unit, quantity: formData.quantity})
+        if (response.success) {
+          handleOpen();
+          refetchItemList();
+        }
       }
     }
-    handleOpen();
-    refetchItemList();
+    // handleOpen();
+    // refetchItemList();
   };
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const categoryId = e.target.value;
@@ -215,6 +224,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                   updateInitialQuantity={updateInitialQuantity}
                                   updateInitialPrice_per_unit={updateInitialPrice_per_unit}
                                   updateValue_is_open_item={updateValue_is_open_item}
+                                  Error={postError || updateError}
           />
         </div>}
 

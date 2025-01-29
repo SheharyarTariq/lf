@@ -13,6 +13,9 @@ interface Props {
   updateInitialPrice_per_unit?: string | null;
   updating?: boolean;
   updateValue_is_open_item?: boolean;
+  Error?: {
+    [key: string]: any
+  } | null
 
 }
 
@@ -50,7 +53,8 @@ const SelectItemFromDropDown: React.FC<Props> = ({
                                                    setFormData,
                                                    updateInitialQuantity,
                                                    updateInitialPrice_per_unit,
-                                                   updating, updateValue_is_open_item
+                                                   updating, updateValue_is_open_item,
+                                                   Error
                                                  }) => {
   const url = `${config.BASE_URL}/items?category_id=${categoryId}`;
   const {data, error, loading} = useFetch<any>(url);
@@ -97,16 +101,15 @@ const SelectItemFromDropDown: React.FC<Props> = ({
           <p className="text-gray-600">No item available.</p>
         )}
       </div>}
+      {Error?.item_id && <p className="text-red-500 text-xs">{Error?.item_id}</p>}
+
       {(selectedItem || updating || formData.is_open_item) && (
         <OrderItemForm
           selectedItem={selectedItem}
-          orderId={orderId}
           formData={formData}
           setFormData={setFormData}
           updating={updating}
-          updateInitialQuantity={updateInitialQuantity}
-          updateInitialPrice_per_unit={updateInitialPrice_per_unit}
-          updateValue_is_open_item={updateValue_is_open_item}
+          Error={Error}
         />
       )}
     </>
