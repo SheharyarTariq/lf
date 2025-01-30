@@ -20,3 +20,16 @@ export enum OrderStatus {
   Delivered = 'delivered',
   Cancelled = 'cancelled'
 }
+
+export const orderByOptions = [
+  {label: "Number", value: "number"},
+  {label: "Pickup Date", value: "pickup_date"},
+  {label: "Dropoff Date", value: "dropoff_date"},
+  {label: "Created At", value: "created_at"},
+  {label: "Status", value: "status"},
+]
+
+export const sortingOrderOptions = [
+  {label: "Ascending", value: "asc"},
+  {label: "Descending", value: "desc"},
+]

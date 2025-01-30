@@ -7,15 +7,17 @@ import {OrderListProps} from "@/pages/dashboard/types";
 import {config} from "@/config";
 import {useSearchParams} from "react-router-dom";
 import Pagination from "@/lib/common/Pagination";
-import {OrderStatus} from "@/lib/enum/constants";
+import {orderByOptions, OrderStatus, sortingOrderOptions} from "@/lib/enum/constants";
 
 const OrderList: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const status = searchParams.get('status') || 'created';
+  const orderBy = searchParams.get('orderBy') || 'number';
+  const sortingOrder = searchParams.get('orderDirection') || 'desc';
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(1);
-  const apiUrl = `${config.BASE_URL}/admin/orders?status=${status}&page=${currentPage}`;
+  const apiUrl = `${config.BASE_URL}/admin/orders?status=${status}&page=${currentPage}&orderBy=${orderBy}&orderDirection=${sortingOrder}`;
   const {data, error, loading, refetch} = useFetch<any>(apiUrl);
 
   useEffect(() => {
@@ -55,6 +57,12 @@ const OrderList: React.FC = () => {
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSearchParams({status: e.target.value, page: "1"});
   };
+  const handleOrderByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchParams({orderBy: e.target.value, page: "1"});
+  };
+  const handleSortingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchParams({orderDirection: e.target.value, page: "1"});
+  };
 
   return (
 
@@ -76,22 +84,42 @@ const OrderList: React.FC = () => {
                 Orders
               </Typography>
             </CardHeader>
+            <div className="flex justify-end gap-2 px-2">
+              <select className="p-2 rounded border border-gray-400"
+                      value={status}
+                      onChange={handleStatusChange}
+              >
+                {Object.entries(OrderStatus)
+                  .map(([key, status]) => (
+                    <option key={status} value={status}>
+                      {key} - {status.replace(/_/g, ' ').toUpperCase()}
+                    </option>))}
+              </select>
+              <select className="p-2 rounded border border-gray-400 "
+                      value={orderBy}
+                      onChange={handleOrderByChange}
+              >
+                {orderByOptions.map(({label, value}) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>))}
+              </select>
+              <select className="p-2 rounded border border-gray-400 "
+                      value={sortingOrder}
+                      onChange={handleSortingChange}
+              >
+                {sortingOrderOptions.map(({label, value}) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>))}
+              </select>
+            </div>
+
             <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
               <table className="w-full table-auto">
+
                 <thead>
-                <tr>
-                  <select
-                    className="p-2 rounded w-full border border-gray-400"
-                    value={status}
-                    onChange={handleStatusChange}
-                  >
-                    {Object.entries(OrderStatus)
-                      .map(([key, status]) => (
-                        <option key={status} value={status}>
-                          {key}
-                        </option>))}
-                  </select>
-                </tr>
+
                 <tr>
                   {["Order#", "status", "created_at", "note", "pickup", "dropoff"].map(
                     (el, idx) => (
@@ -112,8 +140,7 @@ const OrderList: React.FC = () => {
                 ) : (
                   data?.result?.data.map(
                     ({id, number, status, created_at, note, pickup, dropoff}: OrderListProps, key: number) => {
-                      const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-
+                      const className = `py-3 px-5 ${key === data.result.data.length - 1 ? " " : "border-b border-blue-gray-50"}`;
 
                       return (
                         <tr key={id} onClick={() => handleRowClick(id)} className="cursor-pointer">
@@ -142,7 +169,7 @@ const OrderList: React.FC = () => {
               </table>
             </CardBody>
           </Card>
-          <div className="flex flex-col sm:flex-row justify-center mt-10">
+          <div className="flex flex-col sm:flex-row justify-center ">
             <Pagination currentPage={currentPage} setCurrentPage={updatePage} totalPage={totalPage}/>
           </div>
         </>
