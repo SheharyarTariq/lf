@@ -69,14 +69,18 @@ export const Area: React.FC = () => {
           {error ? (<tr>
             <TableData colspan={4} data={error} classes="text-center p-4 " textColor='red'/>
           </tr>) : (data?.result?.map(({
-                                         name, id, service_availabilities, slot_availabilities
+                                         name,
+                                         id,
+                                         service_availabilities,
+                                         slot_availabilities
                                        }: AreaProps, key: number,) => {
             const className = `py-3 px-5 ${key === data.result.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+            console.log("length", data.result.length);
 
             return (<React.Fragment key={id}>
               <tr>
                 <TableData classes={className} data={name}/>
-                <TableData classes={className} data={<div className={`flex`}>
+                <TableData classes={className} data={<div className="flex">
 
                   <CreateArea dailogLabel="Edit" name={name} id={`${id}`}
                               refetch={refetch}/>

@@ -32,7 +32,6 @@ function useFetch<T>(url: string): FetchResult<T> {
         if (!response.ok) {
           console.log('error', data);
           setError(data.errors);
-
         }
 
         setfetchData(data);
