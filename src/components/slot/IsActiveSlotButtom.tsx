@@ -10,7 +10,6 @@ export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
   id: string
   refetch: () => void;
 }) => {
-  console.log("slot id => ", id)
   const urlUpdate = `${config.BASE_URL}/slot-availabilities/${id}/change-state`;
   const {updateArea, loading} = useUpdateServiceAvailability(urlUpdate);
   const [open, setOpen] = React.useState(false);

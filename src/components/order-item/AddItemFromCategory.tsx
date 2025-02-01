@@ -8,7 +8,7 @@ import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
-  orderId: string;
+  orderId: string | null;
   // onSuccess?: () => void;
   refetchItemList: () => void;
   updateInitialQuantity?: number | null;
@@ -217,7 +217,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         </div>}
         {(selectedCategory || updating || formData.is_open_item) && <div>
           <SelectItemFromDropDown categoryId={selectedCategory}
-                                  orderId={orderId}
+                                  orderId={orderId || ""}
                                   formData={formData}
                                   setFormData={setFormData}
                                   updating={updating}

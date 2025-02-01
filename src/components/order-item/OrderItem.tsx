@@ -6,11 +6,12 @@ import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
 import {config} from "@/config";
 import DeleteModal from "@/lib/common/DeleteModal";
 import OrderDetailsCard from "@/components/order-item/OrderDetailsCard";
-import {orderItemProps, OrderItems} from "@/components/order-item/types";
+import {OrderItems} from "@/components/order-item/types";
+import {useParams} from "react-router-dom";
 
-const OrderItem: React.FC<orderItemProps> = ({id}) => {
-
-  const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${id}`);
+const OrderItem: React.FC = () => {
+  const {orderId} = useParams();
+  const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${orderId}`);
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -25,7 +26,7 @@ const OrderItem: React.FC<orderItemProps> = ({id}) => {
   const {result} = data;
   return (
     <>
-      <OrderDetailsCard result={result} id={id}/>
+      <OrderDetailsCard result={result} id={orderId || null}/>
 
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
@@ -34,7 +35,7 @@ const OrderItem: React.FC<orderItemProps> = ({id}) => {
               Order Items
             </div>
             <span className="ml-auto">
-        {!error && (<AddItemFromCategory orderId={id} refetchItemList={refetch}/>)}
+        {!error && (<AddItemFromCategory orderId={orderId || ""} refetchItemList={refetch}/>)}
       </span>
           </Typography>
         </CardHeader>

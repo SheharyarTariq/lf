@@ -1,5 +1,5 @@
 export interface OrderDetailsCardProps {
-  id: string,
+  id: string | null,
   result: {
     number: number,
     created_at: string,
@@ -31,6 +31,3 @@ export interface OrderItems {
   piece: string | null
 }
 
-export interface orderItemProps {
-  id: string;
-}

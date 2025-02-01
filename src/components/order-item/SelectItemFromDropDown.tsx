@@ -48,12 +48,9 @@ interface Item {
 
 const SelectItemFromDropDown: React.FC<Props> = ({
                                                    categoryId,
-                                                   orderId,
                                                    formData,
                                                    setFormData,
-                                                   updateInitialQuantity,
-                                                   updateInitialPrice_per_unit,
-                                                   updating, updateValue_is_open_item,
+                                                   updating,
                                                    Error
                                                  }) => {
   const url = `${config.BASE_URL}/items?category_id=${categoryId}`;
