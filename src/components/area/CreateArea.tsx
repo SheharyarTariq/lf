@@ -1,13 +1,13 @@
 import React, {memo, useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography,} from "@material-tailwind/react";
 import {config} from "@/config";
-import {CreateAreaProps} from "@/pages/dashboard/types";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import {areaSchema} from "@/components/area/constants";
 import CommonToaster from "../../lib/common/CommonToaster";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
+import {CreateAreaProps} from "@/components/area/types";
 
 export const CreateArea: React.FC<CreateAreaProps> = memo(({dailogLabel, name, id, refetch}) => {
     const [open, setOpen] = useState(false);
@@ -39,16 +39,17 @@ export const CreateArea: React.FC<CreateAreaProps> = memo(({dailogLabel, name, i
     };
 
     const onSubmit = async (data: { name: string }) => {
-      const createOrUpdateArea = name
-        ? await updateData(data)
-        : await postData(data);
+      const createOrUpdateArea = name ? await updateData(data) : await postData(data);
       console.log("create/upadate area handler call", createOrUpdateArea)
       if (createOrUpdateArea?.success === true) {
-        CommonToaster({toastName: 'successToast', toastMessage: 'Form submitted!'});
+        CommonToaster({
+          toastName: 'successToast',
+          toastMessage: createOrUpdateArea?.message || "Form Submitted Successfully"
+        });
         refetch();
         handleOpen();
       } else if (createOrUpdateArea?.success === false) {
-        CommonToaster({toastName: 'dangerToast', toastMessage: "Not submitted"});
+        CommonToaster({toastName: 'dangerToast', toastMessage: createOrUpdateArea.message || "Form Failed to Submit"});
 
       } else if (postError?.message || updateError?.message) {
         CommonToaster({toastName: 'dangerToast', toastMessage: postError?.message || updateError?.message});

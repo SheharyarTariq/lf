@@ -4,8 +4,8 @@ import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react"
 import {CreateItem} from "@/components/item/CreateItem";
 import {TableData} from "@/lib/common/TableData";
 import DeleteModal from "@/lib/common/DeleteModal";
-import {ItemProps} from "@/pages/dashboard/types";
 import {config} from "@/config";
+import {ItemProps} from "@/components/item/types";
 
 const Item: React.FC<ItemProps> = ({
                                      categoryId, categoryName, refetch, items,

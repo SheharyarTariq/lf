@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import useCreateCategory from "@/lib/api/Dashboard/hooks/category/useCreateCategory";
 import useUpdateCategory from "@/lib/api/Dashboard/hooks/category/useUpdateCategory";
 import {config} from "@/config";
-import {CreateCategoryFormData, CreateCategoryProps} from "@/pages/dashboard/types";
+import {CreateCategoryFormData, CreateCategoryProps} from "@/components/category/types";
 
 export const CreateCategory: React.FC<CreateCategoryProps> = ({
                                                                 dailogLabel,

@@ -2,20 +2,18 @@ import React, {useState} from "react";
 import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react";
 import {CreateCategory} from "@/components/category/CreateCategory";
 import useFetch from "@/lib/api/Dashboard/hooks/category/useFetchCategory";
-import Item from "@/pages/dashboard/item/Item";
+import Item from "@/components/item/Item";
 import {TableData} from "@/lib/common/TableData";
 import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCodes} from "@/lib/common/Dropdown";
 import DeleteModal from "@/lib/common/DeleteModal";
-import {CategoryProps} from "@/pages/dashboard/types";
 import {config} from "@/config";
+import {CategoryProps} from "@/components/category/types";
 
 
 export const Category: React.FC = () => {
   const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/categories/with-items`);
   const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
-  const [openDropdowns, setOpenDropdowns] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean; }>({});
 
   return (<div className="mt-12 mb-8 flex flex-col gap-12">
     <Card>

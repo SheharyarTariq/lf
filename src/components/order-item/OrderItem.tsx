@@ -1,5 +1,4 @@
 import React from 'react';
-import {OrderItems} from "../types";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
@@ -7,13 +6,9 @@ import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
 import {config} from "@/config";
 import DeleteModal from "@/lib/common/DeleteModal";
 import OrderDetailsCard from "@/components/order-item/OrderDetailsCard";
-import {CreateArea} from "@/components/area/CreateArea";
+import {orderItemProps, OrderItems} from "@/components/order-item/types";
 
-interface Props {
-  id: string;
-}
-
-const OrderItem: React.FC<Props> = ({id}) => {
+const OrderItem: React.FC<orderItemProps> = ({id}) => {
 
   const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${id}`);
   if (loading) {
@@ -27,13 +22,11 @@ const OrderItem: React.FC<Props> = ({id}) => {
   if (!data || !data.result) {
     return <p>No order details available.</p>;
   }
-
   const {result} = data;
-
   return (
     <>
       <OrderDetailsCard result={result} id={id}/>
-        
+
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white" className="flex items-center">
@@ -42,7 +35,7 @@ const OrderItem: React.FC<Props> = ({id}) => {
             </div>
             <span className="ml-auto">
         {!error && (<AddItemFromCategory orderId={id} refetchItemList={refetch}/>)}
-    </span>
+      </span>
           </Typography>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">

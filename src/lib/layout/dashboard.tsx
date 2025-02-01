@@ -1,21 +1,21 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { Cog6ToothIcon } from "@heroicons/react/24/solid";
-import { IconButton } from "@material-tailwind/react";
-import { Configurator } from "@/lib/layout/configurator";
-import { DashboardNavbar } from "@/lib/layout/dashboard-navbar";
-import { Sidenav } from "@/lib/layout/sidenav";
+import {Route, Routes, useNavigate} from "react-router-dom";
+import {Cog6ToothIcon} from "@heroicons/react/24/solid";
+import {IconButton} from "@material-tailwind/react";
+import {Configurator} from "@/lib/layout/configurator";
+import {DashboardNavbar} from "@/lib/layout/dashboard-navbar";
+import {Sidenav} from "@/lib/layout/sidenav";
 
 import routes from "@/routes";
 import {
   setOpenConfigurator,
   useMaterialTailwindController,
 } from "@/lib/context/index";
-import React, { useEffect } from "react";
-import { isAuthenticated } from "@/lib/api/auth/authenticate";
+import React, {useEffect} from "react";
+import {isAuthenticated} from "@/lib/api/auth/authenticate";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
-  const { sidenavType } = controller;
+  const {sidenavType} = controller;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,8 +34,8 @@ export function Dashboard() {
         brandName="LF - Free"
       />
       <div className="p-4 xl:ml-80">
-        <DashboardNavbar />
-        <Configurator />
+        <DashboardNavbar/>
+        <Configurator/>
         <IconButton
           size="lg"
           color="white"
@@ -43,15 +43,15 @@ export function Dashboard() {
           ripple={false}
           onClick={() => setOpenConfigurator(dispatch, true)}
         >
-          <Cog6ToothIcon className="h-5 w-5" />
+          <Cog6ToothIcon className="h-5 w-5"/>
         </IconButton>
 
         <Routes>
           {routes.map(
-            ({ layout, pages }) =>
+            ({layout, pages}) =>
               layout === "dashboard" &&
-              pages.map(({ path, element }) => (
-                <Route path={path} element={element} key={path} />
+              pages.map(({path, element}) => (
+                <Route path={path} element={element} key={path}/>
               )),
           )}
         </Routes>

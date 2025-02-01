@@ -15,6 +15,22 @@ export interface OrderDetailsCardProps {
       time: string,
       point: string,
     },
-
   }
+}
+
+export interface OrderItems {
+  id: string,
+  name: string,
+  quantity: number,
+  cleaning_method: string | null,
+  price_per_unit: string | null,
+  total_price: string,
+  is_approved: boolean | null,
+  is_open_item: boolean,
+  handling_option: string | null,
+  piece: string | null
+}
+
+export interface orderItemProps {
+  id: string;
 }

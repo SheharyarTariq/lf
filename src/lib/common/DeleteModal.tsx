@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import useDeleteArea from "@/lib/api/Dashboard/hooks/area/useDeleteArea";
 import useDelete from "@/lib/api/Dashboard/hooks/useDelete";
 import CommonToaster from "@/lib/common/CommonToaster";
 
@@ -17,8 +16,7 @@ type Props = {
 export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, description, toastMessage}) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
-  // const {deleteArea, loading} = useDeleteArea(toastMessage, url);
-  const {deleteData, loading, errors: deleteError} = useDelete(toastMessage, url);
+  const {deleteData, loading, errors: deleteError} = useDelete(url);
   const handleDelete = async () => {
     const response = await deleteData();
     if (response?.success === true) {

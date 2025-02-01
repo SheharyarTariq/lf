@@ -3,54 +3,60 @@ import {Switch} from "@material-tailwind/react";
 import useUpdateServiceAvailability from "@/lib/api/Dashboard/hooks/serviceAvailability/useUpdateServiceAvailability";
 import toast from "react-hot-toast";
 import {config} from "@/config";
+import CommonToaster from "@/lib/common/CommonToaster";
+import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 
-type Props = {
-    is_active: boolean;
-    id: string;
-    refetch: Function;
+interface UpdateServiceAvailabilityProps {
+  is_active: boolean;
+  id: string;
+  refetch: Function;
 };
 
-const SwitchBtn: React.FC<Props> = ({is_active, id, refetch}) => {
+const SwitchBtn: React.FC<UpdateServiceAvailabilityProps> = ({is_active, id, refetch}) => {
 
-    const urlUpdatePostCode = `${config.BASE_URL}/service-availabilities/${id}/change-state`;
-    const [inputValue, setInputValue] = useState<boolean>(is_active || false);
-    const {
-        updateArea,
-        loading: updateLoading,
-        error: updateError,
-    } = useUpdateServiceAvailability(urlUpdatePostCode);
+  const urlUpdatePostCode = `${config.BASE_URL}/service-availabilities/${id}/change-state`;
+  const [inputValue, setInputValue] = useState<boolean>(is_active || false);
+  const {
+    updateData: updateServiceAvailability,
+    loading: updateLoading,
+    errors: updateError
+  } = useUpdate(urlUpdatePostCode);
 
-    useEffect(() => {
-        setInputValue(is_active);
-    }, [is_active]);
+  useEffect(() => {
+    setInputValue(is_active);
+  }, [is_active]);
 
-    async function handleToggle() {
-        const newState = !inputValue;
-        const dataValue = {is_active: newState};
+  async function handleToggle() {
+    const newState = !inputValue;
+    const dataValue = {is_active: newState};
 
-        const newData = await updateArea(dataValue);
+    const createOrUpdateServiceAvailability = await updateServiceAvailability(dataValue);
 
-        if (newData) {
-            setInputValue(newState);
-            toast.success(`Post Code updated successfully!`, {
-                position: "bottom-center",
-            });
-            refetch();
-        } else {
-            toast.error(`Failed to update Post Code`, {position: "bottom-center"});
-        }
+    if (createOrUpdateServiceAvailability?.success === true) {
+      CommonToaster({
+        toastName: 'successToast',
+        toastMessage: createOrUpdateServiceAvailability?.message || "Postcode updated successfully"
+      });
+      refetch();
+    } else if (createOrUpdateServiceAvailability?.success === false) {
+      CommonToaster({toastName: 'dangerToast', toastMessage: "Failed to update postcode"});
+
+    } else if (updateError?.message) {
+      CommonToaster({toastName: 'dangerToast', toastMessage: updateError?.message});
     }
 
-    return (
-        <>
-            <Switch
-                disabled={updateLoading}
-                crossOrigin={`crossOrigin`}
-                checked={inputValue}
-                onChange={handleToggle}
-            />
-        </>
-    );
+  }
+
+  return (
+    <>
+      <Switch
+        disabled={updateLoading}
+        crossOrigin={`crossOrigin`}
+        checked={inputValue}
+        onChange={handleToggle}
+      />
+    </>
+  );
 };
 
 export default SwitchBtn;

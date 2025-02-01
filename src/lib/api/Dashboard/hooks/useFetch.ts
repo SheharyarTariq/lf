@@ -3,14 +3,14 @@ import {token} from "@/lib/token/Token";
 
 interface FetchResult<T> {
   fetchData: T | null;
-  error: string | null;
+  errors: { [key: string]: any } | null,
   loading: boolean;
   refetch: () => void;
 }
 
 function useFetch<T>(url: string): FetchResult<T> {
   const [fetchData, setfetchData] = useState<T | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: any } | null>(null);
   const [loading, setLoading] = useState(false);
   const [refetchKey, setRefetchKey] = useState(0);
 
@@ -18,7 +18,7 @@ function useFetch<T>(url: string): FetchResult<T> {
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
-      setError(null);
+      setErrors(null);
 
       try {
         const response = await fetch(url, {
@@ -31,13 +31,14 @@ function useFetch<T>(url: string): FetchResult<T> {
         const data = await response.json();
         if (!response.ok) {
           console.log('error', data);
-          setError(data.errors);
+          setErrors(data);
         }
 
         setfetchData(data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Something went wrong...';
-        setError(errorMessage);
+        console.log("Catch error in fetch hook", errorMessage)
+        setErrors({message: errorMessage});
       } finally {
         setLoading(false);
       }
@@ -47,7 +48,7 @@ function useFetch<T>(url: string): FetchResult<T> {
 
   return {
     fetchData,
-    error,
+    errors,
     loading,
     refetch,
   };

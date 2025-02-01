@@ -1,8 +1,7 @@
-import toast from "react-hot-toast";
 import {useState} from "react";
 import {token} from "@/lib/token/Token";
 
-export default function useDelete(label: string, url: string) {
+export default function useDelete(url: string) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: any } | null>(null);
 
