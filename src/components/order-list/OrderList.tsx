@@ -8,6 +8,7 @@ import {useSearchParams} from "react-router-dom";
 import Pagination from "@/lib/common/Pagination";
 import {orderByOptions, orderStatus, sortingOrderOptions} from "./constants";
 import {OrderListProps} from "@/components/order-list/types";
+import SearchBar from "@/components/order-list/SearchBar";
 
 export const OrderList: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
@@ -17,11 +18,13 @@ export const OrderList: React.FC = () => {
   const status = searchParams.get("status") || "";
   const orderBy = searchParams.get("orderBy") || "";
   const sortingOrder = searchParams.get("orderDirection") || "";
+  const searchQuery = searchParams.get("search") || "";
   const currentPage = searchParams.get("page") || "";
 
   // Construct query params dynamically (only include non-empty values)
   const queryParams = new URLSearchParams();
   if (status) queryParams.set("status", status);
+  if (searchQuery) queryParams.set("search", searchQuery);
   if (orderBy) queryParams.set("orderBy", orderBy);
   if (sortingOrder) queryParams.set("orderDirection", sortingOrder);
   if (currentPage) queryParams.set("page", currentPage);
@@ -39,6 +42,9 @@ export const OrderList: React.FC = () => {
         params.set(key, value);
       } else {
         params.delete(key); // Remove param if empty
+      }
+      if (key !== "search") {
+        params.delete("search")
       }
       params.delete("page");
       return params;
@@ -74,25 +80,32 @@ export const OrderList: React.FC = () => {
                 Orders
               </Typography>
             </CardHeader>
-
             {/* Filters */}
             <div className="flex justify-end gap-2 px-2">
-              <select className="p-2 rounded border border-gray-400" value={status}
-                      onChange={e => updateParams("status", e.target.value)}>
-                <option value="">Status</option>
-                {/* Option to remove filter */}
-                {orderStatus.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-              </select>
-              <select className="p-2 rounded border border-gray-400" value={orderBy}
-                      onChange={e => updateParams("orderBy", e.target.value)}>
-                <option value="">Order By</option>
-                {orderByOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-              </select>
-              <select className="p-2 rounded border border-gray-400" value={sortingOrder}
-                      onChange={e => updateParams("orderDirection", e.target.value)}>
-                <option value="">Sorting Order</option>
-                {sortingOrderOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-              </select>
+
+              <SearchBar updateParams={updateParams}/>
+
+              <label> Status:&nbsp;
+                <select className="p-2 rounded border border-gray-400" value={status}
+                        onChange={e => updateParams("status", e.target.value)}>
+                  <option value="">All</option>
+                  {orderStatus.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
+              <label>Order By:&nbsp;
+                <select
+                  className="p-2 rounded border border-gray-400" value={orderBy}
+                  onChange={e => updateParams("orderBy", e.target.value)}>
+                  <option value="">None</option>
+                  {orderByOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
+                </select></label>
+              <label htmlFor="">Sorting Order:&nbsp;
+                <select className="p-2 rounded border border-gray-400" value={sortingOrder}
+                        onChange={e => updateParams("orderDirection", e.target.value)}>
+                  <option value="">None</option>
+                  {sortingOrderOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
             </div>
 
             {/* Orders Table */}

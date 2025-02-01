@@ -27,8 +27,8 @@ function App() {
           </ProtectedRoute>
         }
       />
-      {/*<Route path="/auth/*" element={<Auth/>*/}
-      {/*}/>*/}
+      <Route path="/auth/*" element={<Auth/>
+      }/>
 
       <Route
         path="*"
