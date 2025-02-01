@@ -25,7 +25,6 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
         />&nbsp;
         <Button onClick={() => {
           updateParams("search", search)
-          setSearch('');
 
         }}>
           Search

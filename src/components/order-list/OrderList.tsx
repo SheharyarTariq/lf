@@ -4,7 +4,7 @@ import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import OrderItem from "@/components/order-item/OrderItem";
 import {config} from "@/config";
-import {useSearchParams} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import Pagination from "@/lib/common/Pagination";
 import {orderByOptions, orderStatus, sortingOrderOptions} from "./constants";
 import {OrderListProps} from "@/components/order-list/types";
@@ -43,9 +43,6 @@ export const OrderList: React.FC = () => {
       } else {
         params.delete(key); // Remove param if empty
       }
-      if (key !== "search") {
-        params.delete("search")
-      }
       params.delete("page");
       return params;
     });
@@ -68,6 +65,7 @@ export const OrderList: React.FC = () => {
       {selectedOrder ? (
         <div className="w-full">
           <OrderItem id={selectedOrder}/>
+          {/*<Link to={}> order</Link>*/}
           <button onClick={() => setSelectedOrder(null)} className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md">
             Back to Orders List
           </button>
@@ -80,11 +78,11 @@ export const OrderList: React.FC = () => {
                 Orders
               </Typography>
             </CardHeader>
-            {/* Filters */}
+
             <div className="flex justify-end gap-2 px-2">
-
-              <SearchBar updateParams={updateParams}/>
-
+              <div className="mr-auto">
+                <SearchBar updateParams={updateParams}/>
+              </div>
               <label> Status:&nbsp;
                 <select className="p-2 rounded border border-gray-400" value={status}
                         onChange={e => updateParams("status", e.target.value)}>
@@ -156,7 +154,6 @@ export const OrderList: React.FC = () => {
             </CardBody>
           </Card>
 
-          {/* Pagination */}
           <div className="flex flex-col sm:flex-row justify-center">
             <Pagination currentPage={parseInt(currentPage) || 1} setCurrentPage={updatePage} totalPage={totalPage}/>
           </div>

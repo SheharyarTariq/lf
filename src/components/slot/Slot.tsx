@@ -7,6 +7,7 @@ import {SlotProps} from "@/components/slot/types";
 
 const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refetch,}) => {
 
+  // console.log("slot_availabilities id => ", slot_availabilities)
 
   return (<div className="mt-12 mb-8 flex flex-col  px-16">
     <Card>
@@ -19,11 +20,11 @@ const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refet
         <table className="w-full table-auto">
           <thead>
           <tr>
-            {["Weekdays", <span className=" ">Time Slot</span>,].map((el, idx) => (
+            {["Weekdays", <span> Time Slot</span>,].map((el, idx) => (
               <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                 <Typography
                   variant="small"
-                  className={`text-[11px] font-bold uppercase text-blue-gray-400 ${idx === 1 ? 'text-center' : ''}`}
+                  className={`text-[11px] font-bold uppercase text-blue-gray-400 ${idx === 1 ? 'text-center' : null}`}
                 >
                   {el}
                 </Typography>
@@ -39,14 +40,16 @@ const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refet
                 <TableData classes={`${className}`}
                            data={weekday}></TableData>
                 <TableData classes={`${className} ml-auto text-center`}
-                           data={slots?.map(({slot, id, is_active}) => {
+                           data={slots?.map(({slot, availability_id, is_active}) => {
                              return (<span
                                className="px-2"
-                               key={id}>  <IsActiveSlotButtom
-                               slot={`${slot}`}
-                               id={id}
-                               refetch={refetch}
-                               isActive={is_active}/>
+                               key={availability_id}>
+                               <IsActiveSlotButtom
+                                 slot={slot}
+                                 id={availability_id}
+                                 refetch={refetch}
+                                 isActive={is_active}
+                               />
 
                                                     </span>);
                            },)}/>
