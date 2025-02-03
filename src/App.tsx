@@ -19,27 +19,10 @@ function App() {
 
   return (
     <Routes>
-      <Route
-        path="/dashboard/*"
-        element={
-          <ProtectedRoute>
-            <Dashboard/>
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/auth/*" element={<Auth/>
-      }/>
-
-      <Route
-        path="*"
-        element={
-          <ProtectedRoute>
-            <Navigate to="/dashboard/area" replace/>
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/*" element={<SignIn/>
-      }/>
+      <Route path="/auth/sign-in" element={<SignIn/>}/>
+      <Route path="/dashboard/*" element={<ProtectedRoute> <Dashboard/> </ProtectedRoute>}/>
+      <Route path="/auth/*" element={<Auth/>}/>
+      <Route path="*" element={<ProtectedRoute><Navigate to="/dashboard/area" replace/></ProtectedRoute>}/>
     </Routes>
   );
 }

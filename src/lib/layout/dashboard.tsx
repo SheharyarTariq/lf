@@ -12,6 +12,7 @@ import {
 } from "@/lib/context/index";
 import React, {useEffect} from "react";
 import {isAuthenticated} from "@/lib/api/auth/authenticate";
+import OrderItem from "@/components/order-item/OrderItem";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -54,6 +55,7 @@ export function Dashboard() {
                 <Route path={path} element={element} key={path}/>
               )),
           )}
+          <Route path="/orders/:orderId" element={<OrderItem/>}/>
         </Routes>
       </div>
     </div>

@@ -4,10 +4,14 @@ export interface OrderListProps {
   status: string,
   created_at: string,
   note: string,
+  user: {
+    full_name: string,
+    email: string,
+  }
   pickup: {
-    date: string, start_time: string, end_time: string, point: string
+    date: string, time: string, point: string
   },
   dropoff: {
-    date: string, start_time: string, end_time: string, point: string
-  }
+    date: string, time: string, point: string
+  },
 }

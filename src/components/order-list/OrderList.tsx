@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
@@ -35,7 +35,7 @@ export const OrderList: React.FC = () => {
       if (value) {
         params.set(key, value);
       } else {
-        params.delete(key); // Remove param if empty
+        params.delete(key);
       }
       params.delete("page");
       return params;
@@ -91,12 +91,11 @@ export const OrderList: React.FC = () => {
             </label>
           </div>
 
-          {/* Orders Table */}
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {["Order#", "status", "created_at", "note", "pickup", "dropoff", "Action"].map((el, idx) => (
+                {["Order#", "Status", "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -107,7 +106,7 @@ export const OrderList: React.FC = () => {
               </thead>
               <tbody>
               {error ? (
-                <tr><TableData colspan={6} data={error} classes="text-center p-4" textColor="red"/></tr>
+                <tr><TableData colspan={8} data={error} classes="text-center p-4" textColor="red"/></tr>
               ) : (
                 data?.result?.data.map(({
                                           id,
@@ -116,26 +115,36 @@ export const OrderList: React.FC = () => {
                                           created_at,
                                           note,
                                           pickup,
-                                          dropoff
+                                          dropoff, user
                                         }: OrderListProps, key: number) => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
                   return (
                     <tr key={id}>
                       <TableData classes={className} data={number}/>
                       <TableData classes={className} data={status}/>
-                      <TableData classes={className} data={created_at}/>
+                      <TableData classes={className}
+                                 data={<div>{created_at.split(' ')[0]}<br/>{created_at.split(' ')[1]}</div>}/>
                       <TableData classes={className} data={note}/>
-                      <TableData classes={className} data={pickup?.date || ""}/>
-                      <TableData classes={className} data={dropoff?.date || ""}/>
-                      <TableData classes={className} data={<Link to={id}>Click</Link>}/>
+                      <TableData classes={className} data={<div>{user?.full_name}<br/>{user?.email}</div>}/>
+
+                      <TableData classes={className} data={<div>{pickup?.date}<br/>{pickup?.time}</div>}/>
+                      <TableData classes={className}
+                                 data={<div>{dropoff?.date || ""}<br/>{dropoff?.time || null}</div>}/>
+                      <TableData classes={className} data={<Link to={id}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                      </Link>}/>
                     </tr>
-                    // </Link>
+
                   );
                 })
               )}
-              {loading && <tr><TableData data="Loading..." classes="text-center p-4" colspan={6} noBold={true}/></tr>}
+              {loading && <tr><TableData data="Loading..." classes="text-center p-4" colspan={8} noBold={true}/></tr>}
               {data?.result?.data.length === 0 &&
-                <tr><TableData data="No Data" classes="text-center p-4" colspan={6} noBold={true}/></tr>}
+                <tr><TableData data="No Data" classes="text-center p-4" colspan={8} noBold={true}/></tr>}
               </tbody>
             </table>
           </CardBody>

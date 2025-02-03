@@ -36,26 +36,26 @@ export const routes = [
         path: "/orders",
         element: <OrderList/>,
       },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "Order",
-        path: "/orders/:orderId",
-        element: <OrderItem/>,
-      },
+      // {
+      //   icon: <TableCellsIcon {...icon} />,
+      //   name: "Order",
+      //   path: "/orders/:orderId",
+      //   element: <OrderItem/>,
+      // },
     ],
   },
-  {
-    title: "auth pages",
-    layout: "auth",
-    pages: [
-      {
-        icon: <ServerStackIcon {...icon} />,
-        name: "sign in",
-        path: "/sign-in",
-        element: <SignIn/>,
-      },
-    ],
-  },
+  // {
+  //   title: "auth pages",
+  //   layout: "auth",
+  //   pages: [
+  //     {
+  //       icon: <ServerStackIcon {...icon} />,
+  //       name: "sign in",
+  //       path: "/sign-in",
+  //       element: <SignIn/>,
+  //     },
+  //   ],
+  // },
 ];
 
 export default routes;
