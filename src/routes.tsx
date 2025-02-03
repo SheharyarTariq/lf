@@ -5,6 +5,7 @@ import Category from "@/components/category/Category";
 import {OrderList} from "@/components/order-list/OrderList";
 import Home from "@/components/home/Home";
 import OrderItem from "@/components/order-item/OrderItem";
+import {UsersList} from "@/components/user/UsersList";
 
 const icon = {className: "w-5 h-5 text-inherit"};
 
@@ -35,6 +36,11 @@ export const routes = [
         name: "Order",
         path: "/orders",
         element: <OrderList/>,
+      }, {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Order",
+        path: "/admin/users",
+        element: <UsersList/>,
       },
       // {
       //   icon: <TableCellsIcon {...icon} />,

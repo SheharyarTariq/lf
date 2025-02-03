@@ -45,7 +45,7 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
           &nbsp;
         </div>
       </div>
-      <Button className="min-w-[80px] px-8" onClick={() => {
+      <Button className="min-w-[50px] px-4" onClick={() => {
         updateParams("search", search)
       }}>
         Search
