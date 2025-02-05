@@ -12,7 +12,7 @@ import {
 import toast from "react-hot-toast";
 import useCreateItem from "@/lib/api/Dashboard/hooks/item/useCreateItem";
 import useUpdateCategory from "@/lib/api/Dashboard/hooks/item/useUpdateItem";
-import {CreateItemFormData, CreateItemProps} from "@/components/types";
+import {CreateItemFormData, CreateItemProps} from "./types";
 import {config} from "@/config";
 
 

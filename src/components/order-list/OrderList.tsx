@@ -7,7 +7,7 @@ import {Link, useSearchParams} from "react-router-dom";
 import Pagination from "@/lib/common/Pagination";
 import {orderByOptions, orderStatus, sortingOrderOptions} from "./constants";
 import {OrderListProps} from "@/components/order-list/types";
-import SearchBar from "@/components/order-list/SearchBar";
+import SearchBar from "@/lib/common/SearchBar";
 
 export const OrderList: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -64,35 +64,37 @@ export const OrderList: React.FC = () => {
             </Typography>
           </CardHeader>
 
-          <div className="flex justify-end gap-2 px-2">
-            <div className="mr-auto">
-              <SearchBar updateParams={updateParams}/>
-            </div>
-            <label> Status:&nbsp;
-              <select className="p-2 rounded border border-gray-400" value={status}
-                      onChange={e => updateParams("status", e.target.value)}>
-                <option value="">All</option>
-                {orderStatus.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-              </select>
-            </label>
-            <label>Order By:&nbsp;
-              <select
-                className="p-2 rounded border border-gray-400" value={orderBy}
-                onChange={e => updateParams("orderBy", e.target.value)}>
-                <option value="">None</option>
-                {orderByOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-              </select></label>
-            <label htmlFor="">Sorting Order:&nbsp;
-              <select className="p-2 rounded border border-gray-400" value={sortingOrder}
-                      onChange={e => updateParams("orderDirection", e.target.value)}>
-                <option value="">None</option>
-                {sortingOrderOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-              </select>
-            </label>
-          </div>
 
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+            <div className="flex gap-2 px-2">
+              <div className=" ">
+                <SearchBar updateParams={updateParams}/>
+              </div>
+              <label> Status:&nbsp;
+                <select className="p-2 rounded border border-gray-400" value={status}
+                        onChange={e => updateParams("status", e.target.value)}>
+                  <option value="">All</option>
+                  {orderStatus.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
+
+              <label>Order&nbsp;By:&nbsp;
+                <select
+                  className="p-2 rounded border border-gray-400" value={orderBy}
+                  onChange={e => updateParams("orderBy", e.target.value)}>
+                  <option value="">None</option>
+                  {orderByOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
+                </select></label>
+              <label>Sorting&nbsp;Order:&nbsp;
+                <select className="p-2 rounded border border-gray-400" value={sortingOrder}
+                        onChange={e => updateParams("orderDirection", e.target.value)}>
+                  <option value="">None</option>
+                  {sortingOrderOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
+            </div>
             <table className="w-full table-auto">
+
               <thead>
               <tr>
                 {["Order#", "Status", "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
@@ -126,17 +128,17 @@ export const OrderList: React.FC = () => {
                                  data={<div>{created_at.split(' ')[0]}<br/>{created_at.split(' ')[1]}</div>}/>
                       <TableData classes={className} data={note}/>
                       <TableData classes={className} data={<div>{user?.full_name}<br/>{user?.email}</div>}/>
-
                       <TableData classes={className} data={<div>{pickup?.date}<br/>{pickup?.time}</div>}/>
                       <TableData classes={className}
                                  data={<div>{dropoff?.date || ""}<br/>{dropoff?.time || null}</div>}/>
-                      <TableData classes={className} data={<Link to={id}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                      </Link>}/>
+                      <TableData classes={className} data={
+                        <Link to={id}>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none"
+                               viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                          </svg>
+                        </Link>}/>
                     </tr>
 
                   );

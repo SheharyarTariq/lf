@@ -7,8 +7,9 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
   const [search, setSearch] = useState('');
+
   return (
-    <>
+    <div className="flex">
       <div className="w-full min-w-[300px] max-w-[300px] inline-block">
         <div className="relative flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"
@@ -25,7 +26,6 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
                  setSearch("");
                  updateParams("search", "")
                }}>
-
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#303030CCCCCC"
                stroke-width="0.144"></g>
@@ -34,14 +34,12 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
                     stroke-linejoin="round"></path>
             </g>
           </svg>
-
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
             placeholder="Search by Order#, Name, Email"
           />
-
           &nbsp;
         </div>
       </div>
@@ -50,8 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
       }}>
         Search
       </Button>
-
-    </>
+    </div>
   );
 }
 

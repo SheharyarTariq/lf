@@ -1,5 +1,6 @@
 import React from 'react';
 import {OrderDetailsCardProps} from "@/components/order-item/types";
+import {Button} from "@material-tailwind/react";
 
 const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({id, result}) => {
   return (
@@ -10,9 +11,9 @@ const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({id, result}) => {
       </div>
       <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6 mt-8 mb-6">
         <div className="mb-4">
-          <p className="text-lg text-gray-800"><strong>Created At:</strong> {result.created_at}</p>
-          <p className="text-lg text-gray-800"><strong>Note:</strong> {result.note || 'No additional notes'}
-          </p>
+          <p className="text-lg text-gray-800 "><strong>Created At:</strong> {result.created_at}
+            <span className="ml-auto"><Button>Finalize</Button></span></p>
+          <p className="text-lg text-gray-800"><strong>Note:</strong> {result.note || 'No additional notes'}</p>
           <p><strong>Revenue:</strong> {result.revenue}</p>
         </div>
         <div className="border-t-2 mt-4 mb-4"></div>

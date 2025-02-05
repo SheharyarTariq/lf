@@ -23,11 +23,12 @@ const OrderItem: React.FC = () => {
   if (!data || !data.result) {
     return <p>No order details available.</p>;
   }
+
   const {result} = data;
   return (
     <>
       <OrderDetailsCard result={result} id={orderId || null}/>
-
+      <br/>
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white" className="flex items-center">

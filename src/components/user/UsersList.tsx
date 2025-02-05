@@ -4,9 +4,10 @@ import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
 import {config} from "@/config";
 import {Link, useSearchParams} from "react-router-dom";
-import SearchBar from "@/components/order-list/SearchBar";
+import SearchBar from "@/lib/common/SearchBar";
+import Pagination from "@/lib/common/Pagination";
 
-interface UsersListProps {
+export interface UsersListProps {
   id: string;
   full_name: string;
   email: string;
@@ -32,7 +33,7 @@ export const UsersList: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
-  const currentPage = searchParams.get("page");
+  const currentPage = searchParams.get("page") || "";
 
   const queryParams = new URLSearchParams();
 
@@ -42,7 +43,7 @@ export const UsersList: React.FC = () => {
   const apiUrl = `${config.BASE_URL}/admin/users?${queryParams.toString()}`;
   const {data, error, loading, refetch} = useFetch<any>(apiUrl);
 
-  // const totalPage = useMemo(() => data?.result?.meta?.last_page || 1, [data]);
+  const totalPage = useMemo(() => data?.result?.meta?.last_page || 1, [data]);
 
   const updateParams = (key: string, value: string) => {
     setSearchParams(prev => {
@@ -57,17 +58,17 @@ export const UsersList: React.FC = () => {
     });
   };
 
-  // const updatePage = (page: number) => {
-  //   setSearchParams(prev => {
-  //     const params = new URLSearchParams(prev);
-  //     if (page > 1) {
-  //       params.set("page", page.toString());
-  //     } else {
-  //       params.delete("page");
-  //     }
-  //     return params;
-  //   });
-  // };
+  const updatePage = (page: number) => {
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev);
+      if (page > 1) {
+        params.set("page", page.toString());
+      } else {
+        params.delete("page");
+      }
+      return params;
+    });
+  };
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -75,7 +76,7 @@ export const UsersList: React.FC = () => {
         <Card>
           <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
             <Typography variant="h6" color="white" className="flex items-center">
-              Orders
+              Users
             </Typography>
           </CardHeader>
 
@@ -89,7 +90,7 @@ export const UsersList: React.FC = () => {
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {["Full Name", "Email", "Phone", "Address", "Action"].map((el, idx) => (
+                {["Full Name", "Email", "Phone", "Post Code", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -118,7 +119,7 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={full_name}/>
                       <TableData classes={className} data={email}/>
                       <TableData classes={className} data={phone}/>
-                      <TableData classes={className} data={address.country}/>
+                      <TableData classes={className} data={address.postcode}/>
                       <TableData classes={className} data={<Link to={id}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor">
@@ -139,9 +140,9 @@ export const UsersList: React.FC = () => {
           </CardBody>
         </Card>
 
-        {/*<div className="flex flex-col sm:flex-row justify-center">*/}
-        {/*  <Pagination currentPage={parseInt(currentPage) || 1} setCurrentPage={updatePage} totalPage={totalPage}/>*/}
-        {/*</div>*/}
+        <div className="flex flex-col sm:flex-row justify-center">
+          <Pagination currentPage={parseInt(currentPage) || 1} setCurrentPage={updatePage} totalPage={totalPage}/>
+        </div>
       </>
       {/*)}*/}
     </div>

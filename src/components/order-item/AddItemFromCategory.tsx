@@ -182,7 +182,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         </Typography>
 
       </DialogHeader>
-      <DialogBody className="space-y-4 pb-6">
+      <DialogBody className="space-y-4 pb-6 max-h-96 overflow-scroll">
         {!updating &&
           <> <br/>
             <label>
