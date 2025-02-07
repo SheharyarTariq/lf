@@ -123,7 +123,10 @@ export const OrderList: React.FC = () => {
                   return (
                     <tr key={id}>
                       <TableData classes={className} data={number}/>
-                      <TableData classes={className} data={status}/>
+
+                      <TableData classes={className}
+                                 data={orderStatus.find(element => element.value === status)?.label}/>
+
                       <TableData classes={className}
                                  data={<div>{created_at.split(' ')[0]}<br/>{created_at.split(' ')[1]}</div>}/>
                       <TableData classes={className} data={note}/>

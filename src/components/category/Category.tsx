@@ -8,6 +8,8 @@ import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCode
 import DeleteModal from "@/lib/common/DeleteModal";
 import {config} from "@/config";
 import {CategoryProps} from "@/components/category/types";
+import {handlingOptions} from "@/components/constants";
+import {element} from "prop-types";
 
 
 export const Category: React.FC = () => {
@@ -80,12 +82,16 @@ export const Category: React.FC = () => {
 
                 <TableData classes={className} data={
                   <div>
+
                     {is_hangable ? "Hang" : null}
                     {(is_hangable && is_foldable) ? "-" : null}
-                    {is_foldable ? "Fold" : null}</div>}/>
+                    {is_foldable ? "Fold" : null}
+                  </div>
+                }/>
 
-                <TableData classes={className} data={
-                  <div>{(default_handling_option === "fold") ? "Fold" : "Hang"}</div>}/>
+                <TableData classes={className}
+                           data={handlingOptions.find(element => element.value === default_handling_option)?.label}
+                />
                 <TableData classes={className} data={<div className={`flex`}>
                   <CreateCategory
                     is_hangable={is_hangable}

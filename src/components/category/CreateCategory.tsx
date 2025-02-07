@@ -24,19 +24,16 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
     fold: false,
     default_handling_option: null,
   });
-
-  const urlAddArea = `${config.BASE_URL}/categories`;
-  const urlUpdateArea = `${config.BASE_URL}/categories/${id}`;
   const {
     addArea,
     loading: addLoading,
     error: addError,
-  } = useCreateCategory(urlAddArea);
+  } = useCreateCategory(`${config.BASE_URL}/categories`);
   const {
     updateArea,
     loading: updateLoading,
     error: updateError,
-  } = useUpdateCategory(urlUpdateArea);
+  } = useUpdateCategory(`${config.BASE_URL}/categories/${id}`);
   const isLoading = addLoading || updateLoading;
 
   useEffect(() => {
@@ -180,7 +177,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               </Typography>
               <label>
                 <Switch
-                  crossOrigin={`crossOrigin`}
+                  crossOrigin="crossOrigin"
                   checked={formData.fold}
                   onChange={handleHandlingOptionFold}
                 />
@@ -188,7 +185,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               </label><br/>
               <label>
                 <Switch
-                  crossOrigin={`crossOrigin`}
+                  crossOrigin="crossOrigin"
                   checked={formData.hang}
                   onChange={handleHandlingOptionHang}
                 />
