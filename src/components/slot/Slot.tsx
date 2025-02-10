@@ -6,9 +6,6 @@ import {SlotProps} from "@/components/slot/types";
 
 
 const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refetch,}) => {
-
-  // console.log("slot_availabilities id => ", slot_availabilities)
-
   return (<div className="mt-12 mb-8 flex flex-col  px-16">
     <Card>
       <CardHeader variant="gradient" color="gray" className="mb-8 p-6 text-center">

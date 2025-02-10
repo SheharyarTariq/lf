@@ -1,12 +1,18 @@
 export interface AreaProps {
   name: string,
   id: number,
-  service_availabilities: [],
+
+  post_codes:
+    {
+      id: string
+      postcode: string
+      is_active: boolean
+    }[],
   slot_availabilities: {
     weekday: string
     slots: {
       slot: string
-      id: string
+      availability_id: string
       is_active: boolean
     }[]
   }[],

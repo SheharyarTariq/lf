@@ -52,7 +52,7 @@ const ServiceAvailability: React.FC<ServiceAvailabilityProps> = ({
                   title="Delete Confirmation"
                   description={`Are you sure you want to Delete this postcode (${postcode})?`}
                   refetch={refetch}
-                  url={`${config.BASE_URL}/service-availabilities/${id}`}/>
+                  url={`${config.BASE_URL}/post-codes/${id}`}/>
               </>}/>
             </tr>);
           },)}

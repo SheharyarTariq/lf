@@ -6,7 +6,9 @@ import ServiceAvailability from "@/components/serviceAvailability/ServiceAvailab
 import {TableData} from "@/lib/common/TableData";
 import {
   handleGetAllPostCodesClose,
-  handleGetAllPostCodesOpen, handleGetAllTimeSlotsClose, handleGetAllTimeSlotsOpen,
+  handleGetAllPostCodesOpen,
+  handleGetAllTimeSlotsClose,
+  handleGetAllTimeSlotsOpen,
   handleGetPostCodes,
   handleGetTimeSlots
 } from "@/lib/common/Dropdown";
@@ -80,7 +82,7 @@ export const Area: React.FC = () => {
             {fetchAreaErrors ? (<tr>
                 <TableData colspan={4} data={fetchAreaErrors.message} classes="text-center p-4 " textColor='red'/>
               </tr>) :
-              (data?.result?.map(({name, id, service_availabilities, slot_availabilities}: AreaProps, key: number,) => {
+              (data?.result?.map(({name, id, post_codes, slot_availabilities}: AreaProps, key: number,) => {
                 const className = `py-3 px-5 ${key === data.result.length - 1 ? null : "border-b border-blue-gray-50"}`;
 
                 return (<React.Fragment key={id}>
@@ -122,18 +124,19 @@ export const Area: React.FC = () => {
                                data={<ServiceAvailability
                                  areaName={name}
                                  areaId={`${id}`}
-                                 service_availabilities={service_availabilities}
+                                 service_availabilities={post_codes}
                                  refetch={refetch}
                                />} classes="p-0"/>
 
                   </tr>)} {openTimeDropdowns[id] && (<tr>
                   <TableData colspan={4}
-                             data={<Slot
-                               areaName={name}
-                               areaId={`${id}`}
-                               slot_availabilities={slot_availabilities}
-                               refetch={refetch}
-                             />} classes="p-0"/>
+                             data={
+                               <Slot
+                                 areaName={name}
+                                 areaId={`${id}`}
+                                 slot_availabilities={slot_availabilities}
+                                 refetch={refetch}
+                               />} classes="p-0"/>
 
                 </tr>)}
                 </React.Fragment>);

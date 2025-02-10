@@ -14,7 +14,7 @@ interface UpdateServiceAvailabilityProps {
 
 const SwitchBtn: React.FC<UpdateServiceAvailabilityProps> = ({is_active, id, refetch}) => {
 
-  const urlUpdatePostCode = `${config.BASE_URL}/service-availabilities/${id}/change-state`;
+  const urlUpdatePostCode = `${config.BASE_URL}/post-codes/${id}/change-state`;
   const [inputValue, setInputValue] = useState<boolean>(is_active || false);
   const {
     updateData: updateServiceAvailability,

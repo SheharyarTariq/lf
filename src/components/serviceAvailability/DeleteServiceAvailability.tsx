@@ -20,7 +20,7 @@
 //     const [open, setOpen] = React.useState(false);
 //     const BASE_URL = import.meta.env.VITE_BASE_URL;
 //
-//     const url = `${BASE_URL}/service-availabilities/${id}`;
+//     const url = `${BASE_URL}//post-codes/${id}`;
 //     const handleOpen = () => setOpen(!open);
 //
 //     const { deleteArea, loading } = useDeleteServiceAvailability("Area", url);

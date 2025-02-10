@@ -13,17 +13,15 @@ export interface UsersListProps {
   email: string;
   email_verified_at: string;
   phone: string;
-  address: {
-    address_line_1: string;
-    address_line_2: string;
-    address_line_3: string;
-    city: string;
-    district: string;
-    "county": string,
-    "country": string,
-    "postcode": string,
-    "is_service_available": string
-  }
+  address_line_1: string;
+  address_line_2: string;
+  address_line_3: string;
+  city: string;
+  district: string;
+  county: string,
+  country: string,
+  postcode: string,
+  is_service_available: string
   price_review_required: boolean;
   shirt_handling: string;
   payment_methods: []
@@ -109,9 +107,17 @@ export const UsersList: React.FC = () => {
                                           email,
                                           email_verified_at,
                                           phone,
-                                          address,
+                                          address_line_1,
+                                          address_line_2,
+                                          address_line_3,
+                                          city,
+                                          district,
+                                          country,
+                                          postcode,
+                                          is_service_available,
                                           price_review_required,
-                                          shirt_handling
+                                          shirt_handling,
+                                          payment_methods
                                         }: UsersListProps, key: number) => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
                   return (
@@ -119,7 +125,7 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={full_name}/>
                       <TableData classes={className} data={email}/>
                       <TableData classes={className} data={phone}/>
-                      <TableData classes={className} data={address.postcode}/>
+                      <TableData classes={className} data={postcode}/>
                       <TableData classes={className} data={<Link to={id}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor">

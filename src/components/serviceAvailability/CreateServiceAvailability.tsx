@@ -40,7 +40,7 @@ export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps>
     });
 
     const {addArea, loading: addLoading, error: addError} = useCreateServiceAvailability(
-      `${config.BASE_URL}/service-availabilities`
+      `${config.BASE_URL}/post-codes`
     );
     const isLoading = addLoading;
 
