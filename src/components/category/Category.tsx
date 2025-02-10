@@ -73,7 +73,7 @@ export const Category: React.FC = () => {
                                             default_handling_option,
                                             items,
                                           }: CategoryProps, key: number,) => {
-              const className = `py-3 px-5 ${key === data.result.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+              const className = `py-3 px-5 ${key === data.result.length - 1 ? null : "border-b border-blue-gray-50"}`;
 
               return (<React.Fragment key={id}>
                 <tr>

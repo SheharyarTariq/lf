@@ -1,11 +1,7 @@
 import React from 'react';
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
-import {Button, Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {useParams} from "react-router-dom";
 import {config} from "@/config";
-import {TableData} from "@/lib/common/TableData";
-import AddItemFromCategory from "@/components/order-item/AddItemFromCategory";
-import DeleteModal from "@/lib/common/DeleteModal";
 
 
 interface UserDetail {
@@ -34,7 +30,6 @@ const UserDetail: React.FC = () => {
   if (loading) {
     return <p>Loading...</p>;
   }
-
 
   if (error) {
     return <p>Error loading data: {error || "Unknown error"}</p>;

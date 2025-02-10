@@ -5,6 +5,7 @@ import useCreateCategory from "@/lib/api/Dashboard/hooks/category/useCreateCateg
 import useUpdateCategory from "@/lib/api/Dashboard/hooks/category/useUpdateCategory";
 import {config} from "@/config";
 import {CreateCategoryFormData, CreateCategoryProps} from "@/components/category/types";
+import {handlingOption} from "@/components/constants";
 
 export const CreateCategory: React.FC<CreateCategoryProps> = ({
                                                                 dailogLabel,
@@ -181,7 +182,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                   checked={formData.fold}
                   onChange={handleHandlingOptionFold}
                 />
-                &nbsp;Fold
+                &nbsp;{handlingOption.fold}
               </label><br/>
               <label>
                 <Switch
@@ -189,7 +190,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                   checked={formData.hang}
                   onChange={handleHandlingOptionHang}
                 />
-                &nbsp;Hang
+                &nbsp;{handlingOption.hang}
               </label><br/>
               {(addError.is_foldable || addError.is_hangable) && (
                 <p className="text-red-500 text-xs">
@@ -220,7 +221,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                        default_handling_option: (e.target.value)
                      }))}
               />
-              <label htmlFor="fold">&nbsp;Fold</label><br/></>
+              <label htmlFor="fold">&nbsp;{handlingOption.fold}</label><br/></>
 
             <>
               <input type="radio" id="hang" name="handling_method" value="hang"
@@ -230,8 +231,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                        default_handling_option: (e.target.value)
                      }))}
               />
-              <label htmlFor="hang">&nbsp;Hang</label><br/></>
-
+              <label htmlFor="hang">&nbsp;{handlingOption.hang}</label><br/></>
           </div>
           {addError.default_handling_option && (
             <p className="text-red-500 text-xs">{addError.default_handling_option}</p>

@@ -14,6 +14,7 @@ import useCreateItem from "@/lib/api/Dashboard/hooks/item/useCreateItem";
 import useUpdateCategory from "@/lib/api/Dashboard/hooks/item/useUpdateItem";
 import {CreateItemFormData, CreateItemProps} from "./types";
 import {config} from "@/config";
+import {cleaningMethod} from "@/components/constants";
 
 
 export const CreateItem: React.FC<CreateItemProps> = ({
@@ -64,9 +65,6 @@ export const CreateItem: React.FC<CreateItemProps> = ({
       ...prevState,
       default_cleaning_method: default_cleaning_method
     }));
-    // if (washing_price && dry_cleaning_price) {
-    //   setFormData(prevState => ({...prevState, default_cleaning_method: default_cleaning_method}));
-    // }
   }, [name, description, dry_cleaning_price, washing_price, pieces, default_cleaning_method]);
   console.log("data", formData)
 
@@ -93,7 +91,6 @@ export const CreateItem: React.FC<CreateItemProps> = ({
       handleOpen();
     }
   };
-
 
   return (<>
     <Button
@@ -124,7 +121,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
             Name
           </Typography>
           <Input
-            crossOrigin={`crossorigin`}
+            crossOrigin="crossorigin"
             color="gray"
             size="lg"
             placeholder="Enter name here..."
@@ -151,7 +148,6 @@ export const CreateItem: React.FC<CreateItemProps> = ({
             }))}
           />
 
-          {/*{is_washable ? */}
           <div>
             <Typography
               variant="small"
@@ -180,9 +176,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
               {updateError?.washing_price}
             </p>)}
           </div>
-          {/*: null}*/}
 
-          {/*{is_dry_cleanable ? */}
           <div><Typography
             variant="small"
             color="blue-gray"
@@ -237,7 +231,6 @@ export const CreateItem: React.FC<CreateItemProps> = ({
             {updateError?.piece}
           </p>)}
 
-          {/*{(formData.dry_cleaning_price && formData.washing_price) ? */}
           <div>
             <Typography
               variant="small"
@@ -254,7 +247,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
                        default_cleaning_method: (e.target.value)
                      }))}
               />
-              <label htmlFor="fold">&nbsp;Wash</label><br/></>
+              <label htmlFor="fold">&nbsp;{cleaningMethod.wash}</label><br/></>
 
             <>
               <input type="radio" id="dry_clean" name="handling_clean" value="dry_clean"
@@ -264,10 +257,9 @@ export const CreateItem: React.FC<CreateItemProps> = ({
                        default_cleaning_method: (e.target.value)
                      }))}
               />
-              <label htmlFor="hang">&nbsp;Dry Clean</label><br/></>
+              <label>&nbsp;{cleaningMethod.dry_clean}</label><br/></>
 
           </div>
-          {/*: null}*/}
           {addError.default_cleaning_method && (
             <p className="text-red-500 text-xs">{addError.default_cleaning_method}</p>
           )}

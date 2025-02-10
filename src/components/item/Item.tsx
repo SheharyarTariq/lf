@@ -6,6 +6,7 @@ import {TableData} from "@/lib/common/TableData";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {config} from "@/config";
 import {ItemProps} from "@/components/item/types";
+import {cleaningMethods, handlingOptions} from "@/components/constants";
 
 const Item: React.FC<ItemProps> = ({
                                      categoryId, categoryName, refetch, items,
@@ -23,7 +24,7 @@ const Item: React.FC<ItemProps> = ({
         <table className="w-full table-auto">
           <thead>
           <tr>
-            {['Category', 'Description', 'Dry Cleaning Price', 'Washing Price', "Default Wash", "piece",
+            {['Category', 'Description', 'Dry Cleaning Price', 'Washing Price', "Default Cleaning Method", "piece",
               <CreateItem
                 id={null}
                 label={null}
@@ -61,7 +62,9 @@ const Item: React.FC<ItemProps> = ({
               <TableData classes={`${className}`}
                          data={price.dry_clean ? price.dry_clean : "-"}/>
               <TableData classes={`${className}`} data={price.wash ? price.wash : "-"}/>
-              <TableData classes={`${className}`} data={default_cleaning_method}/>
+              <TableData classes={`${className}`} data={
+                cleaningMethods.find(element => element.value === default_cleaning_method)?.label
+              }/>
               <TableData classes={`${className}`} data={piece ? piece : "-"}/>
               <TableData classes={`${className}`} data={<div className={`flex`}>
                 <CreateItem
