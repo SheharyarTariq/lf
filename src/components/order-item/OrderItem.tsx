@@ -8,10 +8,12 @@ import DeleteModal from "@/lib/common/DeleteModal";
 import OrderDetailsCard from "@/components/order-item/OrderDetailsCard";
 import {OrderItems} from "@/components/order-item/types";
 import {useParams} from "react-router-dom";
+import {cleaningMethods, handlingOptions} from "@/components/constants";
 
 const OrderItem: React.FC = () => {
   const {orderId} = useParams();
   const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${orderId}`);
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -71,31 +73,36 @@ const OrderItem: React.FC = () => {
                 <tr key={id}>
                   <TableData classes="py-3 px-5" data={name}/>
                   <TableData classes="py-3 px-5" data={quantity}/>
-                  <TableData classes="py-3 px-5" data={cleaning_method}/>
-                  <TableData classes="py-3 px-5" data={handling_option}/>
+                  <TableData classes="py-3 px-5"
+                             data={cleaningMethods.find(element => element.value === cleaning_method)?.label}/>
+                  <TableData classes="py-3 px-5"
+                             data={handlingOptions.find(element => element.value === handling_option)?.label}/>
                   <TableData classes="py-3 px-5" data={price_per_unit}/>
                   <TableData classes="py-3 px-5" data={total_price}/>
                   <TableData classes="py-3 px-5" data={is_approved ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={is_open_item ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={<div className={`flex`}>
-                    <AddItemFromCategory orderId={id}
-                                         refetchItemList={refetch}
-                                         dialogLabel="Edit"
-                                         updating={true}
-                                         name={name}
-                                         updateInitialQuantity={quantity}
-                                         cleaning_method={cleaning_method}
-                                         updateInitialPrice_per_unit={price_per_unit}
-                                         orderItemId={id}
-                                         updateValue_is_open_item={is_open_item}
-                                         handling_option={handling_option}
-                                         piece={piece}
+                    <AddItemFromCategory
+                      orderId={id}
+                      refetchItemList={refetch}
+                      dialogLabel="Edit"
+                      updating={true}
+                      name={name}
+                      updateInitialQuantity={quantity}
+                      cleaning_method={cleaning_method}
+                      updateInitialPrice_per_unit={price_per_unit}
+                      orderItemId={id}
+                      updateValue_is_open_item={is_open_item}
+                      handling_option={handling_option}
+                      piece={piece}
                     />
-                    <DeleteModal toastMessage="Order Item deleted" btnLabel='Delete'
-                                 title="Delete Confirmation"
-                                 refetch={refetch}
-                                 description={`Are you sure you want to Delete this Order item (${name})?`}
-                                 url={`${config.BASE_URL}/order-items/${id}`}/>
+                    <DeleteModal
+                      toastMessage="Order Item deleted" btnLabel='Delete'
+                      title="Delete Confirmation"
+                      refetch={refetch}
+                      description={`Are you sure you want to Delete this Order item (${name})?`}
+                      url={`${config.BASE_URL}/order-items/${id}`}
+                    />
                   </div>}/></tr>
               ))
             ) : (

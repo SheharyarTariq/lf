@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typography,} from "@material-tailwind/react";
 import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
-import SelectItemFromDropDown from "@/components/order-item/SelectItemFromDropDown";
 import {config} from "@/config";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
+import OrderItemForm from "@/components/order-item/OrderItemForm";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
@@ -36,7 +36,6 @@ interface ItemPayload {
 export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                                                           dialogLabel,
                                                                           orderId,
-                                                                          // onSuccess,
                                                                           refetchItemList,
                                                                           updating,
                                                                           updateInitialQuantity,
@@ -53,9 +52,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const {data, error, loading, refetch} = useFetch<any>(categoriesUrl);
   const url = `${config.BASE_URL}/order-items/orders/${orderId}`;
-  // const {addOrderItem, loading: addLoading} = useCreateOrder(url);
   const {postData: addOrderItem, loading: addLoading, errors: postError} = usePost(url)
-  // const {update, loading: updateLoading,} = useUpdateOrderItem(`${config.BASE_URL}/order-items/${orderItemId}`);
   const {
     updateData: update,
     loading: updateLoading,
@@ -71,6 +68,18 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     handling_option: null,
     price_per_unit: null,
   });
+  const {
+    data: fetchItemData, error: itemError, loading: itemLoading
+  } = useFetch<any>(`${config.BASE_URL}/items?category_id=${selectedCategory}`);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  
+  const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const itemId = e.target.value;
+    setFormData({...formData, item_id: e.target.value});
+    setSelectedItemId(itemId);
+  };
+
+  const selectedItem = fetchItemData?.result?.find((item: { id: string }) => item.id === selectedItemId);
   console.log("Errors", postError);
 
   useEffect(() => {
@@ -84,9 +93,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         cleaning_method: cleaning_method ?? prevFormData.cleaning_method,
         handling_option: handling_option ?? prevFormData.handling_option,
         quantity: updateInitialQuantity ?? prevFormData.quantity,
-        price_per_unit: updateInitialPrice_per_unit
-          ? +updateInitialPrice_per_unit
-          : prevFormData.price_per_unit,
+        price_per_unit: updateInitialPrice_per_unit ? +updateInitialPrice_per_unit : prevFormData.price_per_unit,
       }));
     }
   }, [
@@ -124,7 +131,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
           handleOpen();
           refetchItemList();
         }
-      } else {// not open item post data
+      } else {
         const payload = {
           is_open_item: formData.is_open_item,
           item_id: formData.item_id,
@@ -154,8 +161,6 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         }
       }
     }
-    // handleOpen();
-    // refetchItemList();
   };
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const categoryId = e.target.value;
@@ -176,63 +181,101 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
       {dialogLabel ? dialogLabel : <i className="fa-solid fa-plus"></i>}
     </Button>
     <Dialog size="lg" open={open} handler={handleOpen} className="p-4">
-      <DialogHeader className="relative m-0 block">
-        <Typography variant="h4" color="blue-gray">
-          Select Category
-        </Typography>
 
-      </DialogHeader>
-      <DialogBody className="space-y-4 pb-6 max-h-96 overflow-scroll">
-        {!updating &&
-          <> <br/>
+      <DialogHeader className="relative m-0 block">
+        <div className="grid grid-cols-2">
+
+          <Typography variant="h4" color="blue-gray">
+            {formData.is_open_item ? "Open Order" : "Standard Order"}
+          </Typography>
+          {!updating &&
             <label>
               <Switch crossOrigin={`crossOrigin`} checked={formData.is_open_item} onChange={handleOpenItem}/>
               &nbsp;Is Order Open
             </label>
-            <br/></>
-        }
-        {(!updating && !formData.is_open_item) && <div>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="mb-2 text-left font-medium"
-          >
-            Select Category to Order
-          </Typography>
-          {loading ? (<p className="text-gray-600">Loading categories...</p>) : error ? (
-            <p className="text-red-500 text-xs">Error: {error}</p>) : data?.result?.length > 0 ? (
-            <select
-              className="p-2 rounded w-full border border-gray-400"
-              value={selectedCategory || ""}
-              onChange={handleCategoryChange}
+          }</div>
+
+      </DialogHeader>
+
+      <DialogBody className="space-y-4 pb-6 min-h-full max-h-96 sm:max-h-auto overflow-y-scroll">
+        <div className="grid sm:grid-cols-2 gap-2">
+          {(!updating && !formData.is_open_item) && <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 text-left font-medium"
             >
-              <option value="" disabled>
-                Choose a category
-              </option>
-              {data.result.map((category: { id: string; name: string }) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>))}
-            </select>) : (<p className="text-gray-600">No categories available.</p>)}
-        </div>}
+              Select Category to Order
+            </Typography>
+            {loading ? (<p className="text-gray-600">Loading categories...</p>) : error ? (
+              <p className="text-red-500 text-xs">Error: {error}</p>) : data?.result?.length > 0 ? (
+              <select
+                className="p-2 rounded w-full border border-gray-400"
+                value={selectedCategory || ""}
+                onChange={handleCategoryChange}
+              >
+                <option value="" disabled>
+                  Choose a category
+                </option>
+                {data.result.map((category: { id: string; name: string }) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>))}
+              </select>) : (<p className="text-gray-600">No categories available.</p>)}
+          </div>}
+          {(!updating && !formData.is_open_item && selectedCategory) && <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 text-left font-medium"
+            >
+              Add item to Order
+            </Typography>
+            {itemLoading ? (
+              <p className="text-gray-600">Loading items...</p>
+            ) : itemError ? (
+              <p className="text-red-500 text-xs">Error: {itemError}</p>
+            ) : fetchItemData?.result?.length > 0 ? (
+              <select
+                className="p-2 rounded w-full border border-gray-400"
+                value={selectedItemId || ""}
+                onChange={handleItemChange}
+              >
+                <option value="" disabled>
+                  Choose an item
+                </option>
+                {fetchItemData.result.map((item: { id: string; name: string }) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-gray-600">No item available.</p>
+            )}
+          </div>
+          }
+          {(postError?.item_id || updateError?.item_id) &&
+            <p className="text-red-500 text-xs">{postError?.item_id || updateError?.item_id}</p>}
+        </div>
+
         {(selectedCategory || updating || formData.is_open_item) && <div>
-          <SelectItemFromDropDown categoryId={selectedCategory}
-                                  orderId={orderId || ""}
-                                  formData={formData}
-                                  setFormData={setFormData}
-                                  updating={updating}
-                                  updateInitialQuantity={updateInitialQuantity}
-                                  updateInitialPrice_per_unit={updateInitialPrice_per_unit}
-                                  updateValue_is_open_item={updateValue_is_open_item}
-                                  Error={postError || updateError}
-          />
+          {selectedItem && (
+            <OrderItemForm
+              selectedItem={selectedItem}
+              formData={formData}
+              setFormData={setFormData}
+              updating={updating}
+              Error={Error}
+            />
+          )}
         </div>}
 
       </DialogBody>
       <DialogFooter>
         <Button
           disabled={loading || addLoading || (!selectedCategory && !updating && !formData.is_open_item)}
-          className={`border ml-auto p-2 mt-2 ${addLoading ? "cursor-not-allowed opacity-50" : ""}`}
+          className={`border ml-auto p-2 mt-2 ${addLoading ? "cursor-not-allowed opacity-50" : null}`}
           onClick={handleAddOrderItem}
         >
           {addLoading ? "Adding..." : "Add"}
