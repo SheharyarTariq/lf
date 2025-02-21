@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typography,} from "@material-tailwind/react";
 import toast from "react-hot-toast";
-import useCreateCategory from "@/lib/api/Dashboard/hooks/category/useCreateCategory";
-import useUpdateCategory from "@/lib/api/Dashboard/hooks/category/useUpdateCategory";
+import usePost from "@/lib/api/Dashboard/hooks/usePost";
+import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {config} from "@/config";
 import {CreateCategoryFormData, CreateCategoryProps} from "@/components/category/types";
 import {handlingOption} from "@/components/constants";
@@ -26,15 +26,15 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
     default_handling_option: null,
   });
   const {
-    addArea,
+    postData: addArea,
     loading: addLoading,
-    error: addError,
-  } = useCreateCategory(`${config.BASE_URL}/categories`);
+    errors: addError,
+  } = usePost(`${config.BASE_URL}/categories`);
   const {
-    updateArea,
+    updateData: updateArea,
     loading: updateLoading,
-    error: updateError,
-  } = useUpdateCategory(`${config.BASE_URL}/categories/${id}`);
+    errors: updateError,
+  } = useUpdate(`${config.BASE_URL}/categories/${id}`);
   const isLoading = addLoading || updateLoading;
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               value={formData.inputValue}
               onChange={(e) => setFormData(prev => ({...prev, inputValue: (e.target.value)}))}
             />
-            {addError.name && (
+            {addError?.name && (
               <p className="text-red-500 text-xs">{addError.name}</p>
             )}
             {updateError?.name && (
@@ -164,7 +164,6 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               name="description"
               value={formData.descriptions}
               onChange={(e) => setFormData(prev => ({...prev, descriptions: (e.target.value)}))}
-
             />
           </div>
           <div className="grid grid-cols-2 ">
@@ -192,12 +191,12 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                 />
                 &nbsp;{handlingOption.hang}
               </label><br/>
-              {(addError.is_foldable || addError.is_hangable) && (
+              {(addError?.is_foldable || addError?.is_hangable) && (
                 <p className="text-red-500 text-xs">
                   {addError.is_foldable || addError.is_hangable}
                 </p>
               )}
-              {(updateError?.is_foldable || updateError.is_hangable) && (
+              {(updateError?.is_foldable || updateError?.is_hangable) && (
                 <p className="text-red-500 text-xs">
                   {updateError.is_foldable || updateError.is_hangable}
                 </p>
@@ -233,7 +232,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               />
               <label htmlFor="hang">&nbsp;{handlingOption.hang}</label><br/></>
           </div>
-          {addError.default_handling_option && (
+          {addError?.default_handling_option && (
             <p className="text-red-500 text-xs">{addError.default_handling_option}</p>
           )}
           {updateError?.default_handling_option && (

@@ -5,14 +5,13 @@ import {token} from "@/lib/token/Token";
 function usePost(url: string) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: any } | null>(null);
-
+  const urls = "https://staging-laundry-free-cdd931a42c66.herokuapp.com/api"
   const postData = async (dataValue: {}) => {
     setLoading(true);
     setErrors(null);
     try {
       const response = await fetch(url, {
-        method: "POST",
-        headers: {
+        method: "POST", headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Bearer ${token}`,

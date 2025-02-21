@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import toast from "react-hot-toast";
-import useCreateServiceAvailability from "@/lib/api/Dashboard/hooks/serviceAvailability/useCreateServiceAvailability";
+import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import {config} from "@/config";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -39,7 +39,7 @@ export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps>
       defaultValues: {postcode: ""},
     });
 
-    const {addArea, loading: addLoading, error: addError} = useCreateServiceAvailability(
+    const {postData: addArea, loading: addLoading, errors: addError} = usePost(
       `${config.BASE_URL}/post-codes`
     );
     const isLoading = addLoading;
@@ -101,7 +101,7 @@ export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps>
               {errors.postcode && (
                 <p className="text-red-500 text-xs">{errors.postcode.message}</p>
               )}
-              {addError && <p className="text-red-500 text-xs">{addError}</p>}
+              {addError && <p className="text-red-500 text-xs">{addError.message}</p>}
             </div>
           </DialogBody>
           <DialogFooter>

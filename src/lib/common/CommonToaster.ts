@@ -1,11 +1,16 @@
 import toast from "react-hot-toast";
+import {ToastProps} from "react-toastify/dist/types";
 
-interface ToasterProps {
+interface ToasterProp {
   toastName: string,
   toastMessage?: string,
 }
 
-const CommonToaster = ({toastName, toastMessage}: ToasterProps) => {
+interface ToasterProps {
+  toastMessage?: string,
+}
+
+const CommonToaster = ({toastName, toastMessage}: ToasterProp) => {
 
   switch (toastName) {
     case 'successToast':
@@ -23,3 +28,15 @@ const CommonToaster = ({toastName, toastMessage}: ToasterProps) => {
   }
 };
 export default CommonToaster;
+
+
+export const SuccessToast = (toastMessage: string) => {
+  toast.success(toastMessage || 'Submitted Successfully !', {
+    position: "bottom-center",
+  })
+}
+export const ErrorToast = (toastMessage: string) => {
+  toast.error(toastMessage || 'Failed to Submit', {
+    position: "bottom-center",
+  })
+}

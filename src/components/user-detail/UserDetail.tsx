@@ -1,5 +1,5 @@
 import React from 'react';
-import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
+import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {useParams} from "react-router-dom";
 import {config} from "@/config";
 
@@ -26,13 +26,13 @@ interface UserDetail {
 
 const UserDetail: React.FC = () => {
   const {userId} = useParams();
-  const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/users/${userId}`);
+  const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/users/${userId}`);
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>Error loading data: {error || "Unknown error"}</p>;
+  if (errors) {
+    return <p>Error loading data: {errors.message || "Unknown error"}</p>;
   }
 
   if (!data || !data.result) {

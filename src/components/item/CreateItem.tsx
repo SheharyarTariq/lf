@@ -6,16 +6,17 @@ import {
   DialogFooter,
   DialogHeader,
   Input,
-  Switch,
   Typography,
 } from "@material-tailwind/react";
 import toast from "react-hot-toast";
-import useCreateItem from "@/lib/api/Dashboard/hooks/item/useCreateItem";
-import useUpdateCategory from "@/lib/api/Dashboard/hooks/item/useUpdateItem";
+import usePost from "@/lib/api/Dashboard/hooks/usePost";
+import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {CreateItemFormData, CreateItemProps} from "./types";
 import {config} from "@/config";
 import {cleaningMethod} from "@/components/constants";
 
+//Todo set scrolling of form also it is being updated and dailog is closed and success message is being showed even
+// there are required fields empty
 
 export const CreateItem: React.FC<CreateItemProps> = ({
                                                         id,
@@ -41,8 +42,8 @@ export const CreateItem: React.FC<CreateItemProps> = ({
   const urlAddArea = `${config.BASE_URL}/items`;
   const urlUpdateArea = `${config.BASE_URL}/items/${id}`;
 
-  const {addArea, loading: addLoading, error: addError,} = useCreateItem(urlAddArea);
-  const {updateArea, loading: updateLoading, error: updateError,} = useUpdateCategory(urlUpdateArea);
+  const {postData: addArea, loading: addLoading, errors: addError,} = usePost(urlAddArea);
+  const {updateData: updateArea, loading: updateLoading, errors: updateError,} = useUpdate(urlUpdateArea);
   const isLoading = addLoading;
 
   useEffect(() => {
@@ -169,10 +170,10 @@ export const CreateItem: React.FC<CreateItemProps> = ({
               }))}
             />
 
-            {addError.washing_price && (<p className="text-red-500 text-xs">
+            {addError?.washing_price && (<p className="text-red-500 text-xs">
               {addError?.washing_price}
             </p>)}
-            {updateError.washing_price && (<p className="text-red-500 text-xs">
+            {updateError?.washing_price && (<p className="text-red-500 text-xs">
               {updateError?.washing_price}
             </p>)}
           </div>
@@ -224,10 +225,10 @@ export const CreateItem: React.FC<CreateItemProps> = ({
             }))}
           />
 
-          {addError.piece && (<p className="text-red-500 text-xs">
+          {addError?.piece && (<p className="text-red-500 text-xs">
             {addError?.piece}
           </p>)}
-          {updateError.piece && (<p className="text-red-500 text-xs">
+          {updateError?.piece && (<p className="text-red-500 text-xs">
             {updateError?.piece}
           </p>)}
 
@@ -260,7 +261,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
               <label>&nbsp;{cleaningMethod.dry_clean}</label><br/></>
 
           </div>
-          {addError.default_cleaning_method && (
+          {addError?.default_cleaning_method && (
             <p className="text-red-500 text-xs">{addError.default_cleaning_method}</p>
           )}
           {updateError?.default_cleaning_method && (

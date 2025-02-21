@@ -1,5 +1,5 @@
 import React from 'react';
-import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
+import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
@@ -12,14 +12,19 @@ import {cleaningMethods, handlingOptions} from "@/components/constants";
 
 const OrderItem: React.FC = () => {
   const {orderId} = useParams();
-  const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/admin/orders/${orderId}`);
+  const {
+    fetchData: data,
+    errors: orderDetailError,
+    loading,
+    refetch
+  } = useFetch<any>(`${config.BASE_URL}/admin/orders/${orderId}`);
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>Error loading data: {error || "Unknown error"}</p>;
+  if (orderDetailError) {
+    return <p>Error loading data: {orderDetailError.message || "Unknown error"}</p>;
   }
 
   if (!data || !data.result) {
@@ -38,7 +43,7 @@ const OrderItem: React.FC = () => {
               Order Items
             </div>
             <span className="ml-auto">
-        {!error && (<AddItemFromCategory orderId={orderId || ""} refetchItemList={refetch}/>)}
+        {!orderDetailError && (<AddItemFromCategory orderId={orderId || ""} refetchItemList={refetch}/>)}
       </span>
           </Typography>
         </CardHeader>

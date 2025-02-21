@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typography,} from "@material-tailwind/react";
-import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
+import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {config} from "@/config";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
@@ -50,7 +50,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
   const categoriesUrl = `${config.BASE_URL}/categories`;
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const {data, error, loading, refetch} = useFetch<any>(categoriesUrl);
+  const {fetchData: data, errors, loading, refetch} = useFetch<any>(categoriesUrl);
   const url = `${config.BASE_URL}/order-items/orders/${orderId}`;
   const {postData: addOrderItem, loading: addLoading, errors: postError} = usePost(url)
   const {
@@ -69,10 +69,10 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     price_per_unit: null,
   });
   const {
-    data: fetchItemData, error: itemError, loading: itemLoading
+    fetchData: fetchItemData, errors: itemError, loading: itemLoading
   } = useFetch<any>(`${config.BASE_URL}/items?category_id=${selectedCategory}`);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  
+
   const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const itemId = e.target.value;
     setFormData({...formData, item_id: e.target.value});
@@ -207,8 +207,8 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
             >
               Select Category to Order
             </Typography>
-            {loading ? (<p className="text-gray-600">Loading categories...</p>) : error ? (
-              <p className="text-red-500 text-xs">Error: {error}</p>) : data?.result?.length > 0 ? (
+            {loading ? (<p className="text-gray-600">Loading categories...</p>) : errors ? (
+              <p className="text-red-500 text-xs">Error: {errors.message}</p>) : data?.result?.length > 0 ? (
               <select
                 className="p-2 rounded w-full border border-gray-400"
                 value={selectedCategory || ""}
@@ -234,7 +234,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
             {itemLoading ? (
               <p className="text-gray-600">Loading items...</p>
             ) : itemError ? (
-              <p className="text-red-500 text-xs">Error: {itemError}</p>
+              <p className="text-red-500 text-xs">Error: {itemError.message}</p>
             ) : fetchItemData?.result?.length > 0 ? (
               <select
                 className="p-2 rounded w-full border border-gray-400"
@@ -260,7 +260,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
         </div>
 
         {(selectedCategory || updating || formData.is_open_item) && <div>
-          {selectedItem && (
+          {
             <OrderItemForm
               selectedItem={selectedItem}
               formData={formData}
@@ -268,7 +268,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
               updating={updating}
               Error={Error}
             />
-          )}
+          }
         </div>}
 
       </DialogBody>

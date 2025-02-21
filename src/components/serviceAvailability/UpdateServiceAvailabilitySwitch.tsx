@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Switch} from "@material-tailwind/react";
-import useUpdateServiceAvailability from "@/lib/api/Dashboard/hooks/serviceAvailability/useUpdateServiceAvailability";
-import toast from "react-hot-toast";
 import {config} from "@/config";
 import CommonToaster from "@/lib/common/CommonToaster";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
@@ -17,9 +15,7 @@ const SwitchBtn: React.FC<UpdateServiceAvailabilityProps> = ({is_active, id, ref
   const urlUpdatePostCode = `${config.BASE_URL}/post-codes/${id}/change-state`;
   const [inputValue, setInputValue] = useState<boolean>(is_active || false);
   const {
-    updateData: updateServiceAvailability,
-    loading: updateLoading,
-    errors: updateError
+    updateData: updateServiceAvailability, loading: updateLoading, errors: updateError
   } = useUpdate(urlUpdatePostCode);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
-import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
+import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {config} from "@/config";
 import {Link, useSearchParams} from "react-router-dom";
 import SearchBar from "@/lib/common/SearchBar";
@@ -39,7 +39,7 @@ export const UsersList: React.FC = () => {
   if (searchQuery) queryParams.set("search", searchQuery);
 
   const apiUrl = `${config.BASE_URL}/admin/users?${queryParams.toString()}`;
-  const {data, error, loading, refetch} = useFetch<any>(apiUrl);
+  const {fetchData: data, errors: userListError, loading, refetch} = useFetch<any>(apiUrl);
 
   const totalPage = useMemo(() => data?.result?.meta?.last_page || 1, [data]);
 
@@ -98,8 +98,8 @@ export const UsersList: React.FC = () => {
               </tr>
               </thead>
               <tbody>
-              {error ? (
-                <tr><TableData colspan={8} data={error} classes="text-center p-4" textColor="red"/></tr>
+              {userListError ? (
+                <tr><TableData colspan={8} data={userListError.message} classes="text-center p-4" textColor="red"/></tr>
               ) : (
                 data?.result?.data.map(({
                                           id,

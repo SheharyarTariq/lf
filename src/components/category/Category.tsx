@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react";
 import {CreateCategory} from "@/components/category/CreateCategory";
-import useFetch from "@/lib/api/Dashboard/hooks/category/useFetchCategory";
+import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import Item from "@/components/item/Item";
 import {TableData} from "@/lib/common/TableData";
 import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCodes} from "@/lib/common/Dropdown";
@@ -12,7 +12,7 @@ import {handlingOption, handlingOptions} from "@/components/constants";
 
 
 export const Category: React.FC = () => {
-  const {data, error, loading, refetch} = useFetch<any>(`${config.BASE_URL}/categories/with-items`);
+  const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${config.BASE_URL}/categories/with-items`);
   const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean; }>({});
 
@@ -37,7 +37,7 @@ export const Category: React.FC = () => {
             <thead>
             <tr>
               {["Category", "Description", "Handling Option", "Default Handling",
-                <span className={`ml-9`}>Action</span>, !error && (
+                <span className={`ml-9`}>Action</span>, !errors && (
                   <CreateCategory
                     is_hangable={null}
                     is_foldable={null}
@@ -61,18 +61,19 @@ export const Category: React.FC = () => {
             </tr>
             </thead>
             <tbody>
-            {error && (<tr>
-              <TableData colspan={4} data={error} classes="text-center p-4 " textColor='red'/>
+            {errors && (<tr>
+              <TableData colspan={4} data={errors.message} classes="text-center p-4 " textColor='red'/>
             </tr>)}
-            {!error && data?.result?.map(({
-                                            name,
-                                            description,
-                                            id,
-                                            is_hangable,
-                                            is_foldable,
-                                            default_handling_option,
-                                            items,
-                                          }: CategoryProps, key: number,) => {
+
+            {!errors && data?.result?.map(({
+                                             name,
+                                             description,
+                                             id,
+                                             is_hangable,
+                                             is_foldable,
+                                             default_handling_option,
+                                             items,
+                                           }: CategoryProps, key: number,) => {
               const className = `py-3 px-5 ${key === data.result.length - 1 ? null : "border-b border-blue-gray-50"}`;
 
               return (<React.Fragment key={id}>

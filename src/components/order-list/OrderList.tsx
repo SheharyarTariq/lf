@@ -1,22 +1,23 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
-import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
+import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {config} from "@/config";
 import {Link, useSearchParams} from "react-router-dom";
 import Pagination from "@/lib/common/Pagination";
 import {orderByOptions, orderStatus, sortingOrderOptions} from "./constants";
 import {OrderListProps} from "@/components/order-list/types";
 import SearchBar from "@/lib/common/SearchBar";
+import {MyIcon} from "@/assets/sort";
 
 export const OrderList: React.FC = () => {
+  const [activeLabel, setActiveLable] = useState("")
   const [searchParams, setSearchParams] = useSearchParams();
   const status = searchParams.get("status") || "";
   const orderBy = searchParams.get("orderBy") || "";
   const sortingOrder = searchParams.get("orderDirection") || "";
   const searchQuery = searchParams.get("search") || "";
   const currentPage = searchParams.get("page") || "";
-
   const queryParams = new URLSearchParams();
   if (status) queryParams.set("status", status);
   if (searchQuery) queryParams.set("search", searchQuery);
@@ -25,7 +26,7 @@ export const OrderList: React.FC = () => {
   if (currentPage) queryParams.set("page", currentPage);
 
   const apiUrl = `${config.BASE_URL}/admin/orders?${queryParams.toString()}`;
-  const {data, error, loading, refetch} = useFetch<any>(apiUrl);
+  const {fetchData: data, errors: orderListError, loading, refetch} = useFetch<any>(apiUrl);
 
   const totalPage = useMemo(() => data?.result?.meta?.last_page || 1, [data]);
 
@@ -97,7 +98,10 @@ export const OrderList: React.FC = () => {
 
               <thead>
               <tr>
-                {["Order#", "Status", "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
+                {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}/>,
+                  <MyIcon
+                    text="Status" setActiveLabel={setActiveLable}
+                    activeLabel={activeLabel}/>, "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -107,8 +111,9 @@ export const OrderList: React.FC = () => {
               </tr>
               </thead>
               <tbody>
-              {error ? (
-                <tr><TableData colspan={8} data={error} classes="text-center p-4" textColor="red"/></tr>
+              {orderListError ? (
+                <tr><TableData colspan={8} data={orderListError.message} classes="text-center p-4" textColor="red"/>
+                </tr>
               ) : (
                 data?.result?.data.map(({
                                           id,

@@ -1,8 +1,7 @@
 import React from 'react';
-import useUpdateServiceAvailability from "@/lib/api/Dashboard/hooks/slot/useUpdateSlot";
+import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
 import {config} from "@/config";
-
 
 export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
   slot: string
@@ -11,13 +10,13 @@ export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
   refetch: () => void;
 }) => {
   const urlUpdate = `${config.BASE_URL}/slot-availabilities/${id}/change-state`;
-  const {updateArea, loading} = useUpdateServiceAvailability(urlUpdate);
+  const {updateData: updateSlot, loading} = useUpdate(urlUpdate);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
 
   async function handleSlotActivation(isActive: boolean) {
     const dataValue = {is_active: !isActive};
-    await updateArea(dataValue)
+    await updateSlot(dataValue)
     refetch();
     handleOpen();
   }

@@ -1,8 +1,4 @@
-import React, {useState} from "react";
-import {config} from "@/config";
-import useFetch from "@/lib/api/Dashboard/hooks/area/useFetchAreas";
-import {Typography} from "@material-tailwind/react";
-import OrderItemForm from "@/components/order-item/OrderItemForm";
+import React from "react";
 
 interface Props {
   selectedItem: {
@@ -73,15 +69,15 @@ const SelectItemFromDropDown: React.FC<Props> = ({
 
   return (
     <div>
-      {/*{(selectedItem || updating || formData.is_open_item) && (*/}
-      {/*  <OrderItemForm*/}
-      {/*    selectedItem={selectedItem}*/}
-      {/*    formData={formData}*/}
-      {/*    setFormData={setFormData}*/}
-      {/*    updating={updating}*/}
-      {/*    Error={Error}*/}
-      {/*  />*/}
-      {/*)}*/}
+      {(selectedItem || updating || formData.is_open_item) && (
+        <OrderItemForm
+          selectedItem={selectedItem}
+          formData={formData}
+          setFormData={setFormData}
+          updating={updating}
+          Error={Error}
+        />
+      )}
     </div>
   );
 };
