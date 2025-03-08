@@ -2,13 +2,13 @@ import React, {useMemo, useState} from 'react';
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
-import {config} from "@/config";
 import {Link, useSearchParams} from "react-router-dom";
 import Pagination from "@/lib/common/Pagination";
 import {orderByOptions, orderStatus, sortingOrderOptions} from "./constants";
 import {OrderListProps} from "@/components/order-list/types";
 import SearchBar from "@/lib/common/SearchBar";
 import {MyIcon} from "@/assets/sort";
+import {adminOrder} from "@/api";
 
 export const OrderList: React.FC = () => {
   const [activeLabel, setActiveLable] = useState("")
@@ -25,8 +25,12 @@ export const OrderList: React.FC = () => {
   if (sortingOrder) queryParams.set("orderDirection", sortingOrder);
   if (currentPage) queryParams.set("page", currentPage);
 
-  const apiUrl = `${config.BASE_URL}/admin/orders?${queryParams.toString()}`;
-  const {fetchData: data, errors: orderListError, loading, refetch} = useFetch<any>(apiUrl);
+  const {
+    fetchData: data,
+    errors: orderListError,
+    loading,
+    refetch
+  } = useFetch<any>(`${adminOrder}?${queryParams.toString()}`);
 
   const totalPage = useMemo(() => data?.result?.meta?.last_page || 1, [data]);
 

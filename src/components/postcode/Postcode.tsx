@@ -1,19 +1,18 @@
 import React from "react";
 import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react";
-import SwitchBtn from "@/components/serviceAvailability/UpdateServiceAvailabilitySwitch";
-import {CreateServiceAvailability} from "@/components/serviceAvailability/CreateServiceAvailability";
+import SwitchBtn from "@/components/postcode/UpdatePostcodeSwitch";
+import {CreatePostcode} from "@/components/postcode/CreatePostcode";
 import {TableData} from "@/lib/common/TableData";
 import DeleteModal from "@/lib/common/DeleteModal";
-import {ServiceAvailabilityProps} from "@/components/serviceAvailability/types";
+import {PostcodeProps} from "@/components/postcode/types";
 import {config} from "@/config";
 
-
-const ServiceAvailability: React.FC<ServiceAvailabilityProps> = ({
-                                                                   areaId,
-                                                                   areaName,
-                                                                   service_availabilities,
-                                                                   refetch,
-                                                                 }) => {
+const Postcode: React.FC<PostcodeProps> = ({
+                                             areaId,
+                                             areaName,
+                                             service_availabilities,
+                                             refetch,
+                                           }) => {
   return (<div className="mt-12 mb-8 flex flex-col gap-12 px-16">
     <Card>
       <CardHeader variant="gradient" color="gray" className="mb-8 p-6 text-center">
@@ -25,7 +24,7 @@ const ServiceAvailability: React.FC<ServiceAvailabilityProps> = ({
         <table className="w-full table-auto">
           <thead>
           <tr>
-            {["Post Code", "Active", <CreateServiceAvailability areaId={areaId} refetch={refetch}/>].map((el, idx) => (
+            {["Post Code", "Active", <CreatePostcode areaId={areaId} refetch={refetch}/>].map((el, idx) => (
               <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                 <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                   {el}
@@ -47,10 +46,10 @@ const ServiceAvailability: React.FC<ServiceAvailabilityProps> = ({
               />
               <TableData classes={className} data={<>
                 <DeleteModal
-                  toastMessage="Post Code Deleted Successfully"
+                  toastMessage="Postcode deleted successfully"
                   btnLabel='Delete'
-                  title="Delete Confirmation"
-                  description={`Are you sure you want to Delete this postcode (${postcode})?`}
+                  title="Delete confirmation"
+                  description={`Are you sure you want to delete this postcode (${postcode})?`}
                   refetch={refetch}
                   url={`${config.BASE_URL}/post-codes/${id}`}/>
               </>}/>
@@ -66,4 +65,4 @@ const ServiceAvailability: React.FC<ServiceAvailabilityProps> = ({
   </div>);
 };
 
-export default ServiceAvailability;
+export default Postcode;

@@ -11,20 +11,28 @@ export interface CategoryProps {
 
 
 export interface CreateCategoryProps {
-  name: string | null;
-  id: string | number | null;
+  name?: string | null;
+  id?: string | number | null;
   refetch: () => void;
-  dailogLabel: string | null;
-  description: string | null;
-  is_hangable: boolean | null;
-  is_foldable: boolean | null;
-  default_handling_option: string | null;
+  dailogLabel?: string | null;
+  description?: string | null;
+  is_hangable?: boolean | null;
+  is_foldable?: boolean | null;
+  default_handling_option?: string | null;
 };
 
 export interface CreateCategoryFormData {
-  inputValue: string;
-  descriptions: string;
-  hang: boolean;
-  fold: boolean;
+  inputValue?: string | null;
+  descriptions?: string | null;
+  hang?: boolean | null;
+  fold?: boolean | null;
+  default_handling_option?: string | null;
+};
+
+export interface CreateCategoryFormDataProps {
+  name: string | null;
+  description?: string | null;
+  is_hangable?: boolean | null;
+  is_foldable?: boolean | null;
   default_handling_option: string | null;
 };

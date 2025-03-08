@@ -31,12 +31,12 @@ export default CommonToaster;
 
 
 export const SuccessToast = (toastMessage: string) => {
-  toast.success(toastMessage || 'Submitted Successfully !', {
+  toast.success(toastMessage, {
     position: "bottom-center",
   })
 }
 export const ErrorToast = (toastMessage: string) => {
-  toast.error(toastMessage || 'Failed to Submit', {
+  toast.error(toastMessage, {
     position: "bottom-center",
   })
 }

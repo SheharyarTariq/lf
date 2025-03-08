@@ -9,15 +9,11 @@ import OrderDetailsCard from "@/components/order-item/OrderDetailsCard";
 import {OrderItems} from "@/components/order-item/types";
 import {useParams} from "react-router-dom";
 import {cleaningMethods, handlingOptions} from "@/components/constants";
+import {adminOrder, orderItem} from "@/api";
 
 const OrderItem: React.FC = () => {
   const {orderId} = useParams();
-  const {
-    fetchData: data,
-    errors: orderDetailError,
-    loading,
-    refetch
-  } = useFetch<any>(`${config.BASE_URL}/admin/orders/${orderId}`);
+  const {fetchData: data, errors: orderDetailError, loading, refetch} = useFetch<any>(`${adminOrder}/${orderId}`);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -106,7 +102,7 @@ const OrderItem: React.FC = () => {
                       title="Delete Confirmation"
                       refetch={refetch}
                       description={`Are you sure you want to Delete this Order item (${name})?`}
-                      url={`${config.BASE_URL}/order-items/${id}`}
+                      url={`${orderItem}/${id}`}
                     />
                   </div>}/></tr>
               ))

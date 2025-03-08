@@ -1,4 +1,6 @@
 import React from "react";
+import {Simulate} from "react-dom/test-utils";
+import toggle = Simulate.toggle;
 
 type GetPostCodes = {
   setOpenDropdowns: React.Dispatch<React.SetStateAction<{ [key: string]: boolean; }>>;
@@ -10,6 +12,17 @@ type GetTimeSlots = {
 }
 
 type GetAllPostCodes = {
+  toggle: boolean;
+  setOpenDropdowns: React.Dispatch<React.SetStateAction<{ [key: string]: boolean; }>>;
+  data: {
+    result: Array<{
+      id: string;
+    }>;
+  }
+  setIsOpenAllPostcodeDropdowns: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+type GetAllCategory = {
   setOpenDropdowns: React.Dispatch<React.SetStateAction<{ [key: string]: boolean; }>>;
   data: {
     result: Array<{
@@ -20,13 +33,14 @@ type GetAllPostCodes = {
 }
 
 type GetAllTimeSlots = {
+  toggle: boolean;
   setOpenTimeDropdowns: React.Dispatch<React.SetStateAction<{ [key: string]: boolean; }>>;
   data: {
     result: Array<{
       id: string;
     }>;
   }
-  setOpenAllTimeSlotDropdowns: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenAllTimeSlotDropdowns: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const handleGetPostCodes = ({id, setOpenDropdowns}: GetPostCodes) => {
@@ -43,8 +57,15 @@ export const handleGetTimeSlots = ({id, setOpenTimeDropdowns}: GetTimeSlots) => 
   }));
 };
 
-export const handleGetAllPostCodesOpen = ({data, setOpenAllDropdowns, setOpenDropdowns}: GetAllPostCodes) => {
-  setOpenAllDropdowns((prevState) => !prevState);
+export const handleGetAllPostCodesOpen = ({
+                                            data,
+                                            setIsOpenAllPostcodeDropdowns,
+                                            setOpenDropdowns,
+                                            toggle
+                                          }: GetAllPostCodes) => {
+  {
+    toggle && setIsOpenAllPostcodeDropdowns((prevState) => !prevState);
+  }
   data.result.map(({id}: { id: string }) =>
     setOpenDropdowns((prevState) => ({
       ...prevState,
@@ -52,8 +73,16 @@ export const handleGetAllPostCodesOpen = ({data, setOpenAllDropdowns, setOpenDro
     })),
   );
 };
-export const handleGetAllPostCodesClose = ({data, setOpenAllDropdowns, setOpenDropdowns,}: GetAllPostCodes) => {
-  setOpenAllDropdowns((prevState) => !prevState);
+export const handleGetAllPostCodesClose = ({
+                                             data,
+                                             setIsOpenAllPostcodeDropdowns,
+                                             setOpenDropdowns,
+                                             toggle
+                                           }: GetAllPostCodes) => {
+  {
+    toggle &&
+    setIsOpenAllPostcodeDropdowns((prevState) => !prevState);
+  }
   data.result.map(({id}) =>
     setOpenDropdowns((prevState) => ({
       ...prevState,
@@ -64,10 +93,13 @@ export const handleGetAllPostCodesClose = ({data, setOpenAllDropdowns, setOpenDr
 
 export const handleGetAllTimeSlotsOpen = ({
                                             data,
-                                            setOpenAllTimeSlotDropdowns,
-                                            setOpenTimeDropdowns
+                                            setIsOpenAllTimeSlotDropdowns,
+                                            setOpenTimeDropdowns,
+                                            toggle = false
                                           }: GetAllTimeSlots) => {
-  setOpenAllTimeSlotDropdowns((prevState) => !prevState);
+  {
+    toggle && setIsOpenAllTimeSlotDropdowns((prevState) => !prevState);
+  }
   data.result.map(({id}: { id: string }) =>
     setOpenTimeDropdowns((prevState) => ({
       ...prevState,
@@ -75,14 +107,49 @@ export const handleGetAllTimeSlotsOpen = ({
     })),
   );
 };
+
 export const handleGetAllTimeSlotsClose = ({
                                              data,
-                                             setOpenAllTimeSlotDropdowns,
-                                             setOpenTimeDropdowns
+                                             setIsOpenAllTimeSlotDropdowns,
+                                             setOpenTimeDropdowns, toggle = false
                                            }: GetAllTimeSlots) => {
-  setOpenAllTimeSlotDropdowns((prevState) => !prevState);
+
+  {
+    toggle &&
+    setIsOpenAllTimeSlotDropdowns((prevState) => !prevState);
+  }
   data.result.map(({id}) =>
     setOpenTimeDropdowns((prevState) => ({
+      ...prevState,
+      [id]: true,
+    })),
+  );
+};
+
+export const handleAllCategoryOpen = ({
+                                        data,
+                                        setOpenAllDropdowns,
+                                        setOpenDropdowns,
+                                      }: GetAllCategory) => {
+  setOpenAllDropdowns((prevState) => !prevState);
+
+  data.result.map(({id}: { id: string }) =>
+    setOpenDropdowns((prevState) => ({
+      ...prevState,
+      [id]: false,
+    })),
+  );
+};
+
+export const handleGetAllCategoryClose = ({
+                                            data,
+                                            setOpenAllDropdowns,
+                                            setOpenDropdowns,
+
+                                          }: GetAllCategory) => {
+  setOpenAllDropdowns((prevState) => !prevState);
+  data.result.map(({id}) =>
+    setOpenDropdowns((prevState) => ({
       ...prevState,
       [id]: true,
     })),

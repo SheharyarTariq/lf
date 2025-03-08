@@ -1,18 +1,18 @@
 import React, {useState} from "react";
 import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react";
+// import {CreateCategory} from "@/components/category/CreateCategory";
 import {CreateCategory} from "@/components/category/CreateCategory";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import Item from "@/components/item/Item";
 import {TableData} from "@/lib/common/TableData";
-import {handleGetAllPostCodesClose, handleGetAllPostCodesOpen, handleGetPostCodes} from "@/lib/common/Dropdown";
+import {handleAllCategoryOpen, handleGetAllCategoryClose, handleGetPostCodes} from "@/lib/common/Dropdown";
 import DeleteModal from "@/lib/common/DeleteModal";
-import {config} from "@/config";
 import {CategoryProps} from "@/components/category/types";
 import {handlingOption, handlingOptions} from "@/components/constants";
-
+import {category, categoryWithItems} from "@/api";
 
 export const Category: React.FC = () => {
-  const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${config.BASE_URL}/categories/with-items`);
+  const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${categoryWithItems}`);
   const [openAllDropdowns, setOpenAllDropdowns] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean; }>({});
 
@@ -22,12 +22,12 @@ export const Category: React.FC = () => {
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white">
             Category{" "}
-            {data && (openAllDropdowns ? (<i onClick={() => handleGetAllPostCodesOpen({
+            {data && (openAllDropdowns ? (<i onClick={() => handleAllCategoryOpen({
               data, setOpenAllDropdowns, setOpenDropdowns
             })}
                                              className="fa-solid fa-caret-up cursor-pointer"/>) : (
               <i className="fa-solid fa-caret-down cursor-pointer"
-                 onClick={() => handleGetAllPostCodesClose({
+                 onClick={() => handleGetAllCategoryClose({
                    data, setOpenAllDropdowns, setOpenDropdowns
                  })}/>))}
           </Typography>
@@ -38,16 +38,8 @@ export const Category: React.FC = () => {
             <tr>
               {["Category", "Description", "Handling Option", "Default Handling",
                 <span className={`ml-9`}>Action</span>, !errors && (
-                  <CreateCategory
-                    is_hangable={null}
-                    is_foldable={null}
-                    default_handling_option={null}
-                    description={null}
-                    dailogLabel={null}
-                    name={null}
-                    id={null}
-                    refetch={refetch}
-                  />),].map((el, idx) => (<th
+                  <CreateCategory refetch={refetch}/>
+                ),].map((el, idx) => (<th
                 key={idx}
                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
               >
@@ -81,11 +73,11 @@ export const Category: React.FC = () => {
                   <TableData classes={className} data={name}/>
                   <TableData classes={className} data={description ? description : "-"}/>
                   <TableData classes={className} data={
-                    <div>
+                    <span>
                       {is_hangable ? handlingOption.hang : null}
                       {(is_hangable && is_foldable) ? "-" : null}
                       {is_foldable ? handlingOption.fold : null}
-                    </div>
+                    </span>
                   }/>
                   <TableData classes={className}
                              data={
@@ -93,7 +85,7 @@ export const Category: React.FC = () => {
                              }
                   />
                   <TableData classes={className} data={
-                    <div className="flex">
+                    <span className="flex">
                       <CreateCategory
                         is_hangable={is_hangable}
                         is_foldable={is_foldable}
@@ -104,13 +96,13 @@ export const Category: React.FC = () => {
                         id={id}
                         refetch={refetch}
                       />
-                      <DeleteModal toastMessage="Category "
+                      <DeleteModal toastMessage="Category deleted successfully"
                                    btnLabel='Delete'
                                    title="Delete Confirmation"
                                    description={`Are you sure you want to Delete this Category (${name})?`}
                                    refetch={refetch}
-                                   url={`${config.BASE_URL}/categories/${id}`}/>
-                    </div>}/>
+                                   url={`${category}/${id}`}/>
+                    </span>}/>
                   <TableData classes={className} data={openDropdowns[id] ? (
                     <i className="fa-solid fa-caret-up cursor-pointer"
                        onClick={() => handleGetPostCodes({id, setOpenDropdowns})}/>) : (

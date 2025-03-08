@@ -5,6 +5,7 @@ import {config} from "@/config";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import OrderItemForm from "@/components/order-item/OrderItemForm";
+import {category, item, orderItem} from "@/api";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
@@ -47,17 +48,11 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
                                                                           handling_option,
                                                                           piece
                                                                         }) => {
-  const categoriesUrl = `${config.BASE_URL}/categories`;
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const {fetchData: data, errors, loading, refetch} = useFetch<any>(categoriesUrl);
-  const url = `${config.BASE_URL}/order-items/orders/${orderId}`;
-  const {postData: addOrderItem, loading: addLoading, errors: postError} = usePost(url)
-  const {
-    updateData: update,
-    loading: updateLoading,
-    errors: updateError
-  } = useUpdate(`${config.BASE_URL}/order-items/${orderItemId}`);
+  const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${category}`);
+  const {postData: addOrderItem, loading: addLoading, errors: postError} = usePost(`${orderItem}/orders/${orderId}`)
+  const {updateData: update, loading: updateLoading, errors: updateError} = useUpdate(`${orderItem}/${orderItemId}`);
   const [formData, setFormData] = useState<ItemPayload>({
     is_open_item: false,
     item_id: "",
@@ -70,7 +65,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
   });
   const {
     fetchData: fetchItemData, errors: itemError, loading: itemLoading
-  } = useFetch<any>(`${config.BASE_URL}/items?category_id=${selectedCategory}`);
+  } = useFetch<any>(`${item}?category_id=${selectedCategory}`);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -181,10 +176,8 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
       {dialogLabel ? dialogLabel : <i className="fa-solid fa-plus"></i>}
     </Button>
     <Dialog size="lg" open={open} handler={handleOpen} className="p-4">
-
       <DialogHeader className="relative m-0 block">
         <div className="grid grid-cols-2">
-
           <Typography variant="h4" color="blue-gray">
             {formData.is_open_item ? "Open Order" : "Standard Order"}
           </Typography>
@@ -194,9 +187,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
               &nbsp;Is Order Open
             </label>
           }</div>
-
       </DialogHeader>
-
       <DialogBody className="space-y-4 pb-6 min-h-full max-h-96 sm:max-h-auto overflow-y-scroll">
         <div className="grid sm:grid-cols-2 gap-2">
           {(!updating && !formData.is_open_item) && <div>
@@ -259,7 +250,7 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
             <p className="text-red-500 text-xs">{postError?.item_id || updateError?.item_id}</p>}
         </div>
 
-        {(selectedCategory || updating || formData.is_open_item) && <div>
+        {((selectedCategory && selectedItemId) || updating || formData.is_open_item) && <div>
           {
             <OrderItemForm
               selectedItem={selectedItem}
@@ -284,5 +275,3 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     </Dialog>
   </>);
 };
-
-export default AddItemFromCategory;

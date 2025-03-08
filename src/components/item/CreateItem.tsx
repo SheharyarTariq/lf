@@ -12,8 +12,13 @@ import toast from "react-hot-toast";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {CreateItemFormData, CreateItemProps} from "./types";
-import {config} from "@/config";
 import {cleaningMethod} from "@/components/constants";
+import {item} from "@/api";
+import * as yup from "yup";
+import {SuccessToast} from "@/lib/common/CommonToaster";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {useForm} from "react-hook-form";
+
 
 //Todo set scrolling of form also it is being updated and dailog is closed and success message is being showed even
 // there are required fields empty
@@ -39,8 +44,37 @@ export const CreateItem: React.FC<CreateItemProps> = ({
     default_cleaning_method: null,
     piece: null
   })
-  const urlAddArea = `${config.BASE_URL}/items`;
-  const urlUpdateArea = `${config.BASE_URL}/items/${id}`;
+
+  // const schema = yup.object().shape({
+  //   name: yup.string().required("Name is required"),
+  //   description: yup.string(),
+  //   washing_price: yup.number(),
+  //   dry_cleaning_price: yup.number(),
+  //   default_cleaning_method: yup.string().oneOf(["fold", "hang"], "Please select a handling method")
+  //     .required("Handling method is required"),
+  //   piece: yup.number().required("Piece is required")
+  // }).test(
+  //   "at-least-one-has-value",
+  //   "Either washing_price or dry_cleaning_price must have value",
+  //   (values) => {
+  //     values.washing_price || values.dry_cleaning_price
+  //   }
+  // );
+  // const initialValues = {
+  //   name: "",
+  //   description: "",
+  //   washing_price: null,
+  //   dry_cleaning_price: null,
+  //   default_cleaning_method: "",
+  //   piece: 1
+  // }
+  // const {register, handleSubmit, formState: {errors}, reset, watch,} = useForm({
+  //   resolver: yupResolver(schema as yup.ObjectSchema<CreateItemProps>),
+  //   defaultValues: initialValues
+  // })
+
+  const urlAddArea = `${item}`;
+  const urlUpdateArea = `${item}/${id}`;
 
   const {postData: addArea, loading: addLoading, errors: addError,} = usePost(urlAddArea);
   const {updateData: updateArea, loading: updateLoading, errors: updateError,} = useUpdate(urlUpdateArea);
@@ -76,10 +110,10 @@ export const CreateItem: React.FC<CreateItemProps> = ({
       category_id: categoryId,
       ...formData
     };
-    const createOrUpdateItem = name ? await updateArea(formData) : await addArea(payload);
+    const response = name ? await updateArea(formData) : await addArea(payload);
 
-    if (createOrUpdateItem) {
-      toast.success(`Item ${name ? "updated" : "added"} successfully!`, {position: "bottom-center",});
+    if (response.success) {
+      SuccessToast(`Item ${name ? "updated" : "added"} successfully!`);
       refetch();
       setFormData({
         name: "",

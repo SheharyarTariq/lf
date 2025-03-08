@@ -1,27 +1,29 @@
 import React, {memo, useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography,} from "@material-tailwind/react";
-import {config} from "@/config";
-import {Controller, useForm} from "react-hook-form";
+import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import {areaSchema} from "@/components/area/constants";
-import CommonToaster from "../../lib/common/CommonToaster";
+import {ErrorToast, SuccessToast} from "../../lib/common/CommonToaster";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {CreateAreaProps} from "@/components/area/types";
+import {area} from "@/api";
+import * as yup from "yup";
+import Input from "@/lib/common/Input"
 
 export const CreateArea: React.FC<CreateAreaProps> = memo(({dailogLabel, name, id, refetch}) => {
     const [open, setOpen] = useState(false);
-    const {postData, loading: addLoading, errors: postError} = usePost(`${config.BASE_URL}/areas`);
-    const {updateData, loading: updateLoading, errors: updateError} = useUpdate(`${config.BASE_URL}/areas/${id}`);
+    const {postData, loading: addLoading, errors: postError} = usePost(`${area}`);
+    const {updateData, loading: updateLoading, errors: updateError} = useUpdate(`${area}/${id}`);
     const isLoading = addLoading || updateLoading;
 
     const {
-      control,
+      register,
       handleSubmit,
       formState: {errors},
       reset,
-    } = useForm({
-      resolver: yupResolver(areaSchema),
+    } = useForm<CreateAreaProps>({
+      resolver: yupResolver(areaSchema as yup.ObjectSchema<CreateAreaProps>),
       defaultValues: {name: ""},
     });
 
@@ -32,27 +34,23 @@ export const CreateArea: React.FC<CreateAreaProps> = memo(({dailogLabel, name, i
     }, [name, reset]);
 
     const handleOpen = () => {
-      setOpen(!open);
-      if (!open && !name) {
-        reset({name: ""});
-      }
+      setOpen((prev) => !prev);
+      if (!name) reset({name: ""});
     };
 
-    const onSubmit = async (data: { name: string }) => {
-      const createOrUpdateArea = name ? await updateData(data) : await postData(data);
-      console.log("create/upadate area handler call", createOrUpdateArea)
-      if (createOrUpdateArea?.success === true) {
-        CommonToaster({
-          toastName: 'successToast',
-          toastMessage: createOrUpdateArea?.message || "Form Submitted Successfully"
-        });
+
+    const onSubmit: SubmitHandler<CreateAreaProps> = async (data) => {
+
+      const response = name ? await updateData(data) : await postData(data);
+      if (response?.success) {
+        SuccessToast(response.message || "Area added successfully")
         refetch();
         handleOpen();
-      } else if (createOrUpdateArea?.success === false) {
-        CommonToaster({toastName: 'dangerToast', toastMessage: createOrUpdateArea.message || "Form Failed to Submit"});
+      } else if (response?.success === false) {
+        ErrorToast(response?.message || "Failed to add area")
 
       } else if (postError?.message || updateError?.message) {
-        CommonToaster({toastName: 'dangerToast', toastMessage: postError?.message || updateError?.message});
+        ErrorToast(postError?.message || updateError?.message || "An unexpected error occurred.")
       }
     };
 
@@ -81,17 +79,7 @@ export const CreateArea: React.FC<CreateAreaProps> = memo(({dailogLabel, name, i
                 className="mb-2 text-left font-medium">
                 Name
               </Typography>
-              <Controller
-                name="name"
-                control={control}
-                render={({field}) => (
-                  <input
-                    {...field}
-                    className="p-2 rounded w-full border border-gray-400"
-                    placeholder="e.g. Manchester"
-                  />
-                )}
-              />
+              <Input placeholder="e.g. Manchester" register={register} name="name" className="w-full"/>
               {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
               {postError?.name && <p className="text-red-500 text-xs">{postError?.name}</p>}
               {updateError?.name && <p className="text-red-500 text-xs">{updateError?.name}</p>}

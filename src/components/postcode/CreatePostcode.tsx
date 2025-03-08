@@ -9,23 +9,15 @@ import {
 } from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
-import {config} from "@/config";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import {CreateServiceAvailabilityProps} from "@/components/serviceAvailability/types";
+import {CreatePostcodeProps} from "@/components/postcode/types";
+import {postcode} from "@/api";
+import Input from "@/lib/common/Input";
+import {schema} from "@/components/postcode/constants";
 
-const schema = yup.object().shape({
-  postcode: yup
-    .string()
-    .required("Postcode is required")
-    .matches(
-      /^[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2}$/,
-      "Invalid postcode format"
-    ),
-});
 
-export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps> = memo(
+export const CreatePostcode: React.FC<CreatePostcodeProps> = memo(
   ({areaId, refetch}) => {
     const [open, setOpen] = useState(false);
 
@@ -39,13 +31,9 @@ export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps>
       defaultValues: {postcode: ""},
     });
 
-    const {postData: addArea, loading: addLoading, errors: addError} = usePost(
-      `${config.BASE_URL}/post-codes`
-    );
+    const {postData: addArea, loading: addLoading, errors: addError} = usePost(`${postcode}`);
     const isLoading = addLoading;
-
     const handleOpen = () => setOpen(!open);
-
     const onSubmit = async (data: { postcode: string }) => {
       const dataValue = {
         postcode: data.postcode,
@@ -93,11 +81,7 @@ export const CreateServiceAvailability: React.FC<CreateServiceAvailabilityProps>
               >
                 Post code
               </Typography>
-              <input
-                className="p-2 rounded w-full border border-gray-400"
-                placeholder="e.g. KT2R 2ER"
-                {...register("postcode")}
-              />
+              <Input placeholder="e.g. KT2R 2ER" register={register} name="postcode" className="w-full"/>
               {errors.postcode && (
                 <p className="text-red-500 text-xs">{errors.postcode.message}</p>
               )}

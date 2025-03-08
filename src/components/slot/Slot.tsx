@@ -42,7 +42,7 @@ const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refet
                                className="px-2"
                                key={availability_id}>
                                <IsActiveSlotButtom
-                                 slot={slot}
+                                 slots={slot}
                                  id={availability_id}
                                  refetch={refetch}
                                  isActive={is_active}

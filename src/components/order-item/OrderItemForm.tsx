@@ -79,6 +79,7 @@ const OrderItemForm: React.FC<Props> = ({
           <Typography variant="small" color="blue-gray" className="mt-4 text-left font-medium">
             Selected Item Details:
           </Typography>
+
           <br/>
           <div className="grid sm:grid-cols-2 gap-2 ">
             <div>

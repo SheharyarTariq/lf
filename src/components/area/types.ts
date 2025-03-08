@@ -20,8 +20,8 @@ export interface AreaProps {
 }
 
 export interface CreateAreaProps {
-  name: string | null;
-  id: string | null;
+  name?: string;
+  id?: string | null;
   refetch: () => void;
-  dailogLabel: string | null;
+  dailogLabel?: string | null;
 };

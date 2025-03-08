@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typography,} from "@material-tailwind/react";
-import toast from "react-hot-toast";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
-import {config} from "@/config";
-import {CreateCategoryFormData, CreateCategoryProps} from "@/components/category/types";
+import {CreateCategoryFormData, CreateCategoryFormDataProps, CreateCategoryProps} from "@/components/category/types";
 import {handlingOption} from "@/components/constants";
+import {category} from "@/api";
+import {ErrorToast, SuccessToast} from "@/lib/common/CommonToaster";
+import * as yup from "yup";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import Input from "@/lib/common/Input";
 
 export const CreateCategory: React.FC<CreateCategoryProps> = ({
                                                                 dailogLabel,
@@ -18,97 +22,78 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                                                                 refetch
                                                               }) => {
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState<CreateCategoryFormData>({
-    inputValue: "",
-    descriptions: "",
-    hang: false,
-    fold: false,
-    default_handling_option: null,
-  });
-  const {
-    postData: addArea,
-    loading: addLoading,
-    errors: addError,
-  } = usePost(`${config.BASE_URL}/categories`);
-  const {
-    updateData: updateArea,
-    loading: updateLoading,
-    errors: updateError,
-  } = useUpdate(`${config.BASE_URL}/categories/${id}`);
+  const {postData: addArea, loading: addLoading, errors: addError,} = usePost(`${category}`);
+  const {updateData: updateArea, loading: updateLoading, errors: updateError,} = useUpdate(`${category}/${id}`);
   const isLoading = addLoading || updateLoading;
+  const initialValue = {
+    name: "",
+    description: "",
+    is_hangable: false,
+    is_foldable: false,
+    default_handling_option: ""
+  }
+  const schema = yup.object().shape({
+    name: yup.string().trim().required("Name is required"),
+    description: yup.string(),
+    is_hangable: yup.boolean(),
+    is_foldable: yup.boolean(),
+    default_handling_option: yup.string()
+      .oneOf(["fold", "hang"], "Please select a handling method")
+      .required("Handling method is required"),
+  })
+    .test(
+      "at-least-one-true",
+      "Either is_hangable or is_foldable must be true",
+      (values) => {
+        return values.is_hangable || values.is_foldable
+      }
+    );
+
+  const {register, handleSubmit, formState: {errors}, reset, watch} = useForm({
+    resolver: yupResolver(schema as yup.ObjectSchema<CreateCategoryFormDataProps>),
+    defaultValues: initialValue
+  })
 
   useEffect(() => {
-    if (name) setFormData(prev => ({...prev, inputValue: name}));
-    if (description) setFormData(prev => ({...prev, descriptions: description}));
-    if (is_foldable) setFormData(prev => ({...prev, fold: is_foldable}));
-    if (is_hangable) setFormData(prev => ({...prev, hang: is_hangable}));
-    if (default_handling_option) {
-      setFormData(prev => ({...prev, default_handling_option: default_handling_option}));
-    } else if (is_foldable && is_hangable) {
-      setFormData(prev => ({...prev, default_handling_option: default_handling_option}))
-    } else if (is_foldable && !is_hangable) {
-      setFormData(prev => ({...prev, default_handling_option: "fold"}))
-    } else if (!is_foldable && is_hangable) {
-      setFormData(prev => ({...prev, default_handling_option: "hang"}))
-    } else if (!is_foldable && !is_hangable) {
-      setFormData(prev => ({...prev, default_handling_option: null}))
-    }
+    reset({
+      name: name || "",
+      description: description || "",
+      is_foldable: is_foldable || false,
+      is_hangable: is_hangable || false,
+      default_handling_option: default_handling_option || "",
+    });
   }, [name, description, is_foldable, is_hangable, default_handling_option]);
 
   useEffect(() => {
-    if (formData.fold && !formData.hang) {
-      setFormData(prev => ({...prev, default_handling_option: "fold"}))
-    } else if (!formData.fold && formData.hang) {
-      setFormData(prev => ({...prev, default_handling_option: "hang"}))
-    } else if (!formData.fold && !formData.hang) {
-      setFormData(prev => ({...prev, default_handling_option: null}))
-    } else if (formData.fold && formData.hang) {
-      setFormData(prev => ({...prev, default_handling_option: default_handling_option}))
+    const Fold = watch("is_foldable");
+    const Hang = watch("is_hangable");
+    if (Fold && !Hang) {
+      reset({...watch(), default_handling_option: "fold"})
+    } else if (!Fold && Hang) {
+      reset({...watch(), default_handling_option: "hang"})
+    } else if (!Fold && !Hang) {
+      reset({...watch(), default_handling_option: ""})
+    } else if (Fold && Hang) {
+      reset({...watch(), default_handling_option: watch("default_handling_option")})
     }
-  }, [formData.hang, formData.fold]);
+  }, [watch("is_foldable"), watch("is_hangable")]);
 
   const handleOpen = () => setOpen(!open);
 
-  const handleSave = async () => {
-    const dataValue = {
-      name: formData.inputValue,
-      description: formData.descriptions,
-      is_hangable: formData.hang,
-      is_foldable: formData.fold,
-      default_handling_option: formData.default_handling_option,
-    };
+  const onSubmit: SubmitHandler<CreateCategoryFormDataProps> = async (data) => {
 
-    const newArea = name ? await updateArea(dataValue) : await addArea(dataValue);
-    if (newArea) {
-      toast.success(`Category ${name ? "updated" : "added"} successfully!`, {position: "bottom-center",});
+    const response = name ? await updateArea(data) : await addArea(data);
+    if (response.success) {
+      SuccessToast(response.message || `Category ${name ? "updated" : "added"} successfully!`)
       refetch();
-      setFormData(prev => ({
-        ...prev,
-        inputValue: "",
-        descriptions: "",
-        hang: false,
-        fold: false,
-        default_handling_option: null,
-      }))
+      reset(initialValue);
       handleOpen();
+    } else if (!response.success) {
+      ErrorToast(response.message || `Failed to ${name ? "updated" : "added"} category!`);
     }
   };
 
 
-  const handleHandlingOptionFold = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setFormData(prev => ({
-      ...prev,
-      fold: checked,
-    }));
-  }
-  const handleHandlingOptionHang = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setFormData(prev => ({
-      ...prev,
-      hang: checked,
-    }));
-  }
   return (
     <>
       <Button
@@ -127,47 +112,41 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
           </Typography>
         </DialogHeader>
         <DialogBody className="space-y-4 pb-6">
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Name
-            </Typography>
-            <input
-              className='p-2 rounded w-full border border-gray-400'
-              placeholder="e.g. T-Shirt"
-              name="name"
-              value={formData.inputValue}
-              onChange={(e) => setFormData(prev => ({...prev, inputValue: (e.target.value)}))}
-            />
-            {addError?.name && (
-              <p className="text-red-500 text-xs">{addError.name}</p>
-            )}
-            {updateError?.name && (
-              <p className="text-red-500 text-xs">{updateError.name}</p>
-            )}
-          </div>
+          <div className="grid grid-cols-2">
+            <div>
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Name
+              </Typography>
+              <Input name="name" register={register} placeholder="e.g. T-Shirt"/>
+              {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
 
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Description
-            </Typography>
-            <input
-              className='p-2 rounded w-full border border-gray-400'
-              placeholder="Description of the Category here..."
-              name="description"
-              value={formData.descriptions}
-              onChange={(e) => setFormData(prev => ({...prev, descriptions: (e.target.value)}))}
-            />
+              {addError?.name && (
+                <p className="text-red-500 text-xs">{addError.name}</p>
+              )}
+              {updateError?.name && (
+                <p className="text-red-500 text-xs">{updateError.name}</p>
+              )}
+            </div>
+
+            <div>
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Description
+              </Typography>
+              <Input name="description" register={register} placeholder="Description here..."/>
+              {errors.description && <p className="text-red-500 text-xs">{errors.description.message}</p>}
+
+            </div>
           </div>
           <div className="grid grid-cols-2 ">
-            <div className="mt-4">
+            <div className="">
               <Typography
                 variant="small"
                 color="blue-gray"
@@ -178,19 +157,23 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               <label>
                 <Switch
                   crossOrigin="crossOrigin"
-                  checked={formData.fold}
-                  onChange={handleHandlingOptionFold}
+                  {...register("is_foldable")}
                 />
                 &nbsp;{handlingOption.fold}
-              </label><br/>
+              </label>
+              <br/>
+
               <label>
                 <Switch
                   crossOrigin="crossOrigin"
-                  checked={formData.hang}
-                  onChange={handleHandlingOptionHang}
+                  {...register("is_hangable")}
                 />
                 &nbsp;{handlingOption.hang}
-              </label><br/>
+              </label>
+              <br/>
+              {(errors as any)?.[""]?.message && (
+                <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
+              )}
               {(addError?.is_foldable || addError?.is_hangable) && (
                 <p className="text-red-500 text-xs">
                   {addError.is_foldable || addError.is_hangable}
@@ -201,48 +184,36 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                   {updateError.is_foldable || updateError.is_hangable}
                 </p>
               )}
+            </div>
 
+            <div>
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Default Handling Option
+              </Typography>
+              <Input name="default_handling_option" register={register} type="radio" value="fold"/>
+              <label htmlFor="fold">&nbsp;{handlingOption.fold}</label><br/>
+              <Input name="default_handling_option" register={register} type="radio" value="hang"/>
+              <label htmlFor="hang">&nbsp;{handlingOption.hang}</label><br/>
+              {errors.default_handling_option &&
+                <p className="text-red-500 text-xs">{errors.default_handling_option.message}</p>}
+              {addError?.default_handling_option && (
+                <p className="text-red-500 text-xs">{addError.default_handling_option}</p>
+              )}
+              {updateError?.default_handling_option && (
+                <p className="text-red-500 text-xs">{updateError.default_handling_option}</p>
+              )}
             </div>
           </div>
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Default Handling Option
-            </Typography>
-            <>
-              <input type="radio" id="fold" name="handling_method" value="fold"
-                     checked={formData.default_handling_option === "fold"}
-                     onChange={(e) => setFormData(prev => ({
-                       ...prev,
-                       default_handling_option: (e.target.value)
-                     }))}
-              />
-              <label htmlFor="fold">&nbsp;{handlingOption.fold}</label><br/></>
-
-            <>
-              <input type="radio" id="hang" name="handling_method" value="hang"
-                     checked={formData.default_handling_option === "hang"}
-                     onChange={(e) => setFormData(prev => ({
-                       ...prev,
-                       default_handling_option: (e.target.value)
-                     }))}
-              />
-              <label htmlFor="hang">&nbsp;{handlingOption.hang}</label><br/></>
-          </div>
-          {addError?.default_handling_option && (
-            <p className="text-red-500 text-xs">{addError.default_handling_option}</p>
-          )}
-          {updateError?.default_handling_option && (
-            <p className="text-red-500 text-xs">{updateError.default_handling_option}</p>
-          )}
         </DialogBody>
         <DialogFooter>
           <Button
             className="ml-auto"
-            onClick={handleSave}
+            onClick={handleSubmit(onSubmit)}
+
             disabled={isLoading}
           >
             {isLoading ? "Saving..." : "Save"}

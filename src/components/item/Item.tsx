@@ -6,12 +6,13 @@ import {TableData} from "@/lib/common/TableData";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {config} from "@/config";
 import {ItemProps} from "@/components/item/types";
-import {cleaningMethods, handlingOptions} from "@/components/constants";
+import {cleaningMethods} from "@/components/constants";
+import {item} from "@/api";
+import {CreateItem2} from "@/components/item/CreateItem2";
 
 const Item: React.FC<ItemProps> = ({
                                      categoryId, categoryName, refetch, items,
                                    }) => {
-  const url = `${config.BASE_URL}/items`;
   return (<div className="mt-12 mb-8 flex flex-col gap-12 px-16">
     <Card>
       <CardHeader variant="gradient" color="gray"
@@ -25,19 +26,25 @@ const Item: React.FC<ItemProps> = ({
           <thead>
           <tr>
             {['Category', 'Description', 'Dry Cleaning Price', 'Washing Price', "Default Cleaning Method", "piece",
-              <CreateItem
-                id={null}
-                label={null}
-                name={null}
-                pieces={null}
-                description={null}
-                dry_cleaning_price={null}
-                default_cleaning_method={null}
-                washing_price={null}
+              // <CreateItem
+              //   // id={null}
+              //   // label={null}
+              //   // name={null}
+              //   // pieces={null}
+              //   // description={null}
+              //   // dry_cleaning_price={null}
+              //   // default_cleaning_method={null}
+              //   // washing_price={null}
+              //   categoryId={categoryId}
+              //   refetch={refetch}
+              // />
+
+              <CreateItem2
                 categoryId={categoryId}
                 refetch={refetch}
-              />].map((el, index) => <th className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                                         key={index}>
+              />
+            ].map((el, index) => <th className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                     key={index}>
               <Typography
                 variant="small"
                 className="text-[11px] font-bold uppercase text-blue-gray-400"
@@ -67,7 +74,19 @@ const Item: React.FC<ItemProps> = ({
               }/>
               <TableData classes={`${className}`} data={piece ? piece : "-"}/>
               <TableData classes={`${className}`} data={<div className={`flex`}>
-                <CreateItem
+                {/*<CreateItem*/}
+                {/*  pieces={piece}*/}
+                {/*  id={`${id}`}*/}
+                {/*  label="Edit"*/}
+                {/*  categoryId={categoryId}*/}
+                {/*  name={name}*/}
+                {/*  description={description}*/}
+                {/*  default_cleaning_method={default_cleaning_method}*/}
+                {/*  dry_cleaning_price={price.dry_clean}*/}
+                {/*  washing_price={price.wash}*/}
+                {/*  refetch={refetch}*/}
+                {/*/>*/}
+                <CreateItem2
                   pieces={piece}
                   id={`${id}`}
                   label="Edit"
@@ -80,13 +99,12 @@ const Item: React.FC<ItemProps> = ({
                   refetch={refetch}
                 />
 
-
-                <DeleteModal toastMessage="Item"
+                <DeleteModal toastMessage="Item deleted successfully"
                              btnLabel='Delete'
                              title="Delete Confirmation"
                              description={`Are you sure you want to Delete this Item (${name})?`}
                              refetch={refetch}
-                             url={`${url}/${id}`}/>
+                             url={`${item}/${id}`}/>
               </div>}
               />
             </tr>);

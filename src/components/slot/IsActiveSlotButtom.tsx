@@ -1,24 +1,32 @@
 import React from 'react';
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react";
-import {config} from "@/config";
+import {slot} from "@/api";
+import {ErrorToast, SuccessToast} from "@/lib/common/CommonToaster";
 
-export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
-  slot: string
+export const IsActiveSlotButtom = ({slots, isActive, refetch, id}: {
+  slots: string
   isActive: boolean
   id: string
   refetch: () => void;
 }) => {
-  const urlUpdate = `${config.BASE_URL}/slot-availabilities/${id}/change-state`;
+  const urlUpdate = `${slot}/${id}/change-state`;
   const {updateData: updateSlot, loading} = useUpdate(urlUpdate);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
 
   async function handleSlotActivation(isActive: boolean) {
     const dataValue = {is_active: !isActive};
-    await updateSlot(dataValue)
-    refetch();
-    handleOpen();
+    const response = await updateSlot(dataValue);
+    if (response?.success) {
+
+      SuccessToast(response.message || response?.result.is_active ? "Time slot activeted successfully" : "Time slot deactiveted successfully");
+
+      refetch();
+      handleOpen();
+    } else {
+      ErrorToast(response.message || "Something went wrong. please try again");
+    }
   }
 
   return (
@@ -26,15 +34,15 @@ export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
       <Button variant="text" color='blue-gray' size="sm"
               className={isActive ? ' bg-blue-gray-50' : 'border border-blue-gray-50'}
               onClick={handleOpen}>
-        {slot}
+        {slots}
       </Button>
 
       <Dialog open={open} handler={handleOpen}>
         <DialogHeader>
           {isActive ? 'Deactivate' : 'Activate'} Confirmation
         </DialogHeader>
-        <DialogBody>Are you sure you want to {isActive ? 'Deactivate' : 'Activate'} this slot
-          ({slot})?</DialogBody>
+        <DialogBody>Are you sure you want to {isActive ? 'Deactivate' : 'Activate'} this slots
+          ({slots})?</DialogBody>
         <DialogFooter>
           <Button
             variant="text"
@@ -45,7 +53,7 @@ export const IsActiveSlotButtom = ({slot, isActive, refetch, id}: {
             <span>Cancel</span>
           </Button>
           <Button variant="gradient" onClick={() => handleSlotActivation(isActive)} disabled={loading}>
-            <span>{loading ? (isActive ? "Deactivating..." : 'Activating') : "Confirm"}</span>
+            <span>{loading ? (isActive ? "Deactivating..." : 'Activating...') : "Confirm"}</span>
           </Button>
         </DialogFooter>
       </Dialog>
