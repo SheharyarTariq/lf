@@ -71,7 +71,7 @@ export const CreateArea: React.FC<CreateAreaProps> = memo(({dailogLabel, name, i
               Area
             </Typography>
           </DialogHeader>
-          <DialogBody className="space-y-4 pb-6">
+          <DialogBody className="space-y-2">
             <div>
               <Typography
                 variant="small"

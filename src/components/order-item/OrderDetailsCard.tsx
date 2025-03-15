@@ -22,7 +22,13 @@ const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({id, result}) => {
           <p className="text-lg text-gray-800"><strong>Note:</strong> {result.note || 'No additional notes'}</p>
           <p><strong>Revenue:</strong> {result.revenue}</p>
           </span>
-          <span className="ml-auto"><Button onClick={handleFinalizeOrder}>Finalize</Button></span>
+          <span className="ml-auto">
+             <Button
+               variant="gradient"
+               onClick={handleFinalizeOrder}
+             >
+          Finalize
+        </Button></span>
         </div>
         <div className="border-t-2 mt-4 mb-4"></div>
         <div className="mt-4 flex flex-col sm:flex-row space-x-0 sm:space-x-4">

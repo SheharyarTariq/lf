@@ -72,7 +72,7 @@ export const CreatePostcode: React.FC<CreatePostcodeProps> = memo(
               Press Save After Adding Postcode.
             </Typography>
           </DialogHeader>
-          <DialogBody className="space-y-4 pb-6">
+          <DialogBody className="space-y-2">
             <div>
               <Typography
                 variant="small"

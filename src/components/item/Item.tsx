@@ -110,8 +110,6 @@ const Item: React.FC<ItemProps> = ({
             </tr>);
           },)}
           {items?.length === 0 && (
-
-
             <tr>
               <TableData data=' No Data' classes="text-center p-4 " colspan={6} noBold={true}/>
             </tr>

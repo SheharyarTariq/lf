@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Switch, Typography,} from "@material-tailwind/react";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
-import {config} from "@/config";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import OrderItemForm from "@/components/order-item/OrderItemForm";
 import {category, item, orderItem} from "@/api";
+import {useForm} from "react-hook-form";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
   orderId: string | null;
-  // onSuccess?: () => void;
   refetchItemList: () => void;
   updateInitialQuantity?: number | null;
   updateInitialPrice_per_unit?: string | null;
@@ -63,6 +64,32 @@ export const AddItemFromCategory: React.FC<AddItemFromCategoryProps> = ({
     handling_option: null,
     price_per_unit: null,
   });
+
+  const initialValues = {
+    is_open_item: false,
+    item_id: "",
+    open_item_name: "",
+    piece: 1,
+    quantity: null,
+    cleaning_method: null,
+    handling_option: null,
+    price_per_unit: null,
+  }
+
+  // const schema = yup.object().shape({
+  //   is_open_item: yup.boolean(),
+  //   item_id: yup.string(),
+  //   open_item_name: yup.string(),
+  //   piece: yup.number(),
+  //   quantity: yup.number(),
+  //   cleaning_method: yup.string(),
+  //   handling_option: yup.string(),
+  //   price_per_unit: yup.number(),
+  // })
+  // const {handleSubmit, register, formState: {}, reset, watch} = useForm({
+  //   resolver: yupResolver(schema),
+  //   defaultValues: initialValues
+  // });
   const {
     fetchData: fetchItemData, errors: itemError, loading: itemLoading
   } = useFetch<any>(`${item}?category_id=${selectedCategory}`);

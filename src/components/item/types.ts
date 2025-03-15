@@ -40,4 +40,5 @@ export interface CreateItemFormData {
   default_cleaning_method: null | string,
   dry_cleaning_price: null | number,
   piece: null | number
+  category_id: string | null;
 };

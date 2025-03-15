@@ -10,6 +10,7 @@ import {OrderItems} from "@/components/order-item/types";
 import {useParams} from "react-router-dom";
 import {cleaningMethods, handlingOptions} from "@/components/constants";
 import {adminOrder, orderItem} from "@/api";
+import {AddItemFromCategory2} from "@/components/order-item/AddItemFromCategory2";
 
 const OrderItem: React.FC = () => {
   const {orderId} = useParams();
@@ -39,7 +40,7 @@ const OrderItem: React.FC = () => {
               Order Items
             </div>
             <span className="ml-auto">
-        {!orderDetailError && (<AddItemFromCategory orderId={orderId || ""} refetchItemList={refetch}/>)}
+        {!orderDetailError && (<AddItemFromCategory2 orderId={orderId || ""} refetchItemList={refetch}/>)}
       </span>
           </Typography>
         </CardHeader>
@@ -83,7 +84,7 @@ const OrderItem: React.FC = () => {
                   <TableData classes="py-3 px-5" data={is_approved ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={is_open_item ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={<div className={`flex`}>
-                    <AddItemFromCategory
+                    <AddItemFromCategory2
                       orderId={id}
                       refetchItemList={refetch}
                       dialogLabel="Edit"

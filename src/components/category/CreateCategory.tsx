@@ -111,17 +111,17 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
             Category
           </Typography>
         </DialogHeader>
-        <DialogBody className="space-y-4 pb-6">
-          <div className="grid grid-cols-2">
+        <DialogBody className="space-y-2">
+          <div className="grid grid-cols-2 gap-2">
             <div>
               <Typography
                 variant="small"
                 color="blue-gray"
-                className="mb-2 text-left font-medium"
+                className="font-medium"
               >
                 Name
               </Typography>
-              <Input name="name" register={register} placeholder="e.g. T-Shirt"/>
+              <Input name="name" register={register} placeholder="e.g. T-Shirt" className="w-full"/>
               {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
 
               {addError?.name && (
@@ -136,16 +136,16 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               <Typography
                 variant="small"
                 color="blue-gray"
-                className="mb-2 text-left font-medium"
+                className="font-medium"
               >
                 Description
               </Typography>
-              <Input name="description" register={register} placeholder="Description here..."/>
+              <Input name="description" register={register} placeholder="Description here..." className="w-full"/>
               {errors.description && <p className="text-red-500 text-xs">{errors.description.message}</p>}
 
             </div>
           </div>
-          <div className="grid grid-cols-2 ">
+          <div className="grid grid-cols-2 gap-2">
             <div className="">
               <Typography
                 variant="small"
@@ -154,16 +154,16 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               >
                 Handling Options
               </Typography>
-              <label>
+              <label className="flex items-center">
                 <Switch
                   crossOrigin="crossOrigin"
                   {...register("is_foldable")}
                 />
                 &nbsp;{handlingOption.fold}
               </label>
-              <br/>
 
-              <label>
+
+              <label className="flex items-center">
                 <Switch
                   crossOrigin="crossOrigin"
                   {...register("is_hangable")}
