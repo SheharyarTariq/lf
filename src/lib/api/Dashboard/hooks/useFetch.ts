@@ -7,11 +7,13 @@ interface FetchResult<T> {
   errors: { [key: string]: any } | null,
   loading: boolean;
   refetch: () => void;
+
 }
 
 function useFetch<T>(url: string): FetchResult<T> {
   const [fetchData, setfetchData] = useState<T | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: any } | null>(null);
+  const [err, setErr] = useState<{ [key: string]: any } | null>(null);
   const [loading, setLoading] = useState(false);
   const [refetchKey, setRefetchKey] = useState(0);
   const navigator = useNavigate();
@@ -20,6 +22,7 @@ function useFetch<T>(url: string): FetchResult<T> {
     const getData = async () => {
       setLoading(true);
       setErrors(null);
+      setErr(null);
 
       try {
         const response = await fetch(url, {

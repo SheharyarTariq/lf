@@ -8,6 +8,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import OrderItemForm2 from "@/components/order-item/OrderItemForm2";
+import {ErrorToast, SuccessToast} from "@/lib/common/CommonToaster";
 
 interface AddItemFromCategoryProps {
   dialogLabel?: string;
@@ -71,13 +72,15 @@ export const AddItemFromCategory2: React.FC<AddItemFromCategoryProps> = ({
                                                                          }) => {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  // errors,
-  const {fetchData: data, loading, refetch} = useFetch<any>(`${category}`);
-  // errors: postError
-  const {postData: addOrderItem, loading: addLoading,} = usePost(`${orderItem}/orders/${orderId}`)
-  // errors: updateError
-  const {updateData: update, loading: updateLoading,} = useUpdate(`${orderItem}/${orderItemId}`);
+  const {fetchData: data, errors: fetchCategoryErrors, loading, refetch} = useFetch<any>(`${category}`);
+  const {postData: addOrderItem, errors: postError, loading: addLoading,} = usePost(`${orderItem}/orders/${orderId}`)
+  const {updateData: update, errors: updateError, loading: updateLoading,} = useUpdate(`${orderItem}/${orderItemId}`);
 
+  const {
+    fetchData: fetchItemData,
+    errors: itemError,
+    loading: itemLoading
+  } = useFetch<any>(`${item}?category_id=${selectedCategory}`);
   const initialValues = {
     is_open_item: false,
     item_id: "",
@@ -100,21 +103,20 @@ export const AddItemFromCategory2: React.FC<AddItemFromCategoryProps> = ({
     defaultValues: initialValues
   });
 
-  const {
-    // errors: itemError,
-    fetchData: fetchItemData, loading: itemLoading
-  } = useFetch<any>(`${item}?category_id=${selectedCategory}`);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const itemId = e.target.value;
+    // const selectedItem = fetchItemData?.result?.find((item: { id: string }) => item.id === itemId);
+
     reset({
-      ...watch(), item_id: itemId
+      ...watch(), item_id: itemId,
     })
     setSelectedItemId(itemId);
   };
 
   const selectedItem = fetchItemData?.result?.find((item: { id: string }) => item.id === selectedItemId);
+  // console.log("selected item all data", selectedItem)
 
   useEffect(() => {
     if (updating) {
@@ -149,42 +151,34 @@ export const AddItemFromCategory2: React.FC<AddItemFromCategoryProps> = ({
   };
 
   const handleAddOrderItem: SubmitHandler<ItemPayload> = async (data) => {
+    let response;
     if (!updating) {
-      if (watch('is_open_item')) { //open item post data
-        const response = await addOrderItem(data);
-        if (response.success) {
-          handleOpen();
-          refetchItemList();
-        }
+      response = watch('is_open_item') ? await addOrderItem(data) : await addOrderItem(data);
+      if (response.success) {
+        handleOpen();
+        refetchItemList();
+        SuccessToast(response.message || "Order Item added successfully")
       } else {
-        const response = await addOrderItem(data);
-        console.log("response", response);
-        if (response.success) {
-          handleOpen();
-          refetchItemList();
-        }
+        ErrorToast(response.message || "Failed to add order item")
       }
     } else {
-      if (watch('is_open_item')) {
-        const response = await update(data)
-        if (response.success) {
-          handleOpen();
-          refetchItemList();
-        }
+      response = watch('is_open_item') ? await update(data) : await update({
+        price_per_unit: +watch('price_per_unit'), quantity: +watch('quantity')
+      })
+      if (response.success) {
+        handleOpen();
+        refetchItemList();
+        SuccessToast(response.message || "Order Item updated successfully")
       } else {
-        const response = await update({price_per_unit: +watch('price_per_unit'), quantity: +watch('quantity')})
-        if (response.success) {
-          handleOpen();
-          refetchItemList();
-        }
+        ErrorToast(response.message || "Failed to update order item")
       }
     }
+
   };
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const categoryId = e.target.value;
-    setSelectedCategory(categoryId);
+    setSelectedCategory(e.target.value);
   };
-
+  console.log("item", itemError)
   return (<>
     <Button
       variant="text"
@@ -214,68 +208,73 @@ export const AddItemFromCategory2: React.FC<AddItemFromCategoryProps> = ({
 
       <DialogBody className="space-y-2 pb-6 min-h-full max-h-96 sm:max-h-auto overflow-y-scroll">
         <div className="grid sm:grid-cols-2 gap-2">
-          {(!updating && !watch("is_open_item")) && <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Select Category to Order
-            </Typography>
-            {loading ? (<p className="text-gray-600">Loading categories...</p>)
-              // : errors ? (
-              // <p className="text-red-500 text-xs">Error: {errors.message}</p>)
-              : data?.result?.length > 0 ? (
-                <select
-                  className="p-2 rounded w-full border border-gray-400"
-                  value={selectedCategory || ""}
-                  onChange={handleCategoryChange}
-                >
-                  <option value="" disabled>
-                    Choose a category
-                  </option>
-                  {data.result.map((category: { id: string; name: string }) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>))}
-                </select>) : (<p className="text-gray-600">No categories available.</p>)}
-          </div>}
-          {(!updating && !watch("is_open_item") && selectedCategory) && <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Add item to Order
-            </Typography>
-            {itemLoading ? (
-                <p className="text-gray-600">Loading items...</p>
-              )
-              //   : itemError ? (
-              //   <p className="text-red-500 text-xs">Error: {itemError.message}</p>
-              // )
-              : fetchItemData?.result?.length > 0 ? (
-                <select
-                  className="p-2 rounded w-full border border-gray-400"
-                  value={selectedItemId || ""}
-                  onChange={handleItemChange}
-                >
-                  <option value="" disabled>
-                    Choose an item
-                  </option>
-                  {fetchItemData.result.map((item: { id: string; name: string }) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <p className="text-gray-600">No item available.</p>
-              )}
-          </div>
+          {(!updating && !watch("is_open_item")) &&
+            <div>
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Select Category to Order
+              </Typography>
+              {loading ? (<p className="text-gray-600">Loading categories...</p>)
+                : fetchCategoryErrors ? (
+                    <p className="text-red-500 text-xs">Error: {fetchCategoryErrors.message}</p>)
+                  : data?.result?.length > 0 ? (
+                    <select
+                      className="p-2 rounded w-full border border-gray-400"
+                      value={selectedCategory || ""}
+                      onChange={handleCategoryChange}
+                    >
+                      <option value="" disabled>
+                        Choose a category
+                      </option>
+                      {data.result.map((category: { id: string; name: string }) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>))}
+                    </select>) : (<p className="text-gray-600">No categories available.</p>)}
+            </div>}
+          {(!updating && !watch("is_open_item") && selectedCategory) &&
+            <div>
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Add item to Order
+              </Typography>
+              {itemLoading ? (
+                  <p className="text-gray-600">Loading items...</p>
+                )
+                : itemError ? (
+//todo: fix this error message as it is not being displayed. only Error appears
+                    <p className="text-red-500 text-xs">Error: {itemError.message}</p>
+                  )
+                  : fetchItemData?.result?.length > 0 ? (
+                    <select
+                      className="p-2 rounded w-full border border-gray-400"
+                      value={selectedItemId || ""}
+                      onChange={handleItemChange}
+                    >
+                      <option value="" disabled>
+                        Choose an item
+                      </option>
+                      {fetchItemData.result.map((item: { id: string; name: string }) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-gray-600">No item available.</p>
+
+                  )}
+              {(postError?.item_id || updateError?.item_id) &&
+                <p className="text-red-500 text-xs">{postError?.item_id || updateError?.item_id}</p>}
+            </div>
           }
-          {/*{(postError?.item_id || updateError?.item_id) &&*/}
-          {/*  <p className="text-red-500 text-xs">{postError?.item_id || updateError?.item_id}</p>}*/}
+
         </div>
 
         {((selectedCategory && selectedItemId) || updating || watch("is_open_item")) && <div>
@@ -283,7 +282,7 @@ export const AddItemFromCategory2: React.FC<AddItemFromCategoryProps> = ({
             <OrderItemForm2
               selectedItem={selectedItem}
               updating={updating}
-              Error={Error}
+              Error={postError || updateError}
               register={register}
               watch={watch}
               setValue={setValue}
@@ -297,7 +296,7 @@ export const AddItemFromCategory2: React.FC<AddItemFromCategoryProps> = ({
         <Button
           variant="gradient"
 
-          disabled={loading || addLoading || (!selectedItem && !updating && !watch("is_open_item"))}
+          // disabled={addLoading || updateLoading || (!selectedItem && !updating && !watch("is_open_item"))}
           onClick={handleSubmit(handleAddOrderItem)}
         >
           {addLoading ? "Adding..." : "Add"}
