@@ -3,6 +3,7 @@ import {OrderDetailsCardProps} from "@/components/order-item/types";
 import {Button} from "@material-tailwind/react";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import {config} from "@/config";
+import CategoryCard from "@/components/item/CategoryCard";
 
 const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({id, result}) => {
   function handleFinalizeOrder() {
@@ -20,7 +21,7 @@ const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({id, result}) => {
           <span>
           <p className="text-lg text-gray-800 "><strong>Created At:</strong> {result.created_at} </p>
           <p className="text-lg text-gray-800"><strong>Note:</strong> {result.note || 'No additional notes'}</p>
-          <p><strong>Revenue:</strong> {result.revenue}</p>
+          <p className="text-lg text-gray-800"><strong>Revenue:</strong> {result.revenue}</p>
           </span>
           <span className="ml-auto">
              <Button

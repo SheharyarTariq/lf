@@ -1,10 +1,8 @@
 import {HomeIcon, TableCellsIcon, ServerStackIcon} from "@heroicons/react/24/solid";
-import SignIn from "@/pages/auth/sign-in";
 import Area from "@/components/area/Area";
 import Category from "@/components/category/Category";
 import {OrderList} from "@/components/order-list/OrderList";
 import Home from "@/components/home/Home";
-import OrderItem from "@/components/order-item/OrderItem";
 import {UsersList} from "@/components/user/UsersList";
 
 const icon = {className: "w-5 h-5 text-inherit"};
@@ -43,26 +41,8 @@ export const routes = [
         path: "/admin/users",
         element: <UsersList/>,
       },
-      // {
-      //   icon: <TableCellsIcon {...icon} />,
-      //   name: "Order",
-      //   path: "/orders/:orderId",
-      //   element: <OrderItem/>,
-      // },
     ],
   },
-  // {
-  //   title: "auth pages",
-  //   layout: "auth",
-  //   pages: [
-  //     {
-  //       icon: <ServerStackIcon {...icon} />,
-  //       name: "sign in",
-  //       path: "/sign-in",
-  //       element: <SignIn/>,
-  //     },
-  //   ],
-  // },
 ];
 
 export default routes;

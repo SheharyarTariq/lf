@@ -16,6 +16,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                                                                 name,
                                                                 description,
                                                                 id,
+                                                                position,
                                                                 is_hangable,
                                                                 is_foldable,
                                                                 default_handling_option,
@@ -28,12 +29,16 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
   const initialValue = {
     name: "",
     description: "",
+    position: 0,
     is_hangable: false,
     is_foldable: false,
     default_handling_option: ""
   }
   const schema = yup.object().shape({
     name: yup.string().trim().required("Name is required"),
+    position: yup.number().transform((value, originalValue) =>
+      originalValue === "" ? 0 : Number(originalValue)
+    ),
     description: yup.string(),
     is_hangable: yup.boolean(),
     is_foldable: yup.boolean(),
@@ -57,12 +62,13 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
   useEffect(() => {
     reset({
       name: name || "",
+      position: position || 0,
       description: description || "",
       is_foldable: is_foldable || false,
       is_hangable: is_hangable || false,
       default_handling_option: default_handling_option || "",
     });
-  }, [name, description, is_foldable, is_hangable, default_handling_option]);
+  }, [name, position, description, is_foldable, is_hangable, default_handling_option]);
 
   useEffect(() => {
     const Fold = watch("is_foldable");
@@ -138,10 +144,23 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                 color="blue-gray"
                 className="font-medium"
               >
+                Position
+              </Typography>
+              <Input name="position" type="number" register={register} placeholder="e.g. 1, 2, 3..."
+                     className="w-full"/>
+              {errors.position && <p className="text-red-500 text-xs">{errors.position.message}</p>}
+
+
+            </div>
+            <div className="grid col-span-2">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-medium"
+              >
                 Description
               </Typography>
               <Input name="description" register={register} placeholder="Description here..." className="w-full"/>
-              {errors.description && <p className="text-red-500 text-xs">{errors.description.message}</p>}
 
             </div>
           </div>
@@ -170,7 +189,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
                 />
                 &nbsp;{handlingOption.hang}
               </label>
-              <br/>
+
               {(errors as any)?.[""]?.message && (
                 <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
               )}

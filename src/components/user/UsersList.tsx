@@ -1,11 +1,12 @@
 import React, {useMemo} from 'react';
-import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
+import {Button, Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {config} from "@/config";
 import {Link, useSearchParams} from "react-router-dom";
 import SearchBar from "@/lib/common/SearchBar";
 import Pagination from "@/lib/common/Pagination";
+import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
 
 export interface UsersListProps {
   id: string;
@@ -127,11 +128,14 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={phone}/>
                       <TableData classes={className} data={postcode}/>
                       <TableData classes={className} data={<Link to={id}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
+                        <CommonButtonWhite>
+                          <svg xmlns="http://www.w3.org/2000/svg" className=" h-4 w-4" fill="none"
+                               viewBox="0 0 24 24"
+                               stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                          </svg>
+                        </CommonButtonWhite>
                       </Link>}/>
                     </tr>
 

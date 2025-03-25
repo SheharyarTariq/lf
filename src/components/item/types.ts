@@ -1,7 +1,6 @@
 export interface ItemProps {
   categoryId: string;
   categoryName: string;
-  // default_handling_option: string;
   items: {
     name: string;
     id: string;
@@ -24,11 +23,12 @@ export interface CreateItemProps {
   categoryId: string | null;
   name?: string | null;
   description?: string | null;
-  washing_price?: number | null;
   pieces?: number | null;
-  // is_dry_cleanable: boolean | null | number;
-  // is_washable: boolean | null | number;
-  dry_cleaning_price?: number | null;
+  price?: {
+    dry_cleaning?: number | null;
+    washing?: number | null;
+    type?: string;
+  };
   default_cleaning_method?: null | string,
   refetch: () => void;
 };
@@ -36,9 +36,12 @@ export interface CreateItemProps {
 export interface CreateItemFormData {
   name: string,
   description: string,
-  washing_price: null | number,
   default_cleaning_method: null | string,
-  dry_cleaning_price: null | number,
+  price: {
+    dry_cleaning?: number | null;
+    washing?: number | null;
+    type: string;
+  };
   piece: null | number
   category_id: string | null;
 };
