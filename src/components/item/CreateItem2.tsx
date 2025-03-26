@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Typography,
-} from "@material-tailwind/react";
+import {Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography,} from "@material-tailwind/react";
 import usePost from "@/lib/api/Dashboard/hooks/usePost";
 import useUpdate from "@/lib/api/Dashboard/hooks/useUpdate";
 import {CreateItemFormData, CreateItemProps} from "./types";
@@ -17,7 +10,7 @@ import {ErrorToast, SuccessToast} from "@/lib/common/CommonToaster";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {SubmitHandler, useForm} from "react-hook-form";
 import Input from "@/lib/common/Input";
-import {CreateCategoryFormDataProps} from "@/components/category/types";
+import {orderByOptions} from "@/components/order-list/constants";
 
 
 //Todo set scrolling of form also it is being updated and dailog is closed and success message is being showed even
@@ -28,8 +21,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
                                                          categoryId,
                                                          name,
                                                          description,
-                                                         washing_price,
-                                                         dry_cleaning_price,
+                                                         price,
                                                          default_cleaning_method,
                                                          pieces,
                                                          label,
@@ -46,12 +38,15 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
     category_id: yup.string().required(),
     name: yup.string().required("Item name is required"),
     description: yup.string(),
-    washing_price: yup.number().transform((value, originalValue) =>
-      originalValue === "" ? null : value
-    ).nullable(),
-    dry_cleaning_price: yup.number().transform((value, originalValue) =>
-      originalValue === "" ? null : value
-    ).nullable(),
+    price: yup.object().shape({
+      dry_cleaning: yup.number().positive("Price must be a positive number").transform((value, originalValue) =>
+        originalValue === "" ? null : value
+      ).nullable(),
+      washing: yup.number().positive("Price must be a positive number").transform((value, originalValue) =>
+        originalValue === "" ? null : value
+      ).nullable(),
+      type: yup.string().required("Price type is required"),
+    }),
     default_cleaning_method: yup
       .string()
       .oneOf(["wash", "dry_clean"], "Please select a cleaning method")
@@ -66,8 +61,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
     "at-least-one-has-value",
     "Either washing price or dry cleaning price must have a value",
     (values) => {
-      console.log("Errpr", errors)
-      return !!values.washing_price || !!values.dry_cleaning_price;
+      return !!values.price.dry_cleaning || !!values.price.washing;
     }
   );
 
@@ -75,8 +69,11 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
     category_id: categoryId,
     name: "",
     description: "",
-    washing_price: null,
-    dry_cleaning_price: null,
+    price: {
+      dry_cleaning: null,
+      washing: null,
+      type: "",
+    },
     default_cleaning_method: "",
     piece: 1
   }
@@ -86,8 +83,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
   })
 
   useEffect(() => {
-    const Washing_Price = watch("washing_price");
-    const Dryclean_Price = watch("default_cleaning_method");
+    const Washing_Price = watch("price.washing");
+    const Dryclean_Price = watch("price.dry_cleaning");
     if (Washing_Price && !Dryclean_Price) {
       reset({...watch(), default_cleaning_method: "wash"})
     } else if (!Washing_Price && Dryclean_Price) {
@@ -95,19 +92,23 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
     } else if (!Washing_Price && !Dryclean_Price) {
       reset({...watch(), default_cleaning_method: null})
     }
-  }, [watch("washing_price"), watch("dry_cleaning_price")]);
+  }, [watch("price.washing"), watch("price.dry_cleaning")]);
 
   useEffect(() => {
     reset({
-      category_id: categoryId || "",
+      category_id: categoryId,
       name: name || "",
       description: description || "",
-      dry_cleaning_price: dry_cleaning_price || null,
-      washing_price: washing_price || null,
+      price: {
+        dry_cleaning: price?.dry_cleaning || null,
+        washing: price?.washing || null,
+        type: price?.type,
+      },
+
       default_cleaning_method: default_cleaning_method || "",
       piece: pieces || 1,
     })
-  }, [name, description, dry_cleaning_price, washing_price, pieces, default_cleaning_method]);
+  }, [name, description, categoryId, price?.dry_cleaning, price?.washing, pieces, default_cleaning_method]);
 
   const handleOpen = () => setOpen(!open);
 
@@ -119,18 +120,14 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
       reset(initialValues);
       handleOpen();
     } else if (!response.success) {
+
       ErrorToast(response.message || `Failed to ${name ? "updated" : "added"} item!`);
     }
   };
 
   return (<>
-    <Button
-      variant="text"
-      color="blue-gray"
-      size="sm"
-      onClick={handleOpen}
-      className={`${!label && "text-black text-center bg-gray-100"}`}
-    >
+    <Button variant="text" color="blue-gray" size="sm" onClick={handleOpen}
+            className={`${!label && "text-black text-center bg-gray-100"}`}>
       {label ? label : <i className=" fa-solid fa-plus "></i>}
     </Button>
     <Dialog size="sm" open={open} handler={handleOpen} className="p-4">
@@ -145,11 +142,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
       <DialogBody className="space-y-2">
         <div className="grid grid-cols-2 gap-2">
           <span>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="font-medium"
-            >
+                      <Typography variant="small" color="blue-gray" className="font-medium">
+
               Name
             </Typography>
             <Input placeholder="Enter name here..." name="name" register={register} className="w-full"/>
@@ -158,11 +152,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
             {updateError?.name && (<p className="text-red-500 text-xs">{updateError?.name}</p>)}
           </span>
           <span>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="font-medium"
-            >
+                      <Typography variant="small" color="blue-gray" className="font-medium">
+
               Piece
             </Typography>
             <Input placeholder="e.g. 1,2... " name="piece" register={register} type="number" className="w-full"/>
@@ -174,59 +165,62 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
               {updateError?.piece}
             </p>)}
           </span>
-        </div>
 
-        <div>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-          >
+          <span>
+          <Typography variant="small" color="blue-gray" className="font-medium">
             Description
           </Typography>
           <Input placeholder="Enter description here...." name="description" register={register} className="w-full"/>
-          {errors?.description && (<p className="text-red-500 text-xs">{errors.description.message}</p>)}
-        </div>
+            {errors?.description && (<p className="text-red-500 text-xs">{errors.description.message}</p>)}
+              </span>
+          <span>
+            <Typography variant="small" color="blue-gray" className="font-medium">
+              Type
+            </Typography>
+            {/*<Input placeholder="e.g. 1,2... " name="price.type" register={register} type="string"/>*/}
+            <select
+              className="p-2.5 rounded border border-gray-400 w-full"  {...register("price.type")}>
+                  <option value="">None</option>
+              {[{label: "Fixed", value: "fixed"},].map(({label, value}) => <option key={value}
+                                                                                   value={value}>{label}</option>)}
+                </select>
+            {errors?.price?.type && (<p className="text-red-500 text-xs">{errors?.price?.type?.message}</p>)}
+            {addError?.price.type && (<p className="text-red-500 text-xs">
+              {addError?.price.type}
+            </p>)}
+            {updateError?.price.type && (<p className="text-red-500 text-xs">
+              {updateError?.price.type}
+            </p>)}
+          </span>
+          <span>
+                    <Typography variant="small" color="blue-gray" className="font-medium">
 
-        <div className="grid grid-cols-2 gap-2">
-        <span>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-          >
             Washing Price
           </Typography>
-          <Input placeholder="e.g. 10.29" name="washing_price" register={register} type="number" className="w-full"/>
-          {(errors as any)?.[""]?.message && (
-            <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
-          )}
-          {errors?.washing_price && (<p className="text-red-500 text-xs">
-            {errors.washing_price.message}
-          </p>)}
-          {addError?.washing_price && (<p className="text-red-500 text-xs">
-            {addError?.washing_price}
-          </p>)}
-          {updateError?.washing_price && (<p className="text-red-500 text-xs">
-            {updateError?.washing_price}
-          </p>)}
-        </span>
-
-          <span>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-          >
-          Dry Cleaning Price
-        </Typography>
-          <Input placeholder="e.g. 10.29" name="dry_cleaning_price" register={register} type="number"
-                 className="w-full"/>
+          <Input placeholder="e.g. 10.29" name="price.washing" register={register} type="number" className="w-full"/>
             {(errors as any)?.[""]?.message && (
               <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
             )}
-            {errors?.dry_cleaning_price && (<p className="text-red-500 text-xs">
-              {errors?.dry_cleaning_price.message}
+            {errors?.price?.washing && (<p className="text-red-500 text-xs">
+              {errors.price.washing.message}
+            </p>)}
+            {addError?.washing_price && (<p className="text-red-500 text-xs">
+              {addError?.washing_price}
+            </p>)}
+            {updateError?.washing_price && (<p className="text-red-500 text-xs">
+              {updateError?.washing_price}
+            </p>)}
+        </span>
+
+          <span>
+          <Typography variant="small" color="blue-gray" className="font-medium">
+          Dry Cleaning Price
+        </Typography>
+          <Input placeholder="e.g. 10.29" name="price.dry_cleaning" register={register} type="number"
+                 className="w-full"/>
+
+            {errors?.price?.dry_cleaning && (<p className="text-red-500 text-xs">
+              {errors?.price.dry_cleaning.message}
             </p>)}
             {addError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
               {addError?.dry_cleaning_price}
@@ -236,11 +230,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
             </p>)}
         </span>
         </div>
-        <Typography
-          variant="small"
-          color="blue-gray"
-          className="font-medium "
-        >
+        <Typography variant="small" color="blue-gray" className="font-medium">
           Default Washing Method
         </Typography>
         <Input name="default_cleaning_method" register={register} type="radio" value="wash"/>
@@ -260,10 +250,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
 
       </DialogBody>
       <DialogFooter>
-        <Button
-          className="ml-auto"
-          onClick={handleSubmit(onSubmit)}
-          disabled={isLoading}
+        <Button className="ml-auto" onClick={handleSubmit(onSubmit)}
+          // disabled={isLoading}
         >
           {isLoading ? "Saving..." : "Save"}
         </Button>

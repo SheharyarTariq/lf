@@ -2,8 +2,6 @@ import React from 'react';
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
-import {AddItemFromCategory} from "@/components/order-item/AddItemFromCategory";
-import {config} from "@/config";
 import DeleteModal from "@/lib/common/DeleteModal";
 import OrderDetailsCard from "@/components/order-item/OrderDetailsCard";
 import {OrderItems} from "@/components/order-item/types";

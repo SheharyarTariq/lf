@@ -56,7 +56,7 @@ const UserDetail: React.FC = () => {
               Name:</strong> {data.result.full_name}</p>
             <p className="text-lg text-gray-800">
               <strong>Email:</strong> {data.result.email || 'No additional notes'}</p>
-            <p><strong>Phone:</strong> {data.result.phone}</p>
+            <p className="text-lg text-gray-800"><strong>Phone:</strong> {data.result.phone}</p>
           </div>
           <div className="border-t-2 mt-4 mb-4"></div>
           <div className="mt-4 flex flex-col sm:flex-row space-x-0 sm:space-x-4">

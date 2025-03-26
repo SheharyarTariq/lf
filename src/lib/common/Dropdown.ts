@@ -125,33 +125,3 @@ export const handleGetAllTimeSlotsClose = ({
     })),
   );
 };
-
-export const handleAllCategoryOpen = ({
-                                        data,
-                                        setOpenAllDropdowns,
-                                        setOpenDropdowns,
-                                      }: GetAllCategory) => {
-  setOpenAllDropdowns((prevState) => !prevState);
-
-  data.result.map(({id}: { id: string }) =>
-    setOpenDropdowns((prevState) => ({
-      ...prevState,
-      [id]: false,
-    })),
-  );
-};
-
-export const handleGetAllCategoryClose = ({
-                                            data,
-                                            setOpenAllDropdowns,
-                                            setOpenDropdowns,
-
-                                          }: GetAllCategory) => {
-  setOpenAllDropdowns((prevState) => !prevState);
-  data.result.map(({id}) =>
-    setOpenDropdowns((prevState) => ({
-      ...prevState,
-      [id]: true,
-    })),
-  );
-};
