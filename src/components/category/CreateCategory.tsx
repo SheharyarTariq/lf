@@ -149,7 +149,12 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
               <Input name="position" type="number" register={register} placeholder="e.g. 1, 2, 3..."
                      className="w-full"/>
               {errors.position && <p className="text-red-500 text-xs">{errors.position.message}</p>}
-
+              {addError?.position && (
+                <p className="text-red-500 text-xs">{addError.position}</p>
+              )}
+              {updateError?.position && (
+                <p className="text-red-500 text-xs">{updateError.position}</p>
+              )}
 
             </div>
             <div className="grid col-span-2">

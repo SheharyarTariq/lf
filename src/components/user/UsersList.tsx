@@ -9,6 +9,7 @@ import Pagination from "@/lib/common/Pagination";
 import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
 
 export interface UsersListProps {
+  address: { postcode: string, line_1: string };
   id: string;
   full_name: string;
   email: string;
@@ -89,7 +90,7 @@ export const UsersList: React.FC = () => {
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {["Full Name", "Email", "Phone", "Post Code", "Action"].map((el, idx) => (
+                {["Full Name", "Email", "Phone", "Address", "Created At", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -114,6 +115,7 @@ export const UsersList: React.FC = () => {
                                           city,
                                           district,
                                           country,
+                                          address,
                                           postcode,
                                           is_service_available,
                                           price_review_required,
@@ -121,12 +123,15 @@ export const UsersList: React.FC = () => {
                                           payment_methods
                                         }: UsersListProps, key: number) => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+                  console.log(data?.result?.data);
+
                   return (
                     <tr key={id}>
                       <TableData classes={className} data={full_name}/>
                       <TableData classes={className} data={email}/>
                       <TableData classes={className} data={phone}/>
-                      <TableData classes={className} data={postcode}/>
+                      <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
+                      <TableData classes={className} data={"11 - 12 - 2025"}/>
                       <TableData classes={className} data={<Link to={id}>
                         <CommonButtonWhite>
                           <svg xmlns="http://www.w3.org/2000/svg" className=" h-4 w-4" fill="none"

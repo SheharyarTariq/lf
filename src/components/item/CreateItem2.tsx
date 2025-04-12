@@ -49,7 +49,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
     }),
     default_cleaning_method: yup
       .string()
-      .oneOf(["wash", "dry_clean"], "Please select a cleaning method")
+      .oneOf(["wash", "dry_clean"], "Please select a default cleaning method")
       .required("Handling method is required"),
     piece: yup.number()
       .transform((value, originalValue) =>
@@ -57,13 +57,14 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
       )
       .nullable()
       .required("Piece field is required"),
-  }).test(
-    "at-least-one-has-value",
-    "Either washing price or dry cleaning price must have a value",
-    (values) => {
-      return !!values.price.dry_cleaning || !!values.price.washing;
-    }
-  );
+  })
+    .test(
+      "at-least-one-has-value",
+      "Either washing price or dry cleaning price must have a value",
+      (values) => {
+        return !!values.price.dry_cleaning || !!values.price.washing;
+      }
+    );
 
   const initialValues = {
     category_id: categoryId,
@@ -97,7 +98,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
   useEffect(() => {
     reset({
       category_id: categoryId,
-      name: name || "",
+      name: name||"",
       description: description || "",
       price: {
         dry_cleaning: price?.dry_cleaning || null,
@@ -177,19 +178,18 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
             <Typography variant="small" color="blue-gray" className="font-medium">
               Type
             </Typography>
-            {/*<Input placeholder="e.g. 1,2... " name="price.type" register={register} type="string"/>*/}
             <select
               className="p-2.5 rounded border border-gray-400 w-full"  {...register("price.type")}>
                   <option value="">None</option>
               {[{label: "Fixed", value: "fixed"},].map(({label, value}) => <option key={value}
                                                                                    value={value}>{label}</option>)}
                 </select>
-            {errors?.price?.type && (<p className="text-red-500 text-xs">{errors?.price?.type?.message}</p>)}
-            {addError?.price.type && (<p className="text-red-500 text-xs">
-              {addError?.price.type}
+            {errors?.price?.type && (<p className="text-red-500 text-xs">{errors.price.type.message}</p>)}
+            {addError?.["price.type"] && (<p className="text-red-500 text-xs">
+              {addError?.["price.type"]}
             </p>)}
-            {updateError?.price.type && (<p className="text-red-500 text-xs">
-              {updateError?.price.type}
+            {updateError?.["price.type"] && (<p className="text-red-500 text-xs">
+              {updateError?.["price.type"]}
             </p>)}
           </span>
           <span>
@@ -197,18 +197,20 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
 
             Washing Price
           </Typography>
-          <Input placeholder="e.g. 10.29" name="price.washing" register={register} type="number" className="w-full"/>
+          <Input placeholder="e.g. 10.29" name="price.washing"
+                 register={(name) => register(name, {valueAsNumber: true})}
+                 type="number" className="w-full"/>
             {(errors as any)?.[""]?.message && (
               <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
             )}
             {errors?.price?.washing && (<p className="text-red-500 text-xs">
               {errors.price.washing.message}
             </p>)}
-            {addError?.washing_price && (<p className="text-red-500 text-xs">
-              {addError?.washing_price}
+            {addError?.["price.washing"] && (<p className="text-red-500 text-xs">
+              {addError?.["price.washing"]}
             </p>)}
-            {updateError?.washing_price && (<p className="text-red-500 text-xs">
-              {updateError?.washing_price}
+            {updateError?.["price.washing"] && (<p className="text-red-500 text-xs">
+              {updateError?.["price.washing"]}
             </p>)}
         </span>
 
@@ -216,17 +218,21 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
           <Typography variant="small" color="blue-gray" className="font-medium">
           Dry Cleaning Price
         </Typography>
-          <Input placeholder="e.g. 10.29" name="price.dry_cleaning" register={register} type="number"
+          <Input placeholder="e.g. 10.29" name="price.dry_cleaning"
+                 register={(name) => register(name, {valueAsNumber: true})}
+                 type="number"
                  className="w-full"/>
-
+            {(errors as any)?.[""]?.message && (
+              <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
+            )}
             {errors?.price?.dry_cleaning && (<p className="text-red-500 text-xs">
               {errors?.price.dry_cleaning.message}
             </p>)}
-            {addError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
-              {addError?.dry_cleaning_price}
+            {addError?.["price.dry_cleaning"] && (<p className="text-red-500 text-xs">
+              {addError?.["price.dry_cleaning"]}
             </p>)}
-            {updateError?.dry_cleaning_price && (<p className="text-red-500 text-xs">
-              {updateError?.dry_cleaning_price}
+            {updateError?.["price.dry_cleaning"] && (<p className="text-red-500 text-xs">
+              {updateError?.["price.dry_cleaning"]}
             </p>)}
         </span>
         </div>
@@ -234,10 +240,10 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
           Default Washing Method
         </Typography>
         <Input name="default_cleaning_method" register={register} type="radio" value="wash"/>
-        <label htmlFor="fold">&nbsp;{cleaningMethod.wash}</label>
+        <label htmlFor="wash">&nbsp;{cleaningMethod.wash}</label>
         <br/>
         <Input name="default_cleaning_method" register={register} type="radio" value="dry_clean"/>
-        <label>&nbsp;{cleaningMethod.dry_clean}</label>
+        <label htmlFor="dry_clean">&nbsp;{cleaningMethod.dry_clean}</label>
 
         {errors?.default_cleaning_method && (
           <p className="text-red-500 text-xs">{errors.default_cleaning_method.message}</p>
