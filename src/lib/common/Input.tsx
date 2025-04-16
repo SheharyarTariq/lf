@@ -1,5 +1,5 @@
 import React from "react";
-import {UseFormRegister} from "react-hook-form";
+import {FieldValues, RegisterOptions, UseFormRegister, UseFormRegisterReturn} from "react-hook-form";
 
 interface InputProps {
   name: string;
@@ -9,14 +9,17 @@ interface InputProps {
   className?: string;
   value?: string;
   readOnly?: boolean;
+  // register: UseFormRegister<FieldValues>;
+  options?: RegisterOptions;
+
 }
 
-const Input: React.FC<InputProps> = ({name, placeholder, register, type, className, value, readOnly}) => {
+const Input: React.FC<InputProps> = ({name, placeholder, options, register, type, className, value, readOnly}) => {
   return (
     <input
       type={type}
       readOnly={readOnly}
-      {...register(name)}
+      {...register(name, options)}
       className={`p-2 rounded  border border-gray-400 ${className}`}
       placeholder={placeholder}
       value={value}

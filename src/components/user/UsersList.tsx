@@ -9,24 +9,23 @@ import Pagination from "@/lib/common/Pagination";
 import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
 
 export interface UsersListProps {
-  address: { postcode: string, line_1: string };
   id: string;
   full_name: string;
   email: string;
-  email_verified_at: string;
+  email_verified_at: string | null;
   phone: string;
-  address_line_1: string;
-  address_line_2: string;
-  address_line_3: string;
-  city: string;
-  district: string;
-  county: string,
-  country: string,
-  postcode: string,
-  is_service_available: string
+  address: {
+    city: string | null;
+    county: string | null;
+    line_1: string | null;
+    line_2: string | null;
+    line_3: string | null;
+    postcode: string;
+  };
+  has_active_address: boolean;
+  payment_methods: any[]; // You can replace `any` with a specific type if available
   price_review_required: boolean;
-  shirt_handling: string;
-  payment_methods: []
+  shirt_handling: string | null;
 }
 
 export const UsersList: React.FC = () => {
@@ -69,7 +68,6 @@ export const UsersList: React.FC = () => {
       return params;
     });
   };
-
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <>
@@ -90,7 +88,7 @@ export const UsersList: React.FC = () => {
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {["Full Name", "Email", "Phone", "Address", "Created At", "Action"].map((el, idx) => (
+                {["Full Name", "Email", "Phone", "Address", "Created At", "Email Created At", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -109,15 +107,7 @@ export const UsersList: React.FC = () => {
                                           email,
                                           email_verified_at,
                                           phone,
-                                          address_line_1,
-                                          address_line_2,
-                                          address_line_3,
-                                          city,
-                                          district,
-                                          country,
                                           address,
-                                          postcode,
-                                          is_service_available,
                                           price_review_required,
                                           shirt_handling,
                                           payment_methods
@@ -131,7 +121,8 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={email}/>
                       <TableData classes={className} data={phone}/>
                       <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
-                      <TableData classes={className} data={"11 - 12 - 2025"}/>
+                      <TableData classes={className} data={"-"}/>
+                      <TableData classes={className} data={email_verified_at}/>
                       <TableData classes={className} data={<Link to={id}>
                         <CommonButtonWhite>
                           <svg xmlns="http://www.w3.org/2000/svg" className=" h-4 w-4" fill="none"

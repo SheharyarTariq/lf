@@ -47,11 +47,10 @@ const Item = ({
       <CategoryCard data={data?.result}/>
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <Card>
-          <CardHeader variant="gradient" color="gray"
-                      className="mb-8 p-6 border-2 shadow-2xl ">
-            <Typography variant="h6" color="white">
-              {data?.result.name} Items <CreateItem2
-              categoryId={data?.result.id || ""} refetch={refetch}/>
+          <CardHeader variant="gradient" color="gray" className="mb-8 p-6 border-2 shadow-2xl ">
+            <Typography variant="h6" color="white" className="flex items-center">
+              {data?.result.name} Items <span className="ml-auto"><CreateItem2 categoryId={data?.result.id || ""}
+                                                                               refetch={refetch}/></span>
             </Typography>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">

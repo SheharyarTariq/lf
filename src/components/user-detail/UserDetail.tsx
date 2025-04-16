@@ -60,19 +60,27 @@ const UserDetail: React.FC = () => {
           </div>
           <div className="border-t-2 mt-4 mb-4"></div>
           <div className="mt-4 flex flex-col sm:flex-row space-x-0 sm:space-x-4">
-            {/*<div className="bg-white shadow-md rounded-lg w-full p-4 mb-4 sm:mb-0">*/}
-            {/*  <h2 className="text-xl font-semibold text-gray-800">Pickup Information</h2>*/}
-            {/*  <p className="text-gray-600"><strong>Date:</strong> {data.result.postcode}</p>*/}
-            {/*  <p className="text-gray-600"><strong>Time:</strong> {data.result.pickup?.time}</p>*/}
-            {/*  <p className="text-gray-600"><strong>Point:</strong> {data.result.pickup?.point}</p>*/}
-            {/*</div>*/}
+            <div className="bg-white shadow-md rounded-lg w-full p-4 mb-4 sm:mb-0">
+              <h2 className="text-xl font-semibold text-gray-800">Address</h2>
+              <p className="text-gray-600"><strong>City:</strong> {data.result.address.city}</p>
+              <p className="text-gray-600"><strong>Postcode:</strong> {data.result.address.postcode}</p>
+              <p className="text-gray-600"><strong>Street
+                Address:</strong> {`${data.result.address.line_1 ? data.result.address.line_1 + " " : ""} ${data.result.address.line_2 ? data.result.address.line_2 + " " : ""} ${data.result.address.line_3 ? data.result.address.line_3 + " " : ""}`}
+              </p>
+              <p className="text-gray-600"><strong>Country:</strong> {data.result.address.country}</p>
 
-            {/*<div className="bg-white shadow-md rounded-lg w-full p-4 mb-4 sm:mb-0">*/}
-            {/*  <h2 className="text-xl font-semibold text-gray-800">Dropoff Information</h2>*/}
-            {/*  <p className="text-gray-600"><strong>Date:</strong> {data.result.email}</p>*/}
-            {/*  <p className="text-gray-600"><strong>Time:</strong> {data.result.dropoff?.time}</p>*/}
-            {/*  <p className="text-gray-600"><strong>Point:</strong> {data.result.dropoff?.point}</p>*/}
-            {/*</div>*/}
+            </div>
+
+            <div className="bg-white shadow-md rounded-lg w-full p-4 mb-4 sm:mb-0">
+              <h2 className="text-xl font-semibold text-gray-800">Information</h2>
+              <p className="text-gray-600"><strong>Email verified at:</strong> {data.result.email_verified_at}</p>
+              <p className="text-gray-600"><strong>Active Address:</strong> {data.result.has_active_address}
+              </p>
+              <p className="text-gray-600"><strong>Price
+                Preview:</strong> {data.result.price_review_required === true ? "Yes" : "No"}</p>
+              <p className="text-gray-600"><strong>Shirt Handling Method:</strong> {data.result.shirt_handling}</p>
+              <p className="text-gray-600"><strong>Payment Method:</strong> {data.result.payment_methods[0]}</p>
+            </div>
           </div>
         </div>
       </div>

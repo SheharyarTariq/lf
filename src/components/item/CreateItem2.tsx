@@ -39,12 +39,12 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
     name: yup.string().required("Item name is required"),
     description: yup.string(),
     price: yup.object().shape({
-      dry_cleaning: yup.number().positive("Price must be a positive number").transform((value, originalValue) =>
-        originalValue === "" ? null : value
-      ).nullable(),
-      washing: yup.number().positive("Price must be a positive number").transform((value, originalValue) =>
-        originalValue === "" ? null : value
-      ).nullable(),
+      dry_cleaning: yup.number().transform((value, originalValue) => {
+        return originalValue === "" || isNaN(value) ? null : value;
+      }).nullable().positive("Price must be a positive number"),
+      washing: yup.number().transform((value, originalValue) => {
+        return originalValue === "" || isNaN(value) ? null : value;
+      }).nullable().positive("Price must be a positive number"),
       type: yup.string().required("Price type is required"),
     }),
     default_cleaning_method: yup
@@ -98,7 +98,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
   useEffect(() => {
     reset({
       category_id: categoryId,
-      name: name||"",
+      name: name || "",
       description: description || "",
       price: {
         dry_cleaning: price?.dry_cleaning || null,
@@ -109,7 +109,7 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
       default_cleaning_method: default_cleaning_method || "",
       piece: pieces || 1,
     })
-  }, [name, description, categoryId, price?.dry_cleaning, price?.washing, pieces, default_cleaning_method]);
+  }, [name, description, categoryId, price?.dry_cleaning, price?.washing, pieces, default_cleaning_method, refetch]);
 
   const handleOpen = () => setOpen(!open);
 
@@ -184,7 +184,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
               {[{label: "Fixed", value: "fixed"},].map(({label, value}) => <option key={value}
                                                                                    value={value}>{label}</option>)}
                 </select>
-            {errors?.price?.type && (<p className="text-red-500 text-xs">{errors.price.type.message}</p>)}
+            {typeof errors?.price?.type === "object" && "message" in errors?.price?.type && (
+              <p className="text-red-500 text-xs">{errors.price.type.message}</p>)}
             {addError?.["price.type"] && (<p className="text-red-500 text-xs">
               {addError?.["price.type"]}
             </p>)}
@@ -198,7 +199,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
             Washing Price
           </Typography>
           <Input placeholder="e.g. 10.29" name="price.washing"
-                 register={(name) => register(name, {valueAsNumber: true})}
+                 register={register}
+                 options={{valueAsNumber: true}}
                  type="number" className="w-full"/>
             {(errors as any)?.[""]?.message && (
               <p className="text-red-500 text-xs">{(errors as any)[""].message}</p>
@@ -219,7 +221,8 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
           Dry Cleaning Price
         </Typography>
           <Input placeholder="e.g. 10.29" name="price.dry_cleaning"
-                 register={(name) => register(name, {valueAsNumber: true})}
+                 register={register}
+                 options={{valueAsNumber: true}}
                  type="number"
                  className="w-full"/>
             {(errors as any)?.[""]?.message && (
