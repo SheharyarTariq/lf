@@ -15,7 +15,6 @@ const Postcode: React.FC<PostcodeProps> = ({
                                            }) => {
   return (
     <span className="mt-12 mb-8 flex flex-col gap-12 px-16">
-
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6 text-center">
           <Typography variant="h6" color="white">

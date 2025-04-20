@@ -101,21 +101,20 @@ export const OrderList: React.FC = () => {
               </label>
             </div>
             <table className="w-full table-auto">
-
-              {/*<thead>*/}
-              {/*<tr>*/}
-              {/*  {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}/>,*/}
-              {/*    <MyIcon*/}
-              {/*      text="Status" setActiveLabel={setActiveLable}*/}
-              {/*      activeLabel={activeLabel}/>, "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (*/}
-              {/*    <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">*/}
-              {/*      <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">*/}
-              {/*        {el || "-"}*/}
-              {/*      </Typography>*/}
-              {/*    </th>*/}
-              {/*  ))}*/}
-              {/*</tr>*/}
-              {/*</thead>*/}
+              <thead>
+              <tr>
+                {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}/>,
+                  <MyIcon
+                    text="Status" setActiveLabel={setActiveLable}
+                    activeLabel={activeLabel}/>, "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
+                  <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                    <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                      {el || "-"}
+                    </Typography>
+                  </th>
+                ))}
+              </tr>
+              </thead>
               <tbody>
               {orderListError ? (
                 <tr><TableData colspan={8} data={orderListError.message} classes="text-center p-4" textColor="red"/>

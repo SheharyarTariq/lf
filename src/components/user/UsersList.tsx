@@ -89,7 +89,7 @@ export const UsersList: React.FC = () => {
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {["Full Name", "Email", "Phone", "Address", "Created At", "Email Created At", "Action"].map((el, idx) => (
+                {["Full Name", "Email", "Phone", "Address", "Created At", "Email Verified At", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -114,7 +114,7 @@ export const UsersList: React.FC = () => {
                                           payment_methods
                                         }: UsersListProps, key: number) => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-
+                  console.log("data", email_verified_at);
                   return (
                     <tr key={id}>
                       <TableData classes={className} data={full_name}/>
@@ -122,7 +122,15 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={phone}/>
                       <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
                       <TableData classes={className} data={"-"}/>
-                      <TableData classes={className} data={email_verified_at || "-"}/>
+                      <TableData classes={className}
+                                 data={
+                                   <>
+                                     {email_verified_at?.split(' ')[0]}
+                                     <br/>
+                                     {email_verified_at?.split(' ')[1]}
+                                   </>
+                                 }/>
+
                       <TableData classes={className} data={<Link to={id}>
                         <CommonButtonWhite>
                           <Arrow/>
