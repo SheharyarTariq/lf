@@ -1,23 +1,29 @@
-import { useState } from "react";
-import { signIn } from "@/lib/api/auth/auth";
+import {useState} from "react";
+import {signIn} from "@/lib/api/auth/auth";
+import {ErrorToast} from "@/lib/common/CommonToaster";
+import {useNavigate} from "react-router-dom";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const navigator = useNavigate();
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     setLoading(true);
     setError(null);
 
     try {
       const data = await signIn(email, password);
-      localStorage.setItem("authToken", data.result.token);
+      if (data.result.is_admin) {
+        await localStorage.setItem("authToken", data.result.token);
+        navigator("/dashboard/home");
 
-      window.location.href = "/dashboard/home";
+      } else {
+        ErrorToast("Access denied. Only admins can log in.")
+
+      }
     } catch (err) {
       if (typeof err === "string") {
         setError(err);
@@ -77,7 +83,7 @@ const SignIn = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <div>{error && <p style={{ color: "red" }}>{error}</p>}</div>
+            {error && <p style={{color: "red"}}>{error}</p>}
           </div>
           <button
             type="submit"

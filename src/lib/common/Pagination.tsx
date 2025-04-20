@@ -11,7 +11,6 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = ({currentPage, totalPage, setCurrentPage}) => {
   const getItemProps = (index: number) => ({
     variant: currentPage === index ? "filled" : "text",
-    color: "dark",
     onClick: () => setCurrentPage(index),
   } as any);
 

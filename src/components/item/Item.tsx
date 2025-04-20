@@ -4,10 +4,11 @@ import {TableData} from "@/lib/common/TableData";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {cleaningMethods} from "@/components/constants";
 import {category, item} from "@/api";
-import {CreateItem2} from "@/components/item/CreateItem2";
+import {CreateItem} from "@/components/item/CreateItem2";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {useParams} from "react-router-dom";
 import CategoryCard from "@/components/item/CategoryCard";
+import {CreateCategory} from "@/components/category/CreateCategory";
 
 
 export interface Item {
@@ -44,13 +45,36 @@ const Item = ({
 
   return (
     <>
-      <CategoryCard data={data?.result}/>
+      <CategoryCard data={data?.result}>
+        <span className="flex">
+                      <CreateCategory
+                        is_hangable={data?.result.is_hangable}
+                        is_foldable={data?.result.is_foldable}
+                        default_handling_option={data?.result.default_handling_option}
+                        description={data?.result.description}
+                        position={data?.result.position}
+                        dailogLabel="Edit"
+                        name={data?.result.name}
+                        id={data?.result.id}
+                        refetch={refetch}
+                      />
+                      <DeleteModal toastMessage="Category deleted successfully"
+                                   btnLabel='Delete'
+                                   title="Delete Confirmation"
+                                   description={`Are you sure you want to Delete this Category (${data?.result.name})?`}
+                                   refetch={refetch}
+                                   url={`${category}/${data?.result.id}`}/>
+                    </span>
+      </CategoryCard>
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <Card>
           <CardHeader variant="gradient" color="gray" className="mb-8 p-6 border-2 shadow-2xl ">
             <Typography variant="h6" color="white" className="flex items-center">
-              {data?.result.name} Items <span className="ml-auto"><CreateItem2 categoryId={data?.result.id || ""}
-                                                                               refetch={refetch}/></span>
+              {data?.result.name} Items <span className="ml-auto">
+
+              <CreateItem categoryId={data?.result.id || ""}
+                          refetch={refetch}/>
+</span>
             </Typography>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -89,7 +113,7 @@ const Item = ({
                   <TableData classes={`${className}`} data={price?.type ? price.type : "-"}/>
                   <TableData classes={`${className}`} data={piece ? piece : "-"}/>
                   <TableData classes={`${className}`} data={<div className={`flex`}>
-                    <CreateItem2
+                    <CreateItem
                       pieces={piece}
                       id={`${id}`}
                       label="Edit"

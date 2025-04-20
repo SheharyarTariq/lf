@@ -16,17 +16,18 @@ import {orderByOptions} from "@/components/order-list/constants";
 //Todo set scrolling of form also it is being updated and dailog is closed and success message is being showed even
 // there are required fields empty
 
-export const CreateItem2: React.FC<CreateItemProps> = ({
-                                                         id,
-                                                         categoryId,
-                                                         name,
-                                                         description,
-                                                         price,
-                                                         default_cleaning_method,
-                                                         pieces,
-                                                         label,
-                                                         refetch,
-                                                       }) => {
+export const CreateItem: React.FC<CreateItemProps> = ({
+                                                        id,
+                                                        categoryId,
+                                                        name,
+                                                        description,
+                                                        price,
+                                                        default_cleaning_method,
+                                                        pieces,
+                                                        label,
+                                                        refetch,
+
+                                                      }) => {
   const [open, setOpen] = useState(false);
   const urlAddArea = `${item}`;
   const urlUpdateArea = `${item}/${id}`;
@@ -127,8 +128,10 @@ export const CreateItem2: React.FC<CreateItemProps> = ({
   };
 
   return (<>
-    <Button variant="text" color="blue-gray" size="sm" onClick={handleOpen}
-            className={`${!label && "text-black text-center bg-gray-100"}`}>
+    <Button variant="text"
+            color="blue-gray"
+            size="sm" onClick={handleOpen}
+            className={`${!label && "text-black hover:bg-gray-300 text-center bg-gray-100"}`}>
       {label ? label : <i className=" fa-solid fa-plus "></i>}
     </Button>
     <Dialog size="sm" open={open} handler={handleOpen} className="p-4">

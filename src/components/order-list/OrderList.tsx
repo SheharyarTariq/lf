@@ -9,6 +9,8 @@ import {OrderListProps} from "@/components/order-list/types";
 import SearchBar from "@/lib/common/SearchBar";
 import {MyIcon} from "@/assets/sort";
 import {adminOrder} from "@/api";
+import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
+import Arrow from "@/lib/common/Arrow";
 
 export const OrderList: React.FC = () => {
   const [activeLabel, setActiveLable] = useState("")
@@ -100,20 +102,20 @@ export const OrderList: React.FC = () => {
             </div>
             <table className="w-full table-auto">
 
-              <thead>
-              <tr>
-                {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}/>,
-                  <MyIcon
-                    text="Status" setActiveLabel={setActiveLable}
-                    activeLabel={activeLabel}/>, "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
-                  <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-              </thead>
+              {/*<thead>*/}
+              {/*<tr>*/}
+              {/*  {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}/>,*/}
+              {/*    <MyIcon*/}
+              {/*      text="Status" setActiveLabel={setActiveLable}*/}
+              {/*      activeLabel={activeLabel}/>, "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (*/}
+              {/*    <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">*/}
+              {/*      <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">*/}
+              {/*        {el || "-"}*/}
+              {/*      </Typography>*/}
+              {/*    </th>*/}
+              {/*  ))}*/}
+              {/*</tr>*/}
+              {/*</thead>*/}
               <tbody>
               {orderListError ? (
                 <tr><TableData colspan={8} data={orderListError.message} classes="text-center p-4" textColor="red"/>
@@ -132,24 +134,19 @@ export const OrderList: React.FC = () => {
                   return (
                     <tr key={id}>
                       <TableData classes={className} data={number}/>
-
                       <TableData classes={className}
                                  data={orderStatus.find(element => element.value === status)?.label}/>
-
                       <TableData classes={className}
-                                 data={<div>{created_at.split(' ')[0]}<br/>{created_at.split(' ')[1]}</div>}/>
-                      <TableData classes={className} data={note}/>
-                      <TableData classes={className} data={<div>{user?.full_name}<br/>{user?.email}</div>}/>
-                      <TableData classes={className} data={<div>{pickup?.date}<br/>{pickup?.time}</div>}/>
-                      <TableData classes={className}
-                                 data={<div>{dropoff?.date || ""}<br/>{dropoff?.time || null}</div>}/>
+                                 data={<>{created_at.split(' ')[0]}<br/>{created_at.split(' ')[1]}</>}/>
+                      <TableData classes={className} data={note || "-"}/>
+                      <TableData classes={className} data={<>{user?.full_name}<br/>{user?.email}</>}/>
+                      <TableData classes={className} data={<>{pickup?.date}<br/>{pickup?.time}</>}/>
+                      <TableData classes={className} data={<>{dropoff?.date || "-"}<br/>{dropoff?.time || "-"}</>}/>
                       <TableData classes={className} data={
                         <Link to={id}>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" fill="none"
-                               viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                          </svg>
+                          <CommonButtonWhite>
+                            <Arrow/>
+                          </CommonButtonWhite>
                         </Link>}/>
                     </tr>
 

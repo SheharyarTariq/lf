@@ -14,9 +14,9 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
         <div className="relative flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"
                className="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600">
-            <path fill-rule="gray"
+            <path fill="gray"
                   d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
-                  clip-rule="gray"/>
+                  clipRule="gray"/>
           </svg>
 
           <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -26,12 +26,12 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
                  setSearch("");
                  updateParams("search", "")
                }}>
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#303030CCCCCC"
-               stroke-width="0.144"></g>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#303030CCCCCC"
+               strokeWidth="0.144"></g>
             <g id="SVGRepo_iconCarrier">
-              <path d="M19 5L5 19M5.00001 5L19 19" stroke="#303030" stroke-width="1.5" stroke-linecap="round"
-                    stroke-linejoin="round"></path>
+              <path d="M19 5L5 19M5.00001 5L19 19" stroke="#303030" strokeWidth="1.5" strokeLinecap="round"
+                    strokeLinejoin="round"></path>
             </g>
           </svg>
           <input

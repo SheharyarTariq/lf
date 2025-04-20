@@ -17,11 +17,7 @@ export default function useDelete(url: string) {
         },
       });
       const data = await response.json();
-
-      console.log('response', data)
-      if (!response.ok) {
-        // setErrors()
-      }
+      
       return data;
     } catch (err) {
       const errorMessage =

@@ -9,6 +9,7 @@ import {handlingOption, handlingOptions} from "@/components/constants";
 import {category} from "@/api";
 import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
 import {Link} from "react-router-dom";
+import Arrow from "@/lib/common/Arrow";
 
 export const Category: React.FC = () => {
   const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${category}`);
@@ -100,12 +101,7 @@ export const Category: React.FC = () => {
                              data={
                                <Link to={`${id}`}>
                                  <CommonButtonWhite>
-                                   <svg xmlns="http://www.w3.org/2000/svg" className=" h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                           d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                   </svg>
+                                   <Arrow/>
                                  </CommonButtonWhite>
                                </Link>
                              }/>

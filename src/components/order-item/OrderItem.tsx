@@ -12,6 +12,7 @@ import {AddItemFromCategory2} from "@/components/order-item/AddItemFromCategory2
 
 const OrderItem: React.FC = () => {
   const {orderId} = useParams();
+  // if ()
   const {fetchData: data, errors: orderDetailError, loading, refetch} = useFetch<any>(`${adminOrder}/${orderId}`);
 
   if (loading) {
@@ -81,7 +82,7 @@ const OrderItem: React.FC = () => {
                   <TableData classes="py-3 px-5" data={total_price}/>
                   <TableData classes="py-3 px-5" data={is_approved ? "Yes" : "No"}/>
                   <TableData classes="py-3 px-5" data={is_open_item ? "Yes" : "No"}/>
-                  <TableData classes="py-3 px-5" data={<div className={`flex`}>
+                  <TableData classes="py-3 px-5" data={<span className={`flex`}>
                     <AddItemFromCategory2
                       orderId={id}
                       refetchItemList={refetch}
@@ -103,7 +104,7 @@ const OrderItem: React.FC = () => {
                       description={`Are you sure you want to Delete this Order item (${name})?`}
                       url={`${orderItem}/${id}`}
                     />
-                  </div>}/></tr>
+                  </span>}/></tr>
               ))
             ) : (
               <tr>

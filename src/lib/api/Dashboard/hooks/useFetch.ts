@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import {token} from "@/lib/token/Token";
 import {useNavigate} from "react-router-dom";
 
 interface FetchResult<T> {
@@ -7,13 +6,12 @@ interface FetchResult<T> {
   errors: { [key: string]: any } | null,
   loading: boolean;
   refetch: () => void;
-
+  search?: boolean;
 }
 
 function useFetch<T>(url: string): FetchResult<T> {
   const [fetchData, setfetchData] = useState<T | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: any } | null>(null);
-  const [err, setErr] = useState<{ [key: string]: any } | null>(null);
   const [loading, setLoading] = useState(false);
   const [refetchKey, setRefetchKey] = useState(0);
   const navigator = useNavigate();
@@ -22,9 +20,10 @@ function useFetch<T>(url: string): FetchResult<T> {
     const getData = async () => {
       setLoading(true);
       setErrors(null);
-      setErr(null);
 
       try {
+        const token = localStorage.getItem("authToken");
+
         const response = await fetch(url, {
           headers: {
             Accept: 'application/json',
@@ -52,8 +51,10 @@ function useFetch<T>(url: string): FetchResult<T> {
         setLoading(false);
       }
     };
-    getData();
-  }, [url, token, refetchKey]);
+    if (url) {
+      getData();
+    }
+  }, [url, refetchKey]);
 
   return {
     fetchData,

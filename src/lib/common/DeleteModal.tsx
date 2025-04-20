@@ -21,7 +21,6 @@ export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, des
     if (response?.success) {
       refetch();
       handleOpen();
-      console.log("Res", response);
       SuccessToast(response.message || toastMessage);
     } else if (response?.success === false) {
       ErrorToast("Failed to Delete");
@@ -32,7 +31,9 @@ export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, des
 
   return (
     <>
-      <Button variant="text" color="blue-gray" size="sm" onClick={handleOpen}>
+      <Button
+        variant="text" color="blue-gray" size="sm"
+        onClick={handleOpen}>
         {btnLabel}
       </Button>
       <Dialog size={`sm`} open={open} handler={handleOpen}>

@@ -7,6 +7,7 @@ import {Link, useSearchParams} from "react-router-dom";
 import SearchBar from "@/lib/common/SearchBar";
 import Pagination from "@/lib/common/Pagination";
 import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
+import Arrow from "@/lib/common/Arrow";
 
 export interface UsersListProps {
   id: string;
@@ -113,7 +114,6 @@ export const UsersList: React.FC = () => {
                                           payment_methods
                                         }: UsersListProps, key: number) => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                  console.log(data?.result?.data);
 
                   return (
                     <tr key={id}>
@@ -122,15 +122,10 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={phone}/>
                       <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
                       <TableData classes={className} data={"-"}/>
-                      <TableData classes={className} data={email_verified_at}/>
+                      <TableData classes={className} data={email_verified_at || "-"}/>
                       <TableData classes={className} data={<Link to={id}>
                         <CommonButtonWhite>
-                          <svg xmlns="http://www.w3.org/2000/svg" className=" h-4 w-4" fill="none"
-                               viewBox="0 0 24 24"
-                               stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                          </svg>
+                          <Arrow/>
                         </CommonButtonWhite>
                       </Link>}/>
                     </tr>

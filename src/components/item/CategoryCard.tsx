@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface Category {
-
+  children: React.ReactNode;
   data?: {
     id: string;
     name: string;
@@ -14,7 +14,7 @@ export interface Category {
   }
 }
 
-const CategoryCard: React.FC<Category> = ({data}) => {
+const CategoryCard: React.FC<Category> = ({data, children}) => {
 
 
   return (
@@ -26,10 +26,12 @@ const CategoryCard: React.FC<Category> = ({data}) => {
       <div className="bg-white shadow-lg rounded-lg overflow-hidden p-6 mt-8 mb-6">
         <div className="mb-4 grid grid-cols-2">
           <span>
-          <p className="text-lg text-gray-800 "><strong>Name:</strong> {data?.name} </p>
+          <p className="text-lg text-gray-800 flex"><strong>Name:</strong> &nbsp;{data?.name}</p>
           <p className="text-lg text-gray-800"><strong>Category Id:</strong> {data?.id}</p>
           <p className="text-lg text-gray-800"><strong>Total Items:</strong> {data?.items.length}</p>
           </span>
+          <span
+            className="ml-auto "> {children}</span>
         </div>
         <div className="border-t-2 mt-4 mb-4"></div>
         <div className="mt-4 flex flex-col sm:flex-row space-x-0 sm:space-x-4">

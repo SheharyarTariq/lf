@@ -1,3 +1,5 @@
+import {ReactNode} from "react";
+
 export interface ItemProps {
   categoryId: string;
   categoryName: string;
