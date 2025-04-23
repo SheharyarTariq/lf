@@ -16,6 +16,9 @@ import Slot from "@/components/slot/Slot";
 import DeleteModal from "@/lib/common/DeleteModal";
 import {AreaProps} from "@/components/area/types";
 import {area} from "@/api";
+import {Link} from "react-router-dom";
+import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
+import Arrow from "@/lib/common/Arrow";
 
 export const Area: React.FC = () => {
   const {fetchData: data, errors: fetchAreaErrors, loading: fetchAreaLoading, refetch} = useFetch<any>(`${area}`);
@@ -42,11 +45,11 @@ export const Area: React.FC = () => {
           <table className="w-full table-auto">
             <thead>
             <tr>
-              {["Area", <span className="ml-9">Action</span>, <span>Post Codes&nbsp;
+              {["Area", <span>Post Codes&nbsp;
                 {isOpenAllPostcodeDropdowns ? (<i onClick={() => {
                     handleGetAllPostCodesOpen({data, setIsOpenAllPostcodeDropdowns, setOpenDropdowns, toggle})
                   }}
-                                                  className="fa-solid fa-caret-up cursor-pointer"/>) :
+                                                  className="fa-solid fa-caret-up cursor-pointer"></i>) :
                   (<i onClick={() => {
                     toggle = isOpenAllTimeSlotDropdowns
                     handleGetAllTimeSlotsOpen({data, setIsOpenAllTimeSlotDropdowns, setOpenTimeDropdowns, toggle});
@@ -72,7 +75,7 @@ export const Area: React.FC = () => {
                     toggle = true;
                     handleGetAllTimeSlotsClose({data, setIsOpenAllTimeSlotDropdowns, setOpenTimeDropdowns, toggle})
                   }}
-                      className="fa-solid fa-caret-down cursor-pointer"/>)}</span>].map((el, idx) => (
+                      className="fa-solid fa-caret-down cursor-pointer"/>)}</span>, "Action"].map((el, idx) => (
                 <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                   <Typography
                     variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">{el}
@@ -94,22 +97,7 @@ export const Area: React.FC = () => {
                   <React.Fragment key={id}>
                     <tr>
                       <TableData classes={className} data={name}/>
-                      <TableData
-                        classes={className}
-                        data={
-                          <span className="flex">
-                  <CreateArea dailogLabel="Edit" name={name} id={`${id}`} refetch={refetch}/>
-                  <DeleteModal
-                    toastMessage="Area Deleted Successfully"
-                    btnLabel="Delete"
-                    title="Delete Confirmation"
-                    description={`Are you sure you want to Delete this Area (${name})?`}
-                    refetch={refetch}
-                    url={`${area}/${id}`}
-                  />
-                </span>
-                        }
-                      />
+
                       <TableData
                         classes={className}
                         data={
@@ -134,12 +122,19 @@ export const Area: React.FC = () => {
                           )
                         }
                       />
+                      <TableData classes={className}
+                                 data={
+                                   <Link to={`${id}`}>
+                                     <CommonButtonWhite>
+                                       <Arrow/>
+                                     </CommonButtonWhite>
+                                   </Link>
+                                 }/>
+
                     </tr>
                     {openDropdowns[id] && (
                       <tr>
-                        <TableData colspan={4} data={<Postcode areaName={name} areaId={`${id}`}
-                                                               service_availabilities={post_codes}
-                                                               refetch={refetch}/>} classes="p-0"/>
+                        <TableData colspan={4} data={""} classes="p-0"/>
                       </tr>
                     )}
                     {openTimeDropdowns[id] && (

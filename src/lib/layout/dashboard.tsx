@@ -15,6 +15,7 @@ import {isAuthenticated} from "@/lib/api/auth/authenticate";
 import OrderItem from "@/components/order-item/OrderItem";
 import UserDetail from "@/components/user-detail/UserDetail";
 import Item from "@/components/item/Item";
+import Postcode from "@/components/postcode/Postcode";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -60,6 +61,7 @@ export function Dashboard() {
           <Route path="admin/orders/:orderId" element={<OrderItem/>}/>
           <Route path="admin/users/:userId" element={<UserDetail/>}/>
           <Route path="category/:categoryId" element={<Item/>}/>
+          <Route path="area/:areaId" element={<Postcode/>}/>
         </Routes>
       </div>
     </div>

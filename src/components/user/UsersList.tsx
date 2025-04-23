@@ -123,14 +123,7 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
                       <TableData classes={className} data={"-"}/>
                       <TableData classes={className}
-                                 data={
-                                   <>
-                                     {email_verified_at?.split(' ')[0]}
-                                     <br/>
-                                     {email_verified_at?.split(' ')[1]}
-                                   </>
-                                 }/>
-
+                                 data={<>{email_verified_at?.split(' ')[0]}<br/>{email_verified_at?.split(' ')[1]}</>}/>
                       <TableData classes={className} data={<Link to={id}>
                         <CommonButtonWhite>
                           <Arrow/>

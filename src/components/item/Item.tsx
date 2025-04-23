@@ -41,7 +41,6 @@ const Item = ({
               }) => {
   const {categoryId} = useParams();
   const {fetchData: data, errors, loading, refetch} = useFetch<any>(`${category}/${categoryId}`);
-  console.log("data", data);
 
   return (
     <>

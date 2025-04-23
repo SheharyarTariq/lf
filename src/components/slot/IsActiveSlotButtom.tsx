@@ -32,7 +32,7 @@ export const IsActiveSlotButtom = ({slots, isActive, refetch, id}: {
   return (
     <>
       <Button variant="text" color='blue-gray' size="sm"
-              className={isActive ? ' bg-blue-gray-50' : 'border border-blue-gray-50'}
+              className={isActive ? 'bg-blue-gray-50 border border-green-500' : 'border border-red-500'}
               onClick={handleOpen}>
         {slots}
       </Button>

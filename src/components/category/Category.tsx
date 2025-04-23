@@ -1,9 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import {Card, CardBody, CardHeader, Typography,} from "@material-tailwind/react";
 import {CreateCategory} from "@/components/category/CreateCategory";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {TableData} from "@/lib/common/TableData";
-import DeleteModal from "@/lib/common/DeleteModal";
 import {CategoryProps} from "@/components/category/types";
 import {handlingOption, handlingOptions} from "@/components/constants";
 import {category} from "@/api";
@@ -17,8 +16,12 @@ export const Category: React.FC = () => {
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-          <Typography variant="h6" color="white">
+          <Typography variant="h6" color="white" className="flex items-center">
             Category
+            <span className="ml-auto">
+{!errors && (
+  <CreateCategory refetch={refetch}/>
+)}</span>
           </Typography>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0  pt-0 pb-2">
@@ -26,9 +29,7 @@ export const Category: React.FC = () => {
             <thead>
             <tr>
               {["Category", "Description", "Handling Option", "Default Handling", "Position",
-                <span className={`ml-9`}>Action</span>, !errors && (
-                  <CreateCategory refetch={refetch}/>
-                ),].map((el, idx) => (<th
+                "Action"].map((el, idx) => (<th
                 key={idx}
                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
               >
@@ -75,28 +76,6 @@ export const Category: React.FC = () => {
                              }
                   />
                   <TableData classes={className} data={position}/>
-
-                  <TableData classes={className} data={
-                    <span className="flex">
-                      <CreateCategory
-                        is_hangable={is_hangable}
-                        is_foldable={is_foldable}
-                        default_handling_option={default_handling_option}
-                        description={description}
-                        position={position}
-                        dailogLabel="Edit"
-                        name={name}
-                        id={id}
-                        refetch={refetch}
-                      />
-                      <DeleteModal toastMessage="Category deleted successfully"
-                                   btnLabel='Delete'
-                                   title="Delete Confirmation"
-                                   description={`Are you sure you want to Delete this Category (${name})?`}
-                                   refetch={refetch}
-                                   url={`${category}/${id}`}/>
-                    </span>}/>
-
                   <TableData classes={className}
                              data={
                                <Link to={`${id}`}>

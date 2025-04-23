@@ -107,7 +107,7 @@ export const CreateCategory: React.FC<CreateCategoryProps> = ({
         color="blue-gray"
         size="sm"
         onClick={handleOpen}
-        className={`${!dailogLabel && "text-black text-center bg-gray-100"}`}
+        className={`${!dailogLabel && "text-black text-center hover:bg-gray-300 bg-gray-100"}`}
       >
         {dailogLabel ? dailogLabel : <i className=" fa-solid fa-plus "></i>}
       </Button>
