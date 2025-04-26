@@ -5,8 +5,8 @@ import IsActiveSlotButtom from "@/components/slot/IsActiveSlotButtom";
 import {SlotProps} from "@/components/slot/types";
 
 
-const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refetch,}) => {
-  return (<div className="mt-12 mb-8 flex flex-col  px-16">
+const Slot: React.FC<SlotProps> = ({areaName, slot_availabilities, refetch, loading}) => {
+  return (<div className="mt-12 mb-8 flex flex-col">
     <Card>
       <CardHeader variant="gradient" color="gray" className="mb-8 p-6 text-center">
         <Typography variant="h6" color="white">
@@ -47,8 +47,12 @@ const Slot: React.FC<SlotProps> = ({areaId, areaName, slot_availabilities, refet
                    </span>);
                            },)}/>
               </tr>
+
             );
           },)}
+          {loading && (<tr>
+            <TableData data='Loading...' classes="text-center p-4 " colspan={3} noBold={true}/>
+          </tr>)}
           </tbody>
         </table>
       </CardBody>

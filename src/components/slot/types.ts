@@ -1,6 +1,6 @@
 export interface SlotProps {
-  areaId: string;
   areaName: string;
+  loading: boolean;
   slot_availabilities: {
     weekday: string; slots: {
       availability_id: string

@@ -35,6 +35,9 @@ function useFetch<T>(url: string): FetchResult<T> {
           localStorage.removeItem('authToken');
           navigator("/auth/sign-in");
         }
+        if (response.status === 404) {
+          navigator("/");
+        }
 
         const data = await response.json();
 

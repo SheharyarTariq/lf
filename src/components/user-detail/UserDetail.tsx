@@ -44,7 +44,6 @@ const UserDetail: React.FC = () => {
 
   return (
     <>
-
       <div>
         <div className="mb-4">
           <h1 className="text-3xl font-semibold text-gray-800">Name: {data.result.full_name}</h1>
