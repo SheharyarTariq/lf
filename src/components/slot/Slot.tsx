@@ -32,7 +32,7 @@ const Slot: React.FC<SlotProps> = ({areaName, slot_availabilities, refetch, load
           {slot_availabilities?.map(({weekday, slots}, key: number,) => {
             const className = `py-3 px-5 ${key === slot_availabilities?.length - 1 ? "" : "border-b border-blue-gray-50"}`;
             return (
-              <tr className="w-full table-auto">
+              <tr className="w-full table-auto" key={key}>
                 <TableData classes={`${className}`} data={weekday}></TableData>
                 <TableData classes={`${className} ml-auto text-center`}
                            data={slots?.map(({slot, availability_id, is_active}) => {

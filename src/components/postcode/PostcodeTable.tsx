@@ -60,7 +60,8 @@ const PostcodeTable: React.FC<PostcodeTable> = ({data, refetch, loading}) => {
                   is_active={element.is_active}
                   id={`${element.id}`}
                   refetch={refetch}
-                />}
+                />
+              }
               />
               <TableData classes={className} data={
                 <DeleteModal

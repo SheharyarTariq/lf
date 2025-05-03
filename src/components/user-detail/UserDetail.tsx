@@ -38,7 +38,6 @@ const UserDetail: React.FC = () => {
   if (!data || !data.result) {
     return <p>No order details available.</p>;
   }
-  console.log(data);
   return (
     <>
       <div>
@@ -77,8 +76,8 @@ const UserDetail: React.FC = () => {
               <p className="text-gray-600"><strong>Price
                 Preview:</strong> {data.result.price_review_required === true ? "Yes" : "No"}</p>
               <p className="text-gray-600"><strong>Shirt Handling Method:</strong> {data.result.shirt_handling}</p>
-              <p className="text-gray-600"><strong>Payment Method:</strong> {data.result.payment_methods[0].provider}
-              </p>
+              {/*<p className="text-gray-600"><strong>Payment Provider:</strong> {data.result.payment_methods[0].provider}
+              </p>*/}
             </div>
           </div>
         </div>

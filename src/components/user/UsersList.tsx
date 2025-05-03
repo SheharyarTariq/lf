@@ -13,6 +13,7 @@ export interface UsersListProps {
   id: string;
   full_name: string;
   email: string;
+  created_at: string
   email_verified_at: string | null;
   phone: string;
   address: {
@@ -109,6 +110,7 @@ export const UsersList: React.FC = () => {
                                           email_verified_at,
                                           phone,
                                           address,
+                                          created_at,
                                           price_review_required,
                                           shirt_handling,
                                           payment_methods
@@ -120,7 +122,7 @@ export const UsersList: React.FC = () => {
                       <TableData classes={className} data={email}/>
                       <TableData classes={className} data={phone}/>
                       <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
-                      <TableData classes={className} data={"-"}/>
+                      <TableData classes={className} data={created_at}/>
                       <TableData classes={className}
                                  data={<>{email_verified_at?.split(' ')[0]}<br/>{email_verified_at?.split(' ')[1]}</>}/>
                       <TableData classes={className} data={<Link to={id}>

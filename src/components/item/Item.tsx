@@ -111,7 +111,7 @@ const Item = ({
                              data={cleaningMethods.find(element => element.value === default_cleaning_method)?.label}/>
                   <TableData classes={`${className}`} data={price?.type ? price.type : "-"}/>
                   <TableData classes={`${className}`} data={piece ? piece : "-"}/>
-                  <TableData classes={`${className}`} data={<div className={`flex`}>
+                  <TableData classes={`${className}`} data={<span className={`flex`}>
                     <CreateItem
                       pieces={piece}
                       id={`${id}`}
@@ -130,7 +130,7 @@ const Item = ({
                       description={`Are you sure you want to Delete this Item (${name})?`}
                       refetch={refetch}
                       url={`${item}/${id}`}/>
-                  </div>}
+                  </span>}
                   />
                 </tr>);
               },)}

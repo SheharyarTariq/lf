@@ -70,8 +70,6 @@ export const OrderList: React.FC = () => {
               Orders
             </Typography>
           </CardHeader>
-
-
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
             <div className="flex gap-2 px-2">
               <div className=" ">
@@ -84,29 +82,35 @@ export const OrderList: React.FC = () => {
                   {orderStatus.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
                 </select>
               </label>
-
-              <label>Order&nbsp;By:&nbsp;
-                <select
-                  className="p-2 rounded border border-gray-400" value={orderBy}
-                  onChange={e => updateParams("orderBy", e.target.value)}>
-                  <option value="">None</option>
-                  {orderByOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-                </select></label>
-              <label>Sorting&nbsp;Order:&nbsp;
-                <select className="p-2 rounded border border-gray-400" value={sortingOrder}
-                        onChange={e => updateParams("orderDirection", e.target.value)}>
-                  <option value="">None</option>
-                  {sortingOrderOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}
-                </select>
-              </label>
+              {/*<label>Order&nbsp;By:&nbsp;*/}
+              {/*  <select className="p-2 rounded border border-gray-400" value={orderBy} onChange={e => updateParams("orderBy", e.target.value)}>*/}
+              {/*    <option value="">None</option>*/}
+              {/*    {orderByOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}*/}
+              {/*  </select>*/}
+              {/*</label>*/}
+              {/*<label>Sorting&nbsp;Order:&nbsp;*/}
+              {/*  <select className="p-2 rounded border border-gray-400" value={sortingOrder}*/}
+              {/*          onChange={e => updateParams("orderDirection", e.target.value)}>*/}
+              {/*    <option value="">None</option>*/}
+              {/*    {sortingOrderOptions.map(({label, value}) => <option key={value} value={value}>{label}</option>)}*/}
+              {/*  </select>*/}
+              {/*</label>*/}
             </div>
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}/>,
-                  <MyIcon
-                    text="Status" setActiveLabel={setActiveLable}
-                    activeLabel={activeLabel}/>, "Created At", "Note", "User", "Pickup", "Dropoff", "Action"].map((el, idx) => (
+                {[<MyIcon text="Order#" setActiveLabel={setActiveLable} activeLabel={activeLabel}
+                          updateParams={updateParams}/>,
+                  <MyIcon text="Status" setActiveLabel={setActiveLable} activeLabel={activeLabel}
+                          updateParams={updateParams}/>,
+                  <MyIcon text="Created At" setActiveLabel={setActiveLable} activeLabel={activeLabel}
+                          updateParams={updateParams}/>,
+                  "Note", "User",
+                  <MyIcon text="Pickup" setActiveLabel={setActiveLable} activeLabel={activeLabel}
+                          updateParams={updateParams}/>,
+                  <MyIcon text="Dropoff" setActiveLabel={setActiveLable} activeLabel={activeLabel}
+                          updateParams={updateParams}/>,
+                  "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el || "-"}
@@ -148,7 +152,6 @@ export const OrderList: React.FC = () => {
                           </CommonButtonWhite>
                         </Link>}/>
                     </tr>
-
                   );
                 })
               )}
@@ -159,7 +162,6 @@ export const OrderList: React.FC = () => {
             </table>
           </CardBody>
         </Card>
-
         <div className="flex flex-col sm:flex-row justify-center">
           <Pagination currentPage={parseInt(currentPage) || 1} setCurrentPage={updatePage} totalPage={totalPage}/>
         </div>
