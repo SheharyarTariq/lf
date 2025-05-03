@@ -16,13 +16,12 @@ export const Area: React.FC = () => {
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-          <Typography variant="h6" color="white" className="flex items-center justify-between">
-            Area
-            {!fetchAreaErrors && (
-              <CreateArea
-                refetch={refetch}
-              />)}
-          </Typography>
+          <div className="flex items-center justify-between">
+            <Typography variant="h6" color="white">
+              Area
+            </Typography>
+            {!fetchAreaErrors && <CreateArea refetch={refetch}/>}
+          </div>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full table-auto">
@@ -30,8 +29,8 @@ export const Area: React.FC = () => {
             <tr>
               {["Area", "Action"].map((el, idx) => (
                 <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                  <Typography
-                    variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">{el}
+                  <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                    {el}
                   </Typography>
                 </th>))
               }

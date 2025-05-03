@@ -114,7 +114,6 @@ export const UsersList: React.FC = () => {
                                           payment_methods
                                         }: UsersListProps, key: number) => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-                  console.log("data", email_verified_at);
                   return (
                     <tr key={id}>
                       <TableData classes={className} data={full_name}/>

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import postcode from "@/components/postcode/Postcode";
 
 interface PostcodeCardProps {
   children?: React.ReactNode;

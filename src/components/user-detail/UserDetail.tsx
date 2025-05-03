@@ -38,10 +38,7 @@ const UserDetail: React.FC = () => {
   if (!data || !data.result) {
     return <p>No order details available.</p>;
   }
-
-  // const {result} = data;
-  console.log("daras", data);
-
+  console.log(data);
   return (
     <>
       <div>
@@ -72,13 +69,16 @@ const UserDetail: React.FC = () => {
 
             <div className="bg-white shadow-md rounded-lg w-full p-4 mb-4 sm:mb-0">
               <h2 className="text-xl font-semibold text-gray-800">Information</h2>
-              <p className="text-gray-600"><strong>Email verified at:</strong> {data.result.email_verified_at}</p>
-              <p className="text-gray-600"><strong>Active Address:</strong> {data.result.has_active_address}
+              <p className="text-gray-600"><strong>Email verified
+                at:</strong> {data.result.email_verified_at.split(" ")[0]}</p>
+              <p className="text-gray-600"><strong>Active
+                Address:</strong> {data.result.has_active_address ? "Yes" : "No"}
               </p>
               <p className="text-gray-600"><strong>Price
                 Preview:</strong> {data.result.price_review_required === true ? "Yes" : "No"}</p>
               <p className="text-gray-600"><strong>Shirt Handling Method:</strong> {data.result.shirt_handling}</p>
-              <p className="text-gray-600"><strong>Payment Method:</strong> {data.result.payment_methods[0]}</p>
+              <p className="text-gray-600"><strong>Payment Method:</strong> {data.result.payment_methods[0].provider}
+              </p>
             </div>
           </div>
         </div>

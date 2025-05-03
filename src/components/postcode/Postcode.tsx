@@ -14,22 +14,22 @@ const Postcode: React.FC = () => {
   return (
     <span className="space-y-12 flex flex-col ">
       <PostcodeCard data={data}>
+        <DeleteModal
+          toastMessage="Area Deleted Successfully"
+          btnLabel="Delete"
+          title="Delete Confirmation"
+          description={`Are you sure you want to Delete this Area (${data?.result?.name})?`}
+          refetch={refetch}
+          url={`${area}/${data?.result?.id}`}
+        />
         <CreateArea dailogLabel="Edit" name={data?.result?.name} id={`${data?.result.id}`} refetch={refetch}/>
-          <DeleteModal
-            toastMessage="Area Deleted Successfully"
-            btnLabel="Delete"
-            title="Delete Confirmation"
-            description={`Are you sure you want to Delete this Area (${data?.result?.name})?`}
-            refetch={refetch}
-            url={`${area}/${data?.result?.id}`}
-          />
       </PostcodeCard>
+      <Slot
+        loading={loading}
+        areaName={data?.result?.name}
+        slot_availabilities={data?.result?.slot_availabilities}
+        refetch={refetch}/>
       <PostcodeTable data={data} refetch={refetch} loading={loading}/>
-       <Slot
-         loading={loading}
-         areaName={data?.result?.name}
-         slot_availabilities={data?.result?.slot_availabilities}
-         refetch={refetch}/>
       </span>
 
   );

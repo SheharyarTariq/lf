@@ -32,7 +32,7 @@ export const DeleteModal: React.FC<Props> = ({btnLabel, url, refetch, title, des
   return (
     <>
       <Button
-        variant="text" color="blue-gray" size="sm"
+        variant="text" color="blue-gray" size="sm" className="text-red-700"
         onClick={handleOpen}>
         {btnLabel}
       </Button>
