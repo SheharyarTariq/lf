@@ -1,8 +1,8 @@
 import {config} from "@/config";
-import {token} from "@/lib/token/Token";
 
 const SignOut = async () => {
   try { //Todo: remove this api call and use hook instead and upon seuccess response remove the token and navigate it.
+    const token = localStorage.getItem('authToken');
     const response = await fetch(`${config.BASE_URL}/auth/logout`,
       {
         method: "POST",

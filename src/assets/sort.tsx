@@ -6,9 +6,6 @@ interface SvgProps {
   setActiveLabel: React.Dispatch<React.SetStateAction<string>>;
   activeLabel: string;
   updateParams: (key: string, value: string) => void;
-
-  // toggleSortingOrder: boolean,
-  // setToggleSortingOrder: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export const MyIcon: React.FC<SvgProps> = ({
