@@ -19,13 +19,13 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
                   clipRule="gray"/>
           </svg>
 
-          <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-               stroke="rgb(48,48,48)"
-               className="absolute w-5 h-5 top-2.5 right-2.5 text-slate-600 hover:cursor-pointer hover:scale-110"
-               onClick={() => {
-                 setSearch("");
-                 updateParams("search", "")
-               }}>
+          {search && <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          stroke="rgb(48,48,48)"
+                          className="absolute w-5 h-5 top-2.5 right-2.5 text-slate-600 hover:cursor-pointer hover:scale-110"
+                          onClick={() => {
+                            setSearch("");
+                            updateParams("search", "")
+                          }}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#303030CCCCCC"
                strokeWidth="0.144"></g>
@@ -33,12 +33,12 @@ const SearchBar: React.FC<SearchBarProps> = ({updateParams}) => {
               <path d="M19 5L5 19M5.00001 5L19 19" stroke="#303030" strokeWidth="1.5" strokeLinecap="round"
                     strokeLinejoin="round"></path>
             </g>
-          </svg>
+          </svg>}
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-            placeholder="Search by Order#, Name, Email"
+            placeholder="Search ...."
           />
           &nbsp;
         </div>

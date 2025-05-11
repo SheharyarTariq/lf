@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {Button, Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
+import {Card, CardBody, CardHeader, Typography} from "@material-tailwind/react";
 import {TableData} from "@/lib/common/TableData";
 import useFetch from "@/lib/api/Dashboard/hooks/useFetch";
 import {config} from "@/config";
@@ -8,6 +8,7 @@ import SearchBar from "@/lib/common/SearchBar";
 import Pagination from "@/lib/common/Pagination";
 import CommonButtonWhite from "@/lib/common/CommonButtonWhite";
 import Arrow from "@/lib/common/Arrow";
+import Search from "@/lib/common/Search";
 
 export interface UsersListProps {
   id: string;
@@ -80,7 +81,8 @@ export const UsersList: React.FC = () => {
             </Typography>
           </CardHeader>
 
-          <div className="flex justify-end gap-2 px-2">
+          <div className="flex flex-col justify-end gap-2 px-2">
+            <Search updateParams={updateParams}/>
             <div className="mr-auto">
               <SearchBar updateParams={updateParams}/>
             </div>
@@ -90,7 +92,7 @@ export const UsersList: React.FC = () => {
             <table className="w-full table-auto">
               <thead>
               <tr>
-                {["Full Name", "Email", "Phone", "Address", "Created At", "Email Verified At", "Action"].map((el, idx) => (
+                {["User", "Address", "Registered at", "Verified at", "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                     <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                       {el}
@@ -118,13 +120,11 @@ export const UsersList: React.FC = () => {
                   const className = `py-3 px-5 ${key === data.result.data.length - 1 ? "" : "border-b border-blue-gray-50"}`;
                   return (
                     <tr key={id}>
-                      <TableData classes={className} data={full_name}/>
-                      <TableData classes={className} data={email}/>
-                      <TableData classes={className} data={phone}/>
+                      <TableData classes={className} data={<>{full_name} <br/> {email} <br/> {phone} </>}/>
                       <TableData classes={className} data={<>{address.line_1} <br/> {address.postcode}</>}/>
-                      <TableData classes={className} data={created_at}/>
+                      <TableData classes={className} data={created_at?.split(' ')[0]}/>
                       <TableData classes={className}
-                                 data={<>{email_verified_at?.split(' ')[0]}<br/>{email_verified_at?.split(' ')[1]}</>}/>
+                                 data={email_verified_at?.split(' ')[0]}/>
                       <TableData classes={className} data={<Link to={id}>
                         <CommonButtonWhite>
                           <Arrow/>

@@ -69,7 +69,7 @@ const UserDetail: React.FC = () => {
             <div className="bg-white shadow-md rounded-lg w-full p-4 mb-4 sm:mb-0">
               <h2 className="text-xl font-semibold text-gray-800">Information</h2>
               <p className="text-gray-600"><strong>Email verified
-                at:</strong> {data.result.email_verified_at.split(" ")[0]}</p>
+                at:</strong> {data?.result?.email_verified_at?.split(" ")[0]}</p>
               <p className="text-gray-600"><strong>Active
                 Address:</strong> {data.result.has_active_address ? "Yes" : "No"}
               </p>

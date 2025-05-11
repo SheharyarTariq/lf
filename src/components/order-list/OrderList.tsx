@@ -108,7 +108,7 @@ export const OrderList: React.FC = () => {
                   "Note", "User",
                   <MyIcon text="Pickup" setActiveLabel={setActiveLable} activeLabel={activeLabel}
                           updateParams={updateParams}/>,
-                  <MyIcon text="Dropoff" setActiveLabel={setActiveLable} activeLabel={activeLabel}
+                  <MyIcon text="Dropoff " setActiveLabel={setActiveLable} activeLabel={activeLabel}
                           updateParams={updateParams}/>,
                   "Action"].map((el, idx) => (
                   <th key={idx} className="border-b border-blue-gray-50 py-3 px-5 text-left">
