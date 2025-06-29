@@ -184,7 +184,7 @@ export const CreateItem: React.FC<CreateItemProps> = ({
             <select
               className="p-2.5 rounded border border-gray-400 w-full"  {...register("price.type")}>
                   <option value="">None</option>
-              {[{label: "Fixed", value: "fixed"},].map(({label, value}) => <option key={value}
+              {[{label: "Fixed", value: "fixed"},{label: "KG", value: "kg"},{label: "From", value: "from"},].map(({label, value}) => <option key={value}
                                                                                    value={value}>{label}</option>)}
                 </select>
             {typeof errors?.price?.type === "object" && "message" in errors?.price?.type && (
